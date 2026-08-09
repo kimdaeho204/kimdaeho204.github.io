@@ -1255,17 +1255,23 @@ body:not(:has(.intro-splash)) .global-sound-panel,
 .intro-enter-copy small{font-size:11px;color:#e9d8bd}
 .intro-enter-arrow{font-size:25px;color:#e8c675;font-weight:900}
 
+
+/* ===== v35 intro structure hardening ===== */
+.intro-splash{pointer-events:auto!important;z-index:9999!important}
+.intro-inner{display:block!important;position:relative!important;z-index:2!important}
+.intro-enter-card{position:relative;z-index:3}
+.home-shell.intro-hidden{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+.home-shell.page-cinematic{visibility:visible!important;pointer-events:auto!important}
+.intro-enter-wrap{animation-delay:2.4s!important}
+.intro-sound-hint{animation-delay:1.9s!important}
+
 </style>
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%234568f2"/><text x="32" y="43" text-anchor="middle" font-size="38" font-weight="700" fill="white">中</text></svg>'>
 <script>
 (function(){
-  try{
-    if("scrollRestoration" in history) history.scrollRestoration="manual";
-    window.scrollTo(0,0);
-    if(!sessionStorage.getItem("meohoIntroSeenV1")){
-      document.documentElement.classList.add("play-intro");
-    }
-  }catch(e){}
+  try{if("scrollRestoration" in history)history.scrollRestoration="manual"}catch(e){}
+  window.scrollTo(0,0);
+  document.documentElement.classList.add("play-intro");
 })();
 </script>
 </head>
@@ -1281,11 +1287,29 @@ body:not(:has(.intro-splash)) .global-sound-panel,
 </div>
 
 
-<div id="introSplash" class="intro-splash" aria-hidden="true">
+<div id="introSplash" class="intro-splash" aria-hidden="false">
+  <div class="intro-inner">
+    <div class="intro-seal">中</div>
+    <p class="intro-kicker">MEOHO CHINESE STUDY</p>
+    <h1 class="intro-title">每天一点，慢慢进步。</h1>
+    <div class="intro-line"></div>
+    <p class="intro-sub">매일 조금씩, 천천히 실력을 쌓아가는 중국어 공부</p>
+    <p class="intro-sound-hint">아래 카드를 눌러 학습을 시작하세요 · BGM 기본 ON</p>
+    <div class="intro-enter-wrap">
+      <button id="introEnterCard" class="intro-enter-card" type="button">
+        <span class="intro-enter-icon">入</span>
+        <span class="intro-enter-copy">
+          <strong>메인으로 들어가기</strong>
+          <small>点击进入 · 학습을 시작합니다</small>
+        </span>
+        <span class="intro-enter-arrow">→</span>
+      </button>
+    </div>
+  </div>
+</div>
 
+<div class="shell home-shell intro-hidden">
 
-
-<div class="shell home-shell">
   <nav class="topnav">
     <div class="brand"><div class="brand-mark">中</div>머호의 중국어 공부</div>
   </nav>
@@ -1509,16 +1533,13 @@ body:not(:has(.intro-splash)) .global-sound-panel,
   const forceTop=()=>window.scrollTo({top:0,left:0,behavior:"auto"});
   forceTop();
   window.addEventListener("pageshow",()=>setTimeout(forceTop,0));
-  window.addEventListener("load",()=>{forceTop();setTimeout(forceTop,80);setTimeout(forceTop,350)});
+  window.addEventListener("load",()=>{forceTop();setTimeout(forceTop,80);setTimeout(forceTop,300)});
 
   const splash=document.getElementById("introSplash");
   const shell=document.querySelector(".home-shell");
   const enterCard=document.getElementById("introEnterCard");
   const muteBtn=document.getElementById("bgmMuteBtn");
   const volumeInput=document.getElementById("bgmVolume");
-
-  let shouldPlay=false;
-  try{shouldPlay=!sessionStorage.getItem("meohoIntroSeenV1")}catch(e){}
 
   let ctx=null,master=null,bgmStarted=false,muted=false,bgmTimer=null,bgmStep=0;
   const scale=[0,2,4,7,9],baseMidi=57;
@@ -1570,12 +1591,7 @@ body:not(:has(.intro-splash)) .global-sound-panel,
     if(!ensureAudio())return false;
     try{
       if(ctx.state==="suspended")await ctx.resume();
-      muted=false;
-      if(!bgmStarted){
-        bgmStarted=true;
-        bgmTick();
-        bgmTimer=setInterval(bgmTick,430);
-      }
+      if(!bgmStarted){bgmStarted=true;bgmTick();bgmTimer=setInterval(bgmTick,430)}
       updateMute();
       return ctx.state==="running";
     }catch(e){return false}
@@ -1589,14 +1605,9 @@ body:not(:has(.intro-splash)) .global-sound-panel,
   }
   function clickSound(){
     if(!ctx||!master||ctx.state!=="running"||muted)return;
-    const t=ctx.currentTime;
-    const osc=ctx.createOscillator(),gain=ctx.createGain();
-    osc.type="sine";
-    osc.frequency.setValueAtTime(740,t);
-    osc.frequency.exponentialRampToValueAtTime(1030,t+.05);
-    gain.gain.setValueAtTime(.0001,t);
-    gain.gain.exponentialRampToValueAtTime(.045,t+.007);
-    gain.gain.exponentialRampToValueAtTime(.0001,t+.085);
+    const t=ctx.currentTime,osc=ctx.createOscillator(),gain=ctx.createGain();
+    osc.type="sine";osc.frequency.setValueAtTime(740,t);osc.frequency.exponentialRampToValueAtTime(1030,t+.05);
+    gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.045,t+.007);gain.gain.exponentialRampToValueAtTime(.0001,t+.085);
     osc.connect(gain);gain.connect(master);osc.start(t);osc.stop(t+.095);
   }
 
@@ -1610,65 +1621,39 @@ body:not(:has(.intro-splash)) .global-sound-panel,
     volumeInput.addEventListener("click",e=>e.stopPropagation());
     volumeInput.addEventListener("input",async e=>{
       if(!bgmStarted)await startBgm();
-      muted=Number(e.target.value)===0;
-      updateMute();
+      muted=Number(e.target.value)===0;updateMute();
     });
   }
 
-  function startMainAnimation(){
-    forceTop();
-    if(!shell)return;
-    shell.classList.remove("intro-hidden");
-    shell.classList.add("intro-show","page-cinematic");
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      shell.classList.add("reveal");
-      forceTop();
-    }));
-  }
-
-  let finished=false;
-  const finish=()=>{
-    if(finished)return;
-    finished=true;
-    try{sessionStorage.setItem("meohoIntroSeenV1","1")}catch(e){}
+  function enterMain(){
     forceTop();
     document.documentElement.classList.remove("play-intro");
-    if(splash)splash.classList.add("hide");
-    startMainAnimation();
-    setTimeout(()=>{if(splash)splash.remove();forceTop()},650);
-  };
-
-  // Default ON attempt. If browser blocks it, pressing Enter card starts BGM.
-  startBgm();
-
-  if(!shouldPlay){
-    if(splash)splash.remove();
-    document.documentElement.classList.remove("play-intro");
-    startMainAnimation();
-  }else{
-    if(shell)shell.classList.add("intro-hidden");
-
-    if(enterCard){
-      enterCard.addEventListener("click",async e=>{
-        e.stopPropagation();
-        await startBgm();
-        clickSound();
-        finish();
-      });
-    }
+    splash?.classList.add("hide");
+    shell?.classList.remove("intro-hidden");
+    shell?.classList.add("intro-show","page-cinematic");
+    requestAnimationFrame(()=>requestAnimationFrame(()=>shell?.classList.add("reveal")));
+    setTimeout(()=>{splash?.remove();forceTop()},650);
   }
 
-  // Main-page card click sounds only
-  const targets=[
-    document.querySelector(".today-main-cta"),
-    ...document.querySelectorAll(".menu-grid .home-card")
-  ].filter(Boolean);
+  // The intro is a hard modal: only the enter card or audio controls are interactive.
+  if(splash){
+    splash.addEventListener("click",e=>{
+      if(!e.target.closest("#introEnterCard,#globalSoundPanel"))e.stopPropagation();
+    });
+  }
+  enterCard?.addEventListener("click",async e=>{
+    e.preventDefault();e.stopPropagation();
+    await startBgm();
+    clickSound();
+    enterMain();
+  });
+
+  // Main-page card click sounds only.
+  const targets=[document.querySelector(".today-main-cta"),...document.querySelectorAll(".menu-grid .home-card")].filter(Boolean);
   targets.forEach(el=>{
     el.classList.add("home-click-target");
     el.addEventListener("click",()=>{
-      clickSound();
-      el.classList.add("clicking");
-      setTimeout(()=>el.classList.remove("clicking"),120);
+      clickSound();el.classList.add("clicking");setTimeout(()=>el.classList.remove("clicking"),120);
     });
   });
 })();
