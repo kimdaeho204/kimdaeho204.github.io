@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>오답노트 | 머호의 중국어 공부</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<main class="shell">
+<nav class="topnav"><a class="brand" href="index.html"><div class="brand-mark">中</div>머호의 중국어 공부</a><a class="nav-home" href="index.html">← 홈</a></nav>
+<div class="page-head"><div><p class="eyebrow">REVIEW</p><h1 class="page-title">오답노트</h1><p class="page-sub">단어 공부에서 ‘모름’으로 체크한 단어가 자동으로 모입니다. 필요한 단어는 직접 추가할 수도 있어요.</p></div></div>
+<section class="wrong-section">
+  <div class="wrong-header"><div><h2>오답 단어</h2><p>외운 단어는 ‘외움 처리’를 누르면 오답노트에서 빠집니다.</p></div><span id="wrongCountBadge" class="wrong-count">0개</span></div>
+  <div class="wrong-add"><input id="wrongHanziInput" placeholder="한자 예: 学习"><input id="wrongPinyinInput" placeholder="병음 예: xuéxí"><input id="wrongMeaningInput" placeholder="뜻 예: 공부하다"><button id="addWrongWordBtn">+ 오답 단어 추가</button></div>
+  <div id="wrongList" class="wrong-list"></div><div id="wrongEmpty" class="wrong-empty">아직 오답 단어가 없어요.</div>
+</section>
+</main>
+<script src="data.js"></script><script src="wrong.js"></script>
+</body></html>

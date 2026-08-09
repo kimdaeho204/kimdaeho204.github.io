@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>단어 공부 | 머호의 중국어 공부</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<main class="shell">
+<nav class="topnav"><a class="brand" href="index.html"><div class="brand-mark">中</div>머호의 중국어 공부</a><a class="nav-home" href="index.html">← 홈</a></nav>
+<div class="page-head">
+  <div><p class="eyebrow">VOCABULARY</p><h1 class="page-title">단어 공부</h1><p class="page-sub">한자를 보고 병음과 뜻을 떠올려보세요. 병음 보기에서는 발음도 함께 들을 수 있어요.</p></div>
+  <button id="resetBtn" class="ghost">학습기록 초기화</button>
+</div>
+<section class="stats">
+  <div><strong id="totalCount">0</strong><span>전체</span></div>
+  <div><strong id="knownCount">0</strong><span>외움</span></div>
+  <div><strong id="unsureCount">0</strong><span>애매함</span></div>
+  <div><strong id="unknownCount">0</strong><span>모름</span></div>
+</section>
+<section class="study-panel">
+  <div class="topline"><span id="progress">1 / 1</span><div class="controls"><button id="shuffleBtn" class="ghost">랜덤 섞기</button><select id="filterSelect"><option value="all">전체 단어</option><option value="unknown">모름만</option><option value="unsure">애매함만</option><option value="known">외운 단어만</option></select></div></div>
+  <article class="card"><div class="hanzi" id="hanzi"></div><button class="reveal" id="showPinyinBtn">병음 보기 🔊</button><div class="pinyin hidden" id="pinyin"></div><div class="voice-hint">병음 보기를 누르면 중국어 발음이 재생됩니다.</div><button class="reveal" id="showMeaningBtn">뜻 보기</button><div class="meaning hidden" id="meaning"></div></article>
+  <div class="rating"><button data-status="unknown" class="rate unknown">모름</button><button data-status="unsure" class="rate unsure">애매함</button><button data-status="known" class="rate known">외움</button></div>
+  <div class="nav"><button id="prevBtn">← 이전</button><button id="nextBtn">다음 →</button></div>
+</section>
+<section class="list-section"><div class="list-header"><h2>단어 목록</h2><input id="searchInput" placeholder="한자 / 병음 / 뜻 검색"></div><div id="wordList" class="word-list"></div></section>
+</main>
+<script src="data.js"></script><script src="study.js"></script>
+</body></html>
