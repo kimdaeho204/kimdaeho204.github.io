@@ -45,6 +45,8 @@ function renderWord(x){
  </article>`;
 }
 function renderSentence(x){
+ const src=SENTENCES.find(s=>s.id===x.sentenceId)||{};
+ const comps=src.components||[]; const poss=src.pos||[];
  return `<article class="review-card" data-key="${esc(x.key)}">${head(x)}
   <div class="sentence-badges"><span class="sbadge">${esc(x.category)}</span><span class="sbadge">${esc(x.level)}</span></div>
   <div class="review-sentence">${esc(x.text)}</div>
@@ -55,6 +57,12 @@ function renderSentence(x){
    <div class="review-meaning review-hidden">${esc(x.meaning)}</div>
   </div>
   <div class="review-focus">핵심 단어 <span>${esc(x.focus)}</span></div>
+  <div class="grammar-actions">
+   <button onclick="toggleGrammar('${safe(x.key)}','comp')">문장 성분 보기</button>
+   <button onclick="toggleGrammar('${safe(x.key)}','pos')">품사 보기</button>
+  </div>
+  <div id="comp_${safe(x.key)}" class="grammar-box review-hidden"><h3>문장 성분 · 학습용 분석</h3><div class="tag-row">${comps.map(c=>`<span class="grammar-tag"><strong>${esc(c.text)}</strong>${esc(c.role)}</span>`).join("")}</div></div>
+  <div id="pos_${safe(x.key)}" class="grammar-box review-hidden"><h3>품사</h3><div class="pos-grid">${poss.map(p=>`<div class="pos-item"><div class="word">${esc(p.text)}</div><div class="ptype">${esc(p.pos)}</div></div>`).join("")}</div></div>
   <div class="review-actions"><button class="keep-btn" onclick="keepItem('${esc(x.key)}')">다시 보기</button><button class="resolve-btn" onclick="solveSentence('${esc(x.key)}','${esc(x.sentenceId)}')">이해했음</button></div>
  </article>`;
 }
@@ -74,18 +82,40 @@ function renderQuiz(x){
  return `<article class="review-card" data-key="${esc(x.key)}">${head(x)}<span class="quiz-type">${esc(q.label)}</span>${body}<div id="fb_${safe(x.key)}" class="review-feedback review-hidden"></div></article>`;
 }
 function safe(s){return btoa(unescape(encodeURIComponent(s))).replace(/[^a-zA-Z0-9]/g,"")}
+function toggleGrammar(id,type){const el=document.getElementById(type+"_"+id);if(el)el.classList.toggle("review-hidden")}
+
 function showNext(btn){btn.nextElementSibling.classList.toggle("review-hidden")}
 function showWordPinyin(btn,key){btn.nextElementSibling.classList.remove("review-hidden");const x=getReviewItems().find(i=>i.key===key);if(x)speak(x.hanzi)}
 function showSentencePinyin(btn,key){btn.nextElementSibling.classList.remove("review-hidden");const x=getReviewItems().find(i=>i.key===key);if(x)speak(x.text)}
 function keepItem(key){const items=getReviewItems();const x=items.find(i=>i.key===key);if(x){x.wrongCount=(x.wrongCount||1)+1;x.lastWrongAt=Date.now();saveReviewItems(items)}render()}
 function solveWord(key,id){states[id]="known";localStorage.setItem("chineseVocabStatesV4",JSON.stringify(states));resolveReviewItem(key);render()}
 function solveSentence(key,id){sentenceStates[id]="known";localStorage.setItem("sentenceStatesV1",JSON.stringify(sentenceStates));resolveReviewItem(key);render()}
+
+function replayExplain(q,userAnswer,ok){
+ const why=q.type==="reading"
+   ?`문장의 전체 의미와 핵심 단어 ‘${q.sentence.focus}’를 기준으로 판단하는 문제입니다.`
+   :q.type==="listening"
+   ?`듣기에서는 핵심 단어 ‘${q.sentence.focus}’와 들리는 어순을 잡는 것이 중요합니다.`
+   :`문장 배열은 보통 주어 → 시간/장소 → 서술어 → 목적어 순서를 먼저 확인하면 좋아요.`;
+ const correct=q.type==="order"?q.sentence.text:q.answer;
+ return `<div class="quiz-explain">
+   <div class="quiz-explain-title">${ok?"✅ 정답 해설":"❌ 오답 해설"}</div>
+   ${!ok?`<div class="quiz-explain-row"><strong>내 답</strong>${esc(userAnswer||"-")}</div>`:""}
+   <div class="quiz-explain-row"><strong>정답</strong>${esc(correct)}</div>
+   <div class="quiz-explain-row"><strong>병음</strong><span class="quiz-pinyin">${esc(pinyinFor(q.sentence.text))}</span></div>
+   <div class="quiz-explain-row"><strong>해석</strong>${esc(q.sentence.meaning)}</div>
+   <div class="quiz-explain-row"><strong>이유</strong>${esc(why)}</div>
+   <div class="quiz-explain-row"><strong>포인트</strong>핵심 단어: ${esc(q.sentence.focus)}</div>
+   <button class="quiz-explain-listen" onclick="speak('${esc(q.sentence.text)}')">🔊 정답 문장 듣기</button>
+ </div>`;
+}
+
 function answerReplay(key,btn,opt){
  const x=getReviewItems().find(i=>i.key===key);if(!x)return;const q=x.quiz;const ok=opt===q.answer;
  const card=btn.closest(".review-card");card.querySelectorAll(".review-option").forEach(b=>{b.disabled=true;if(b.textContent===q.answer)b.classList.add("correct")});
  if(!ok)btn.classList.add("wrong");
  const fb=$("fb_"+safe(key));fb.classList.remove("review-hidden");
- fb.innerHTML=ok?`✅ 정답입니다. 오답노트에서 제거했어요.<br>${esc(q.sentence.meaning)}`:`❌ 정답은 <strong>${esc(q.answer)}</strong> 입니다.<br>${esc(q.sentence.meaning)}`;
+ fb.innerHTML=replayExplain(q,opt,ok);
  if(ok){setTimeout(()=>{resolveReviewItem(key);render()},900)}else keepItemSilent(key);
 }
 let replayTokens={};
@@ -93,7 +123,7 @@ function pickToken(key,btn,t){if(!replayTokens[key])replayTokens[key]=[];replayT
 function renderBank(key){const el=$("ans_"+safe(key));el.innerHTML=(replayTokens[key]||[]).map(t=>`<span class="review-token">${esc(t)}</span>`).join("")}
 function checkReplayOrder(key){
  const x=getReviewItems().find(i=>i.key===key);if(!x)return;const q=x.quiz,built=(replayTokens[key]||[]).join(""),ok=built===q.answer;
- const fb=$("fb_"+safe(key));fb.classList.remove("review-hidden");fb.innerHTML=ok?`✅ 정답입니다. 오답노트에서 제거했어요.<br>${esc(q.sentence.text)}<br>${esc(q.sentence.meaning)}`:`❌ 다시 확인해보세요.<br><strong>정답:</strong> ${esc(q.sentence.text)}<br>${esc(q.sentence.meaning)}`;
+ const fb=$("fb_"+safe(key));fb.classList.remove("review-hidden");fb.innerHTML=replayExplain(q,built,ok);
  if(ok){setTimeout(()=>{resolveReviewItem(key);render()},900)}else{keepItemSilent(key);replayTokens[key]=[];setTimeout(render,900)}
 }
 function keepItemSilent(key){const items=getReviewItems(),x=items.find(i=>i.key===key);if(x){x.wrongCount=(x.wrongCount||1)+1;x.lastWrongAt=Date.now();saveReviewItems(items)}}

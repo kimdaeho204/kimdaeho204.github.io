@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>문장 공부 | 머호의 중국어 공부</title><style>
+<title>오늘 학습 | 머호의 중국어 공부</title><style>
 
 :root{
   --bg:#f7f8fc;
@@ -243,71 +243,81 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
 .quiz-pinyin{color:var(--accent);font-weight:800}
 .quiz-explain-listen{border:0;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:8px 12px;font-weight:900;margin-top:8px}
 
+
+.today-hero{
+  background:linear-gradient(135deg,#151a2d,#2b3e70 65%,#4568f2);
+  color:#fff;border-radius:28px;padding:34px;box-shadow:var(--shadow);margin-bottom:20px
+}
+.today-hero .eyebrow{color:#c6d0ff}
+.today-hero h1{font-size:38px;margin:0 0 10px;letter-spacing:-.04em}
+.today-hero p{color:#dbe0f0;margin:0;line-height:1.7}
+.today-overview{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+.today-overview div{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:15px;padding:14px;text-align:center}
+.today-overview strong{display:block;font-size:23px}.today-overview span{font-size:12px;color:#dce1f3}
+.today-tabs{display:flex;gap:10px;margin:18px 0}
+.today-tab{border:1px solid var(--border);background:#fff;border-radius:13px;padding:11px 16px;font-weight:900;color:#566073}
+.today-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.today-progress-line{display:flex;justify-content:space-between;align-items:center;margin:12px 0 8px;font-size:13px;color:var(--muted)}
+.today-card{background:#fff;border:1px solid var(--border);border-radius:25px;padding:26px;box-shadow:var(--shadow)}
+.today-qtype{display:inline-block;background:var(--accent-soft);color:var(--accent);font-weight:900;font-size:12px;padding:7px 10px;border-radius:999px}
+.today-question{font-size:30px;font-weight:900;line-height:1.5;text-align:center;margin:30px 0 10px}
+.today-sub{text-align:center;color:var(--muted);margin-bottom:22px}
+.today-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.today-option{border:1px solid var(--border);background:#fff;border-radius:14px;padding:15px;text-align:left;font-weight:800;line-height:1.45}
+.today-option:hover{background:#fafbff;border-color:#ccd5ff}
+.today-option.correct{background:#eaf8ef;border-color:#c5e6d1;color:#247343}
+.today-option.wrong{background:#fff0f0;border-color:#efd0d0;color:#b83e3e}
+.today-feedback{margin-top:16px;display:none}
+.today-next{width:100%;border:0;background:var(--accent);color:#fff;border-radius:14px;padding:14px;font-weight:900;margin-top:14px;display:none}
+.today-listen{display:block;margin:10px auto 20px;border:0;background:var(--accent);color:#fff;border-radius:999px;padding:11px 16px;font-weight:900}
+.today-token-bank,.today-answer-bank{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;min-height:58px;padding:12px;border-radius:15px;border:1px dashed var(--border);margin:12px 0}
+.today-answer-bank{background:#fafbff;border-style:solid}
+.today-token{border:1px solid var(--border);background:#fff;border-radius:11px;padding:9px 12px;font-weight:900}
+.today-result{text-align:center;padding:44px 18px}
+.today-result h2{font-size:30px;margin:0 0 10px}.today-result p{color:var(--muted)}
+.today-result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:520px;margin:24px auto}
+.today-result-grid div{border:1px solid var(--border);border-radius:15px;padding:16px;background:#fafbff}
+.today-result-grid strong{display:block;font-size:26px}
+.today-restart{border:0;background:var(--accent);color:#fff;border-radius:14px;padding:13px 18px;font-weight:900}
+@media(max-width:760px){.today-overview{grid-template-columns:1fr}.today-options{grid-template-columns:1fr}.today-question{font-size:25px}}
 </style></head>
 <body>
 <main class="shell">
 <nav class="topnav"><a class="brand" href="index.html"><div class="brand-mark">中</div>머호의 중국어 공부</a><a class="nav-home" href="index.html">← 홈</a></nav>
-<div class="page-head"><div><p class="eyebrow">HSK SENTENCE TRAINING</p><h1 class="page-title">문장 공부</h1><p class="page-sub">단어장에서 배운 어휘를 문장 안에서 익히고, HSK형 문제로 바로 확인해보세요.</p></div></div>
 
-<div class="sentence-tabs">
-  <button class="sentence-tab active" data-tab="learn">문장 학습</button>
-  <button class="sentence-tab" data-tab="quiz">HSK 연습</button>
+<section class="today-hero">
+ <p class="eyebrow">TODAY'S STUDY</p>
+ <h1>오늘 학습</h1>
+ <p>단어 50문제와 HSK형 문장 20문제를 랜덤으로 풀어보세요. 틀린 문제는 바로 해설하고 오답노트에도 자동 저장됩니다.</p>
+ <div class="today-overview">
+  <div><strong>50</strong><span>단어 문제</span></div>
+  <div><strong>20</strong><span>문장 문제</span></div>
+  <div><strong>70</strong><span>오늘 총 문제</span></div>
+ </div>
+</section>
+
+<div class="today-tabs">
+ <button class="today-tab active" data-section="word">단어 50문제</button>
+ <button class="today-tab" data-section="sentence">문장 20문제</button>
 </div>
 
-<section id="learnPane">
-  <div class="sentence-toolbar">
-    <div class="group">
-      <select id="categoryFilter"><option value="all">전체 주제</option></select>
-      <select id="levelFilter"><option value="all">전체 난이도</option><option>쉬움</option><option>보통</option><option>어려움</option></select>
-    </div>
-    <button id="sentenceShuffle" class="ghost">랜덤 문장</button>
-  </div>
-  <div class="progress-track"><div id="sentenceProgress" class="progress-bar"></div></div>
-  <article class="sentence-card">
-    <div class="sentence-meta"><span id="sentenceCount">1 / 150</span><div class="sentence-badges"><span id="categoryBadge" class="sbadge"></span><span id="levelBadge" class="sbadge"></span></div></div>
-    <div id="sentenceCn" class="sentence-cn"></div>
-    <div id="sentencePinyin" class="sentence-pinyin hidden"></div>
-    <div id="sentenceMeaning" class="sentence-meaning hidden"></div>
-    <div class="sentence-actions"><button id="showSentencePinyin">병음 보기 🔊</button><button id="showSentenceMeaning">뜻 보기</button></div>
-    <div class="focus-box"><span>핵심 단어</span><strong id="focusWord" class="focus-word"></strong></div>
-    <div class="grammar-actions">
-      <button id="showComponents">문장 성분 보기</button>
-      <button id="showPos">품사 보기</button>
-    </div>
-    <div id="componentBox" class="grammar-box hidden-block">
-      <h3>문장 성분 · 학습용 분석</h3>
-      <div id="componentTags" class="tag-row"></div>
-    </div>
-    <div id="posBox" class="grammar-box hidden-block">
-      <h3>품사</h3>
-      <div id="posGrid" class="pos-grid"></div>
-    </div>
+<div class="today-progress-line"><span id="todayPart">단어 학습</span><span id="todayCount">1 / 50</span></div>
+<div class="progress-track"><div id="todayProgress" class="progress-bar"></div></div>
 
-    <div class="sentence-rate"><button id="sentenceUnknown" class="unknown">다시 보기</button><button id="sentenceKnown" class="known">이해했음</button></div>
-    <div class="snav"><button id="sentencePrev">← 이전</button><button id="sentenceNext">다음 →</button></div>
-  </article>
-</section>
-
-<section id="quizPane" class="hidden-block">
-  <div class="quiz-mode-cards">
-    <button class="quiz-mode-card active" data-mode="mixed">혼합 10문제</button>
-    <button class="quiz-mode-card" data-mode="reading">독해·뜻</button>
-    <button class="quiz-mode-card" data-mode="order">문장 배열</button>
-    <button class="quiz-mode-card" data-mode="listening">듣기</button>
-  </div>
-  <div class="progress-track"><div id="quizProgress" class="progress-bar"></div></div>
-  <section class="quiz-panel">
-    <div class="quiz-head"><span id="quizType" class="quiz-type">HSK 연습</span><strong id="quizScore">0 / 0</strong></div>
-    <div id="quizQuestion" class="quiz-question"></div>
-    <div id="quizSub" class="quiz-sub"></div>
-    <button id="listenQuestion" class="listen-btn hidden-block">🔊 문장 듣기</button>
-    <div id="options" class="options"></div>
-    <div id="answerBank" class="answer-bank hidden-block"></div>
-    <div id="tokenBank" class="token-bank hidden-block"></div>
-    <div id="quizFeedback" class="quiz-feedback"></div>
-    <button id="quizNext" class="quiz-next">다음 문제 →</button>
-  </section>
+<section id="todayCard" class="today-card">
+ <span id="todayType" class="today-qtype">단어 · 뜻 고르기</span>
+ <div id="todayQuestion" class="today-question"></div>
+ <div id="todaySub" class="today-sub"></div>
+ <button id="todayListen" class="today-listen hidden-block">🔊 듣기</button>
+ <div id="todayOptions" class="today-options"></div>
+ <div id="todayAnswerBank" class="today-answer-bank hidden-block"></div>
+ <div id="todayTokenBank" class="today-token-bank hidden-block"></div>
+ <div id="todayFeedback" class="today-feedback"></div>
+ <button id="todayNext" class="today-next">다음 문제 →</button>
 </section>
 </main>
-<script src="data.js?v=11"></script><script src="sentences.js?v=12"></script><script src="review-store.js?v=11"></script><script src="sentence-study.js?v=13"></script>
+<script src="data.js?v=14"></script>
+<script src="sentences.js?v=14"></script>
+<script src="review-store.js?v=14"></script>
+<script src="today.js?v=14"></script>
 </body></html>

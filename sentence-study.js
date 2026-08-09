@@ -50,6 +50,10 @@ function renderSentence(){
   $("categoryBadge").textContent=s.category;$("levelBadge").textContent=s.level;
   $("sentenceCn").textContent=s.text;$("sentencePinyin").textContent=pinyinFor(s.text);
   $("sentenceMeaning").textContent=s.meaning;$("focusWord").textContent=s.focus;
+  $("componentTags").innerHTML=(s.components||[]).map(x=>`<span class="grammar-tag"><strong>${x.text}</strong>${x.role}</span>`).join("");
+  $("posGrid").innerHTML=(s.pos||[]).map(x=>`<div class="pos-item"><div class="word">${x.text}</div><div class="ptype">${x.pos}</div></div>`).join("");
+  $("componentBox").classList.add("hidden-block");$("posBox").classList.add("hidden-block");
+  $("showComponents").textContent="문장 성분 보기";$("showPos").textContent="품사 보기";
   $("sentencePinyin").classList.add("hidden");$("sentenceMeaning").classList.add("hidden");
   $("showSentencePinyin").textContent="병음 보기 🔊";$("showSentenceMeaning").textContent="뜻 보기";
 }
@@ -75,8 +79,28 @@ $("sentenceKnown").onclick=()=>{
  resolveReviewItem("sentence:"+s.id);$("sentenceNext").click()
 };
 
+
+$("showComponents").onclick=()=>{
+  $("componentBox").classList.toggle("hidden-block");
+  $("showComponents").textContent=$("componentBox").classList.contains("hidden-block")?"문장 성분 보기":"문장 성분 숨기기";
+};
+$("showPos").onclick=()=>{
+  $("posBox").classList.toggle("hidden-block");
+  $("showPos").textContent=$("posBox").classList.contains("hidden-block")?"품사 보기":"품사 숨기기";
+};
+
 document.querySelectorAll(".sentence-tab").forEach(b=>b.onclick=()=>{
- document.querySelectorAll(".sentence-tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");
+ 
+$("showComponents").onclick=()=>{
+  $("componentBox").classList.toggle("hidden-block");
+  $("showComponents").textContent=$("componentBox").classList.contains("hidden-block")?"문장 성분 보기":"문장 성분 숨기기";
+};
+$("showPos").onclick=()=>{
+  $("posBox").classList.toggle("hidden-block");
+  $("showPos").textContent=$("posBox").classList.contains("hidden-block")?"품사 보기":"품사 숨기기";
+};
+
+document.querySelectorAll(".sentence-tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");
  const learn=b.dataset.tab==="learn";$("learnPane").classList.toggle("hidden-block",!learn);$("quizPane").classList.toggle("hidden-block",learn);
  if(!learn) startQuiz(quizMode);
 });
@@ -152,19 +176,54 @@ function answerOption(opt,btn){
    [...$("options").children].forEach(b=>{if(b.textContent===currentQ.answer)b.classList.add("correct")});
    saveWrongQuiz(currentQ,opt);
  }
- showFeedback(ok);
+ showFeedback(ok,null,opt);
 }
 function checkOrder(){
  if(answered)return;answered=true;
  const built=chosenTokens.join(""), ok=built===currentQ.answer;
  if(ok){score++;resolveReviewItem("quiz:"+[currentQ.type,currentQ.s.id,currentQ.answer].join(":"))}
  else saveWrongQuiz(currentQ,built);
- showFeedback(ok, currentQ.s.text);
+ showFeedback(ok,currentQ.s.text,built);
 }
-function showFeedback(ok,correctText){
+
+function explanationFor(q,userAnswer){
+  const s=q.s;
+  if(q.type==="reading"){
+    return {
+      why:`이 문제는 문장의 전체 의미를 묻습니다. 핵심 표현 ‘${s.focus}’와 문장 흐름을 확인하면 정답을 고를 수 있어요.`,
+      point:`핵심 단어: ${s.focus}`
+    };
+  }
+  if(q.type==="listening"){
+    return {
+      why:`듣기에서는 문장 전체를 모두 번역하려 하기보다 들리는 핵심 단어와 어순을 잡는 것이 중요해요. 이 문장의 핵심은 ‘${s.focus}’입니다.`,
+      point:`핵심 단어: ${s.focus}`
+    };
+  }
+  return {
+    why:`중국어 기본 어순은 보통 ‘주어 + 시간/장소 + 서술어 + 목적어’ 순서입니다. 원래 문장의 어순을 기준으로 배열해야 해요.`,
+    point:`핵심 단어: ${s.focus}`
+  };
+}
+function explanationHtml(q,userAnswer,ok){
+  const e=explanationFor(q,userAnswer);
+  const correct=q.type==="order"?q.s.text:q.answer;
+  return `<div class="quiz-explain">
+    <div class="quiz-explain-title">${ok?"✅ 정답 해설":"❌ 오답 해설"}</div>
+    ${!ok?`<div class="quiz-explain-row"><strong>내 답</strong>${userAnswer||"-"}</div>`:""}
+    <div class="quiz-explain-row"><strong>정답</strong>${correct}</div>
+    <div class="quiz-explain-row"><strong>병음</strong><span class="quiz-pinyin">${pinyinFor(q.s.text)}</span></div>
+    <div class="quiz-explain-row"><strong>해석</strong>${q.s.meaning}</div>
+    <div class="quiz-explain-row"><strong>이유</strong>${e.why}</div>
+    <div class="quiz-explain-row"><strong>포인트</strong>${e.point}</div>
+    <button class="quiz-explain-listen" onclick="speakChinese('${q.s.text.replace(/'/g,"\\'")}')">🔊 정답 문장 듣기</button>
+  </div>`;
+}
+
+function showFeedback(ok,correctText,userAnswer){
  quizIndex++;$("quizScore").textContent=`${score} / ${quizIndex}`;$("quizProgress").style.width=`${(quizIndex/10)*100}%`;
  $("quizFeedback").style.display="block";
- $("quizFeedback").innerHTML=ok?`✅ 정답입니다.<br>${currentQ.s.text}<br>${currentQ.s.meaning}`:`❌ 다시 확인해보세요.<br><strong>정답:</strong> ${correctText||currentQ.answer}<br>${currentQ.s.meaning}`;
+ $("quizFeedback").innerHTML=explanationHtml(currentQ,userAnswer,ok);
  $("quizNext").style.display="block";$("quizNext").textContent=quizIndex>=10?"결과 보기":"다음 문제 →";
 }
 $("quizNext").onclick=()=>{
