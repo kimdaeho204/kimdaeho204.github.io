@@ -416,7 +416,7 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
 
 /* Hover tooltip */
 .today-main-cta::after{
-  content:"단어 30문제 + 문장 10문제 + HSK 10문제 + 듣기 5문제 · 오늘 총 55문제";
+  content:"단어 30문제 + HSK 20문제 · 오늘 총 50문제";
   position:absolute;
   left:50%;
   bottom:-48px;
@@ -738,7 +738,7 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
         </div>
 
         
-        <a class="today-main-cta today-main-big" href="today.html" title="단어 30문제 + 문장 10문제 + HSK 10문제 + 듣기 5문제 · 오늘 총 55문제">
+        <a class="today-main-cta today-main-big" href="today.html" title="단어 30문제 + HSK 20문제 · 오늘 총 50문제">
           <div class="today-main-left">
             <div class="today-main-icon">今</div>
             <div class="today-main-copy">
@@ -789,7 +789,7 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
           <div>
             <p class="eyebrow">STUDY CALENDAR</p>
             <h2>학습 달력</h2>
-            <p>오늘의 학습 55문제를 모두 끝내면 해당 날짜에 완료 표시가 남아요.</p>
+            <p>오늘의 학습 50문제를 모두 끝내면 해당 날짜에 완료 표시가 남아요.</p>
           </div>
           <div class="calendar-nav">
             <button id="prevMonth" aria-label="이전 달">←</button>
@@ -878,9 +878,9 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
     let s=null;
     try{s=JSON.parse(localStorage.getItem(TODAY_SESSION_KEY)||"null")}catch(e){}
     if(s && s.date===localToday() && s.started){
-      const done=(s.section==="word"?s.pos:(s.section==="sentence"?30+s.pos:(s.section==="hsk"?40+s.pos:50+s.pos)));
+      const done=(s.section==="word"?s.pos:30+s.pos);
       title.textContent="오늘의 학습 이어하기";
-      note.textContent=`${Math.min(done,54)} / 55 진행 중`;
+      note.textContent=`${Math.min(done,49)} / 50 진행 중`;
       note.style.display="block";
     }else{
       title.textContent="오늘의 학습";

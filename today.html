@@ -280,6 +280,93 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
 .today-result-grid strong{display:block;font-size:26px}
 .today-restart{border:0;background:var(--accent);color:#fff;border-radius:14px;padding:13px 18px;font-weight:900}
 @media(max-width:760px){.today-overview{grid-template-columns:1fr}.today-options{grid-template-columns:1fr}.today-question{font-size:25px}}
+
+/* v28 editable sentence ordering */
+.order-controls{
+  display:flex;
+  gap:8px;
+  margin-bottom:10px;
+}
+.order-control-btn{
+  flex:1;
+  border:1px solid var(--border);
+  background:#fff;
+  color:#596275;
+  border-radius:12px;
+  padding:11px 12px;
+  font-weight:900;
+  cursor:pointer;
+}
+.order-control-btn:hover{
+  border-color:#b8c6ff;
+  background:#f6f8ff;
+  color:var(--accent);
+}
+.chosen-token{
+  cursor:pointer !important;
+  background:#eef2ff !important;
+  border-color:#cbd5ff !important;
+  color:var(--accent) !important;
+}
+.chosen-token:hover{
+  background:#ffecec !important;
+  border-color:#ffc9c9 !important;
+  color:#c13d3d !important;
+  text-decoration:line-through;
+}
+.order-check-btn{
+  margin-top:0;
+}
+@media(max-width:600px){
+  .order-controls{flex-direction:column}
+}
+
+
+/* v29 drag-and-drop sentence ordering */
+#todayAnswerBank{
+  min-height:58px;
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+  padding:10px;
+  border-radius:14px;
+  transition:background .15s ease,border-color .15s ease;
+}
+.chosen-token[draggable="true"]{
+  cursor:grab !important;
+  user-select:none;
+  touch-action:manipulation;
+}
+.chosen-token[draggable="true"]:active{
+  cursor:grabbing !important;
+}
+.chosen-token.dragging{
+  opacity:.4;
+  transform:scale(.96);
+}
+.chosen-token.drag-over-left{
+  box-shadow:-4px 0 0 var(--accent);
+}
+.chosen-token.drag-over-right{
+  box-shadow:4px 0 0 var(--accent);
+}
+#todayAnswerBank:empty::before{
+  content:"단어를 선택해 문장을 만들어보세요";
+  color:#9aa2b3;
+  font-size:13px;
+  font-weight:700;
+}
+@media(pointer:fine){
+  .chosen-token::before{
+    content:"⋮⋮";
+    margin-right:5px;
+    color:#8fa0db;
+    letter-spacing:-3px;
+    font-size:11px;
+  }
+}
+
 </style><link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%234568f2"/><text x="32" y="43" text-anchor="middle" font-size="38" font-weight="700" fill="white">中</text></svg>'>
 </head>
 <body>
@@ -289,24 +376,22 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
 <section class="today-hero">
  <p class="eyebrow">TODAY'S STUDY</p>
  <h1>오늘의 학습</h1>
- <p>단어 30문제, 문장 10문제, HSK 10문제, 듣기 5문제를 풀어보세요. 미출제 문제와 틀린 문제를 우선 섞어서 출제하며, 여러 번 틀린 문제는 복습 확률이 더 높아집니다.</p>
+ <p>단어 30문제와 HSK 20문제를 풀어보세요. HSK는 듣기 7문제, 독해 7문제, 쓰기 6문제로 구성되며, 미출제 문제와 틀린 문제를 우선 섞어서 출제합니다.</p>
  <div class="today-overview">
   <div><strong>30</strong><span>단어 문제</span></div>
-  <div><strong>10</strong><span>문장 문제</span></div>
-  <div><strong>10</strong><span>HSK 문제</span></div>
-  <div><strong>5</strong><span>듣기 문제</span></div>
-  <div><strong>55</strong><span>오늘 총 문제</span></div>
+  <div><strong>7</strong><span>HSK 듣기</span></div>
+  <div><strong>7</strong><span>HSK 독해</span></div>
+  <div><strong>6</strong><span>HSK 쓰기</span></div>
+  <div><strong>50</strong><span>오늘 총 문제</span></div>
  </div>
 </section>
 
 <div class="today-tabs">
  <button class="today-tab active" data-section="word">단어 30문제</button>
- <button class="today-tab" data-section="sentence">문장 10문제</button>
- <button class="today-tab" data-section="hsk">HSK 10문제</button>
- <button class="today-tab" data-section="listening">듣기 5문제</button>
+ <button class="today-tab" data-section="hsk">HSK 20문제</button>
 </div>
 
-<div class="today-progress-line"><span id="todayPart">단어 학습</span><span id="todayCount">1 / 55</span></div>
+<div class="today-progress-line"><span id="todayPart">단어 학습</span><span id="todayCount">1 / 50</span></div>
 <div class="progress-track"><div id="todayProgress" class="progress-bar"></div></div>
 
 <section id="todayCard" class="today-card">
@@ -321,9 +406,9 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
  <button id="todayNext" class="today-next">다음 문제 →</button>
 </section>
 </main>
-<script src="data.js?v=26"></script>
-<script src="sentences.js?v=26"></script>
-<script src="listening.js?v=26"></script>
-<script src="review-store.js?v=26"></script>
-<script src="today.js?v=26"></script>
+<script src="data.js?v=27"></script>
+<script src="sentences.js?v=27"></script>
+<script src="listening.js?v=27"></script>
+<script src="review-store.js?v=27"></script>
+<script src="today.js?v=29"></script>
 </body></html>
