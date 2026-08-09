@@ -1822,41 +1822,81 @@ html.play-intro .home-shell{
   .section-heading>p{display:none}
 }
 
+
+/* ===== v41 requested dashboard order / no BGM ===== */
+.progress-feature{
+  order:1;
+  overflow:hidden;
+  border-radius:26px;
+  border:1px solid rgba(214,168,75,.30);
+  box-shadow:0 16px 38px rgba(80,47,24,.09);
+}
+.progress-feature .progress-summary{
+  border-radius:26px;
+}
+
+.today-feature-card{order:2 !important}
+
+.calendar-feature{
+  order:3 !important;
+  padding:0 !important;
+  overflow:hidden;
+  border-radius:26px !important;
+  background:linear-gradient(180deg,#fffdf9,#fbf5eb) !important;
+  box-shadow:0 16px 38px rgba(80,47,24,.08) !important;
+}
+.calendar-feature .calendar-head{
+  padding:24px 28px 0 !important;
+}
+.calendar-feature .calendar-week,
+.calendar-feature .calendar-grid{
+  margin-left:28px !important;
+  margin-right:28px !important;
+}
+.calendar-feature .calendar-legend{
+  padding:0 28px 22px !important;
+}
+
+.study-menu-section{order:4 !important}
+
+/* Main reveal order */
+.home-shell.page-cinematic .progress-feature,
+.home-shell.page-cinematic .today-feature-card,
+.home-shell.page-cinematic .calendar-feature,
+.home-shell.page-cinematic .study-menu-section{
+  opacity:0;
+  transform:translateY(20px);
+}
+.home-shell.page-cinematic.reveal .progress-feature{
+  animation:mainRise .52s cubic-bezier(.2,.75,.25,1) .12s forwards;
+}
+.home-shell.page-cinematic.reveal .today-feature-card{
+  animation:mainRise .62s cubic-bezier(.2,.75,.25,1) .34s forwards;
+}
+.home-shell.page-cinematic.reveal .calendar-feature{
+  animation:mainRise .58s cubic-bezier(.2,.75,.25,1) .56s forwards;
+}
+.home-shell.page-cinematic.reveal .study-menu-section{
+  animation:mainRise .60s cubic-bezier(.2,.75,.25,1) .76s forwards;
+}
+
+@media(max-width:760px){
+  .calendar-feature .calendar-head{padding:20px 20px 0 !important}
+  .calendar-feature .calendar-week,
+  .calendar-feature .calendar-grid{
+    margin-left:20px !important;
+    margin-right:20px !important;
+  }
+  .calendar-feature .calendar-legend{padding:0 20px 20px !important}
+}
+
 </style>
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%234568f2"/><text x="32" y="43" text-anchor="middle" font-size="38" font-weight="700" fill="white">中</text></svg>'>
 
 </head>
 <body>
 
-<div id="globalSoundPanel" class="global-sound-panel">
-  <button id="bgmStartBtn" class="bgm-start-btn" type="button">▶ BGM 켜기</button>
-  <button id="bgmMuteBtn" class="audio-icon-btn" type="button" aria-label="BGM 켜기/끄기" title="BGM 켜기/끄기">🔊</button>
-  <label class="audio-volume-wrap" for="bgmVolume">
-    <span>BGM</span>
-    <input id="bgmVolume" type="range" min="0" max="100" value="32" aria-label="BGM 볼륨">
-  </label>
-</div>
 
-
-<div id="introSplash" class="intro-splash" aria-hidden="false">
-  <div class="intro-inner">
-    <div class="intro-seal">中</div>
-    <p class="intro-kicker">MEOHO CHINESE STUDY</p>
-    <h1 class="intro-title">每天一点，慢慢进步。</h1>
-    <p class="intro-sub">매일 조금씩, 천천히 실력을 쌓아가는 머호의 중국어 학습 공간.</p>
-    <div class="intro-line"></div>
-    <p class="intro-sound-hint">아래 카드를 눌러 학습을 시작하세요 · BGM 기본 ON</p>
-    <div class="intro-enter-wrap">
-      <button id="introEnterCard" class="intro-enter-card" type="button">
-        <span class="intro-enter-icon">入</span>
-        <span class="intro-enter-copy">
-          <strong>메인으로 들어가기</strong>
-          <small>点击进入 · 학습을 시작합니다</small>
-        </span>
-        <span class="intro-enter-arrow">→</span>
-      </button>
-    </div>
-  </div>
 </div>
 
 <div class="shell home-shell intro-hidden">
@@ -1865,10 +1905,11 @@ html.play-intro .home-shell{
     <div class="brand"><div class="brand-mark">中</div>머호의 중국어 공부</div>
   </nav>
 
+
   <main class="home-main">
     <div class="dashboard-stack">
 
-      <section class="study-calendar calendar-feature">
+      <section class="progress-feature">
         <div class="progress-summary">
           <div class="progress-summary-head">
             <div>
@@ -1902,29 +1943,6 @@ html.play-intro .home-shell{
             </div>
           </div>
         </div>
-
-        <div class="calendar-divider"></div>
-
-        <div class="calendar-head">
-          <div>
-            <p class="eyebrow">STUDY CALENDAR</p>
-            <h2>학습 달력</h2>
-            <p>오늘의 학습 50문제를 모두 끝내면 해당 날짜에 완료 표시가 남아요.</p>
-          </div>
-          <div class="calendar-nav">
-            <button id="prevMonth" aria-label="이전 달">←</button>
-            <strong id="calendarTitle"></strong>
-            <button id="nextMonth" aria-label="다음 달">→</button>
-          </div>
-        </div>
-        <div class="calendar-week">
-          <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
-        </div>
-        <div id="calendarGrid" class="calendar-grid"></div>
-        <div class="calendar-legend">
-          <span><i class="legend-dot today-dot"></i>오늘</span>
-          <span><i class="legend-dot done-dot"></i>학습 완료</span>
-        </div>
       </section>
 
       <a class="today-main-cta today-main-big today-feature-card" href="today.html" title="단어 30문제 + HSK 20문제 · 오늘 총 50문제">
@@ -1950,6 +1968,29 @@ html.play-intro .home-shell{
           <span class="today-main-arrow">→</span>
         </div>
       </a>
+
+      <section class="study-calendar calendar-feature">
+        <div class="calendar-head">
+          <div>
+            <p class="eyebrow">STUDY CALENDAR</p>
+            <h2>학습 달력</h2>
+            <p>오늘의 학습 50문제를 모두 끝내면 해당 날짜에 완료 표시가 남아요.</p>
+          </div>
+          <div class="calendar-nav">
+            <button id="prevMonth" aria-label="이전 달">←</button>
+            <strong id="calendarTitle"></strong>
+            <button id="nextMonth" aria-label="다음 달">→</button>
+          </div>
+        </div>
+        <div class="calendar-week">
+          <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+        </div>
+        <div id="calendarGrid" class="calendar-grid"></div>
+        <div class="calendar-legend">
+          <span><i class="legend-dot today-dot"></i>오늘</span>
+          <span><i class="legend-dot done-dot"></i>학습 완료</span>
+        </div>
+      </section>
 
       <section class="study-menu-section">
         <div class="section-heading">
@@ -1993,6 +2034,7 @@ html.play-intro .home-shell{
 
     </div>
   </main>
+
 
 </div>
 
@@ -2314,135 +2356,46 @@ html.play-intro .home-shell{
 </script>
 
 
+
+
+
 <script>
 (function(){
-  try{ if("scrollRestoration" in history) history.scrollRestoration="manual"; }catch(e){}
+  try{if("scrollRestoration" in history)history.scrollRestoration="manual"}catch(e){}
   const forceTop=()=>window.scrollTo(0,0);
   forceTop();
 
   const splash=document.getElementById("introSplash");
   const shell=document.querySelector(".home-shell");
   const enterCard=document.getElementById("introEnterCard");
-  const muteBtn=document.getElementById("bgmMuteBtn");
-  const volumeInput=document.getElementById("bgmVolume");
 
-  // Make the intro a real modal until the user presses the enter card.
   if(shell){
     shell.inert=true;
     shell.setAttribute("aria-hidden","true");
     shell.classList.add("intro-hidden");
   }
 
-  let ctx=null, master=null, timer=null, step=0;
-  let started=false, muted=false;
-  const scale=[0,2,4,7,9];
-  const melody=[0,2,4,2,1,0,4,2,0,1,2,4,2,1,0,4];
-  const midiHz=m=>440*Math.pow(2,(m-69)/12);
-
-  function volumeLevel(){
-    return Math.max(0,Math.min(1,Number(volumeInput?.value||32)/100));
-  }
-  function ensureAudio(){
-    const AC=window.AudioContext||window.webkitAudioContext;
-    if(!AC) return false;
-    if(!ctx){
-      ctx=new AC();
-      master=ctx.createGain();
-      master.gain.value=volumeLevel()*0.42;
-      master.connect(ctx.destination);
-    }
-    return true;
-  }
-  function note(freq, when, dur=.34, level=.18, type="triangle"){
-    if(!ctx||!master)return;
-    const o=ctx.createOscillator();
-    const g=ctx.createGain();
-    const f=ctx.createBiquadFilter();
-    o.type=type;
-    o.frequency.setValueAtTime(freq,when);
-    f.type="lowpass";
-    f.frequency.setValueAtTime(1900,when);
-    g.gain.setValueAtTime(.0001,when);
-    g.gain.exponentialRampToValueAtTime(level,when+.012);
-    g.gain.exponentialRampToValueAtTime(.0001,when+dur);
-    o.connect(f);f.connect(g);g.connect(master);
-    o.start(when);o.stop(when+dur+.04);
-  }
-  function playStep(){
-    if(!ctx||ctx.state!=="running"||muted)return;
-    const now=ctx.currentTime+.025;
-    const degree=scale[melody[step%melody.length]%scale.length];
-    const high=(step%8===6)?12:0;
-    note(midiHz(57+degree+high),now,.36,.20,"triangle");
-    if(step%4===0){
-      note(midiHz(45+scale[(step/4)%scale.length|0]),now,.78,.11,"sine");
-      note(midiHz(69+degree),now+.035,.55,.055,"sine");
-    }
-    step++;
-  }
-  function beginLoop(){
-    if(started)return;
-    started=true;
-    playStep();
-    timer=setInterval(playStep,420);
-  }
-  function startBgmFromGesture(){
-    if(!ensureAudio())return;
-    muted=false;
-    if(muteBtn)muteBtn.textContent="🔊";
-
-    // resume() is called synchronously from the user's click.
-    const resumeResult=ctx.resume();
-    if(ctx.state==="running") beginLoop();
-    if(resumeResult && typeof resumeResult.then==="function"){
-      resumeResult.then(()=>{
-        if(ctx.state==="running")beginLoop();
-      }).catch(()=>{});
-    }
-    if(master){
-      master.gain.cancelScheduledValues(ctx.currentTime);
-      master.gain.setTargetAtTime(volumeLevel()*0.42,ctx.currentTime,.02);
-    }
-  }
-  function updateVolume(){
-    if(!ctx||!master)return;
-    const target=muted?0:volumeLevel()*0.42;
-    master.gain.cancelScheduledValues(ctx.currentTime);
-    master.gain.setTargetAtTime(target,ctx.currentTime,.02);
-  }
+  // Short UI click only. No background music.
+  let audioCtx=null;
   function clickSound(){
-    if(!ctx||ctx.state!=="running"||!master||muted)return;
-    const t=ctx.currentTime;
-    const o=ctx.createOscillator(),g=ctx.createGain();
-    o.type="sine";
-    o.frequency.setValueAtTime(650,t);
-    o.frequency.exponentialRampToValueAtTime(980,t+.055);
-    g.gain.setValueAtTime(.0001,t);
-    g.gain.exponentialRampToValueAtTime(.12,t+.006);
-    g.gain.exponentialRampToValueAtTime(.0001,t+.09);
-    o.connect(g);g.connect(master);
-    o.start(t);o.stop(t+.10);
+    try{
+      const AC=window.AudioContext||window.webkitAudioContext;
+      if(!AC)return;
+      if(!audioCtx)audioCtx=new AC();
+      if(audioCtx.state==="suspended")audioCtx.resume();
+      const t=audioCtx.currentTime;
+      const osc=audioCtx.createOscillator();
+      const gain=audioCtx.createGain();
+      osc.type="sine";
+      osc.frequency.setValueAtTime(650,t);
+      osc.frequency.exponentialRampToValueAtTime(930,t+.05);
+      gain.gain.setValueAtTime(.0001,t);
+      gain.gain.exponentialRampToValueAtTime(.055,t+.006);
+      gain.gain.exponentialRampToValueAtTime(.0001,t+.085);
+      osc.connect(gain);gain.connect(audioCtx.destination);
+      osc.start(t);osc.stop(t+.095);
+    }catch(e){}
   }
-
-  muteBtn?.addEventListener("click",e=>{
-    e.preventDefault();
-    e.stopPropagation();
-    if(!started){
-      startBgmFromGesture();
-      return;
-    }
-    muted=!muted;
-    muteBtn.textContent=muted?"🔇":"🔊";
-    updateVolume();
-  });
-
-  volumeInput?.addEventListener("input",e=>{
-    e.stopPropagation();
-    if(!started)startBgmFromGesture();
-    muted=Number(volumeInput.value)===0;
-    if(muteBtn)muteBtn.textContent=muted?"🔇":"🔊";
-    updateVolume();
-  });
 
   function enterMain(){
     forceTop();
@@ -2467,22 +2420,19 @@ html.play-intro .home-shell{
   enterCard?.addEventListener("click",e=>{
     e.preventDefault();
     e.stopPropagation();
-
-    // This one user gesture both unlocks the BGM and enters the main page.
-    startBgmFromGesture();
     clickSound();
     enterMain();
   });
 
-  // Background clicks never pass through to the hidden main page.
+  // Intro background itself never opens the main page.
   splash?.addEventListener("click",e=>{
-    if(!e.target.closest("#introEnterCard")) {
+    if(!e.target.closest("#introEnterCard")){
       e.preventDefault();
       e.stopPropagation();
     }
   });
 
-  // Home-page card sounds only.
+  // Click sound only on main action cards.
   const homeTargets=[
     document.querySelector(".today-main-cta"),
     ...document.querySelectorAll(".menu-grid .home-card")
