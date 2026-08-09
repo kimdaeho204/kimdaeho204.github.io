@@ -51,10 +51,10 @@ function pinyinForChunk(chunk){
 }
 function rubySentence(sentence){
  const chunks=(sentence&&Array.isArray(sentence.chunks)&&sentence.chunks.length)?sentence.chunks:[sentence?.text||""];
- return `<span class="ruby-sentence">${chunks.map(chunk=>{
-   if(punctuation.has(chunk))return `<span class="ruby-punct">${esc(chunk)}</span>`;
+ return `<span class="pinyin-word-line">${chunks.map(chunk=>{
+   if(punctuation.has(chunk))return `<span class="pinyin-punct">${esc(chunk)}</span>`;
    const py=pinyinForChunk(chunk);
-   return `<ruby class="ruby-word"><span>${esc(chunk)}</span>${py?`<rt>${esc(py)}</rt>`:""}</ruby>`;
+   return `<span class="pinyin-word-stack"><span class="pinyin-above">${esc(py||"")}</span><span class="hanzi-below">${esc(chunk)}</span></span>`;
  }).join("")}</span>`;
 }
 
@@ -222,6 +222,13 @@ function render(){
      b.dataset.optionIndex=String(idx);
      b.onclick=()=>{
        if(answered)return;
+
+       // 단어 문제는 보기를 선택하는 순간 중국어 발음을 들려줍니다.
+       // 한자 고르기: 클릭한 중국어 보기 발음 / 뜻·병음 고르기: 문제 단어 발음
+       if(current.kind==="word"&&current.word){
+         speak(current.type==="hanzi"?o:current.word.hanzi);
+       }
+
        selectedOption=o;
        optionWrap.querySelectorAll(".today-choice-option").forEach(x=>x.classList.remove("selected"));
        b.classList.add("selected");
@@ -346,6 +353,75 @@ function renderOrderTokens(){
  });
 }
 
+
+function findWordForOption(q,opt){
+ if(q.word&&opt===q.answer)return q.word;
+ if(q.type==="meaning")return WORDS.find(w=>w.meaning===opt)||null;
+ if(q.type==="hanzi"||q.type==="writeword")return WORDS.find(w=>w.hanzi===opt)||null;
+ if(q.type==="pinyin")return WORDS.find(w=>w.pinyin===opt)||null;
+ return null;
+}
+function findSentenceForOption(q,opt){
+ if(q.sentence&&opt===q.answer)return q.sentence;
+ if(q.type==="listening"){
+   return SENTENCES.find(s=>s.text===opt)||SENTENCES.find(s=>s.meaning===opt)||null;
+ }
+ if(q.type==="reading")return SENTENCES.find(s=>s.meaning===opt)||null;
+ return null;
+}
+function optionInfoHtml(q){
+ if(!Array.isArray(q.options)||!q.options.length)return "";
+ const cards=q.options.map((opt,idx)=>{
+   const isCorrect=opt===q.answer;
+   const state=isCorrect?"correct":"distractor";
+   const badge=isCorrect?"정답":"오답 보기";
+
+   if(q.kind==="word"||q.type==="writeword"){
+     const w=findWordForOption(q,opt);
+     if(!w){
+       return `<div class="option-info-card ${state}"><div class="option-info-head"><span class="option-info-num">보기 ${idx+1}</span><span class="option-info-badge">${badge}</span></div><div class="option-info-main">${esc(opt)}</div></div>`;
+     }
+     return `<div class="option-info-card ${state}">
+       <div class="option-info-head"><span class="option-info-num">보기 ${idx+1}</span><span class="option-info-badge">${badge}</span></div>
+       <div class="option-info-word"><strong>${esc(w.hanzi)}</strong><span>${esc(w.pinyin)}</span></div>
+       <div class="option-info-meta"><span><b>뜻</b> ${esc(w.meaning)}</span><span><b>품사</b> ${esc(w.pos||"-")}</span></div>
+       <button class="option-info-listen" type="button" data-speak="${esc(w.hanzi)}">🔊 듣기</button>
+     </div>`;
+   }
+
+   const s=findSentenceForOption(q,opt);
+   if(s){
+     return `<div class="option-info-card ${state}">
+       <div class="option-info-head"><span class="option-info-num">보기 ${idx+1}</span><span class="option-info-badge">${badge}</span></div>
+       <div class="option-info-sentence">${rubySentence(s)}</div>
+       <div class="option-info-meaning"><b>뜻</b> ${esc(s.meaning)}</div>
+       <button class="option-info-listen" type="button" data-speak="${esc(s.text)}">🔊 문장 듣기</button>
+     </div>`;
+   }
+
+   return `<div class="option-info-card ${state}"><div class="option-info-head"><span class="option-info-num">보기 ${idx+1}</span><span class="option-info-badge">${badge}</span></div><div class="option-info-main">${esc(opt)}</div></div>`;
+ }).join("");
+ return `<div class="all-option-info"><div class="all-option-title">보기별 정보</div><div class="all-option-grid">${cards}</div></div>`;
+}
+function orderTokenInfoHtml(q){
+ if(q.type!=="order"||!Array.isArray(q.tokens))return "";
+ const unique=[];
+ q.tokens.forEach(t=>{if(!unique.includes(t))unique.push(t)});
+ const cards=unique.map(t=>{
+   const w=WORDS.find(x=>x.hanzi===t)||null;
+   const py=w?.pinyin||pinyinForChunk(t)||"-";
+   const meaning=w?.meaning||"문장 안에서 의미를 확인하세요.";
+   const pos=w?.pos||"문장 구성 요소";
+   return `<div class="token-info-card"><div class="token-info-word"><strong>${esc(t)}</strong><span>${esc(py)}</span></div><div class="token-info-meta"><span><b>뜻</b> ${esc(meaning)}</span><span><b>품사</b> ${esc(pos)}</span></div></div>`;
+ }).join("");
+ return `<div class="all-option-info"><div class="all-option-title">배열 단어 정보</div><div class="all-option-grid">${cards}</div></div>`;
+}
+function bindInfoListenButtons(){
+ document.querySelectorAll(".option-info-listen[data-speak]").forEach(btn=>{
+   btn.onclick=()=>speak(btn.dataset.speak||"");
+ });
+}
+
 function wordExplain(q,userAnswer,ok){
  const w=q.word;
  let why=q.type==="meaning"?`‘${w.hanzi}’의 뜻은 ‘${w.meaning}’입니다.`
@@ -357,9 +433,9 @@ function wordExplain(q,userAnswer,ok){
  <div class="quiz-explain-row"><strong>한자</strong>${esc(w.hanzi)}</div>
  <div class="quiz-explain-row"><strong>병음</strong><span class="quiz-pinyin">${esc(w.pinyin)}</span></div>
  <div class="quiz-explain-row"><strong>뜻</strong>${esc(w.meaning)}</div>
- <div class="quiz-explain-row"><strong>품사</strong>${esc(w.pos||"-")}</div>
  <div class="quiz-explain-row"><strong>이유</strong>${esc(why)}</div>
- <button class="quiz-explain-listen" onclick="speak('${esc(w.hanzi)}')">🔊 단어 듣기</button></div>`;
+ <button class="quiz-explain-listen" onclick="speak('${esc(w.hanzi)}')">🔊 단어 듣기</button>
+ ${optionInfoHtml(q)}</div>`;
 }
 function hskExplain(q,userAnswer,ok){
  if(q.type==="writeword"){
@@ -370,7 +446,8 @@ function hskExplain(q,userAnswer,ok){
    <div class="quiz-explain-row"><strong>병음</strong>${esc(w.pinyin)}</div>
    <div class="quiz-explain-row"><strong>뜻</strong>${esc(w.meaning)}</div>
    <div class="quiz-explain-row"><strong>포인트</strong>병음과 한자를 함께 연결해서 기억하세요.</div>
-   <button class="quiz-explain-listen" onclick="speak('${esc(w.hanzi)}')">🔊 듣기</button></div>`;
+   <button class="quiz-explain-listen" onclick="speak('${esc(w.hanzi)}')">🔊 듣기</button>
+   ${optionInfoHtml(q)}</div>`;
  }
  const s=q.sentence,correct=q.type==="order"?s.text:q.answer;
  const why=q.hskType==="listening"?"핵심 단어와 술어를 먼저 듣고 전체 의미를 연결하세요."
@@ -383,7 +460,8 @@ function hskExplain(q,userAnswer,ok){
  <div class="quiz-explain-row"><strong>해석</strong>${esc(s.meaning)}</div>
  <div class="quiz-explain-row"><strong>포인트</strong>핵심 단어: ${esc(s.focus)}</div>
  <div class="quiz-explain-row"><strong>이유</strong>${why}</div>
- <button class="quiz-explain-listen" onclick="speak('${esc(s.text)}')">🔊 정답 문장 듣기</button></div>`;
+ <button class="quiz-explain-listen" onclick="speak('${esc(s.text)}')">🔊 정답 문장 듣기</button>
+ ${q.type==="order"?orderTokenInfoHtml(q):optionInfoHtml(q)}</div>`;
 }
 function saveWrong(q,userAnswer){
  if(q.kind==="word"){
@@ -419,6 +497,7 @@ function submitSelectedOption(optionWrap,submitBtn){
 
  $("todayFeedback").style.display="block";
  $("todayFeedback").innerHTML=current.kind==="word"?wordExplain(current,opt,ok):hskExplain(current,opt,ok);
+ bindInfoListenButtons();
  $("todayNext").style.display="block";
  persist();
 }
@@ -431,7 +510,7 @@ function checkOrder(){
  }
  answered=true;const built=chosenTokens.join(""),ok=built===current.answer;
  if(ok)addScore();else saveWrong(current,built);
- $("todayFeedback").style.display="block";$("todayFeedback").innerHTML=hskExplain(current,built,ok);$("todayNext").style.display="block";persist();
+ $("todayFeedback").style.display="block";$("todayFeedback").innerHTML=hskExplain(current,built,ok);bindInfoListenButtons();$("todayNext").style.display="block";persist();
 }
 function finishSection(){
  if(section==="word"){section="hsk";pos=0;persist();render()}
