@@ -14,6 +14,7 @@ const RECENT_SENT_KEY="meohoRecentTodaySentenceIdsV1";
 const RECENT_HSK_KEY="meohoRecentTodayHskIdsV1";
 const RECENT_LISTEN_KEY="meohoRecentTodayListeningIdsV1";
 const TODAY_SESSION_KEY="meohoTodayStudySessionV1";
+const LISTEN_BANK=(typeof LISTENING_ITEMS!=="undefined"&&Array.isArray(LISTENING_ITEMS))?LISTENING_ITEMS:[];
 
 function loadArr(key){try{return JSON.parse(localStorage.getItem(key)||"[]")}catch(e){return []}}
 function saveArr(key,a){localStorage.setItem(key,JSON.stringify(a))}
@@ -122,7 +123,7 @@ function createFreshSession(){
  const hskCandidates=[];
  SENTENCES.forEach(s=>["reading","order","listening"].forEach(type=>hskCandidates.push({id:`${s.id}:${type}`,s,type})));
  const hskPool=pickMixedPriority(hskCandidates,10,SEEN_HSK_KEY,RECENT_HSK_KEY,x=>x.id,x=>(rw.hsk.get(x.id)||rw.sentence.get(x.s.id)||0));
- const listeningPool=pickMixedPriority(LISTENING_ITEMS,Math.min(5,LISTENING_ITEMS.length),SEEN_LISTEN_KEY,RECENT_LISTEN_KEY,x=>x.id,x=>(rw.listening.get(x.id)||rw.listening.get(x.sentenceId)||rw.sentence.get(x.sentenceId)||0));
+ const listeningPool=pickMixedPriority(LISTEN_BANK,Math.min(5,LISTEN_BANK.length),SEEN_LISTEN_KEY,RECENT_LISTEN_KEY,x=>x.id,x=>(rw.listening.get(x.id)||rw.listening.get(x.sentenceId)||rw.sentence.get(x.sentenceId)||0));
 
  const wordQuestions=wordPool.map((w,i)=>{
   const type=["meaning","hanzi","pinyin"][i%3];
@@ -140,7 +141,8 @@ function createFreshSession(){
 
  const sentenceQuestions=sentencePool.map((s,i)=>makeSentenceQ(s,["reading","order","listening"][i%3],"문장"));
  const hskQuestions=hskPool.map(x=>makeSentenceQ(x.s,x.type,"HSK"));
- const listeningQuestions=listeningPool.map(item=>{
+ const effectiveListeningPool=listeningPool.length?listeningPool:shuffled(SENTENCES).slice(0,5).map((s,i)=>({id:`fallback:${s.id}:${i}`,mode:["same","meaning","dialogue"][i%3],sentenceId:s.id,questionKo:"들은 문장의 주요 의미는 무엇인가요?"}));
+ const listeningQuestions=effectiveListeningPool.map(item=>{
    const s=SENTENCES.find(x=>x.id===item.sentenceId);
    if(item.mode==="same"){
      const wrong=sample(SENTENCES.map(x=>x.text),3,s.text);
@@ -164,7 +166,7 @@ function createFreshSession(){
 function loadSession(){
  let s=null;
  try{s=JSON.parse(localStorage.getItem(TODAY_SESSION_KEY)||"null")}catch(e){}
- if(!s || s.date!==todayLocalKey() || !Array.isArray(s.wordQuestions) || s.wordQuestions.length!==30 || !Array.isArray(s.listeningQuestions) || s.listeningQuestions.length!==5){
+ if(!s || s.date!==todayLocalKey() || !Array.isArray(s.wordQuestions) || s.wordQuestions.length!==30 || !Array.isArray(s.sentenceQuestions) || s.sentenceQuestions.length!==10 || !Array.isArray(s.hskQuestions) || s.hskQuestions.length!==10 || !Array.isArray(s.listeningQuestions) || s.listeningQuestions.length!==5){
    s=createFreshSession();
    localStorage.setItem(TODAY_SESSION_KEY,JSON.stringify(s));
  }
@@ -191,7 +193,13 @@ function syncTab(){
 }
 
 function render(){
- const qs=questions();current=qs[pos];answered=false;chosenTokens=[];syncTab();
+ const qs=questions();
+ if(!Array.isArray(qs)||!qs.length||!qs[pos]){
+   localStorage.removeItem(TODAY_SESSION_KEY);
+   location.reload();
+   return;
+ }
+ current=qs[pos];answered=false;chosenTokens=[];syncTab();
  $("todayPart").textContent=sectionLabel();$("todayCount").textContent=`${pos+1} / ${qs.length}`;$("todayProgress").style.width=`${((pos+1)/qs.length)*100}%`;
  $("todayType").textContent=current.label;$("todayQuestion").textContent=current.question;$("todaySub").textContent=current.sub;
  $("todayOptions").innerHTML="";$("todayAnswerBank").innerHTML="";$("todayTokenBank").innerHTML="";
