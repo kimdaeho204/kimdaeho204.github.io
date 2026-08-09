@@ -246,14 +246,15 @@ function renderSentence(){
   $("sentenceCount").textContent=`${learnPos+1} / ${arr.length}`;
   $("sentenceProgress").style.width=`${((learnPos+1)/arr.length)*100}%`;
   $("categoryBadge").textContent=s.category;$("levelBadge").textContent=s.level;
-  $("sentenceCn").textContent=s.text;$("sentencePinyin").textContent=pinyinFor(s.text);
-  $("sentenceMeaning").textContent=s.meaning;$("focusWord").textContent=s.focus;
+  $("sentenceCn").textContent=s.text;
+  $("answerCn").textContent=s.text;
+  $("answerPinyin").textContent=pinyinFor(s.text);
+  $("answerMeaning").textContent=s.meaning;
+  $("focusWord").textContent=s.focus;
   $("componentTags").innerHTML=displayComponents(s).map(x=>`<span class="grammar-tag"><strong>${x.text}</strong>${x.role}</span>`).join("");
   $("posGrid").innerHTML=displayPosItems(s).map(x=>`<div class="pos-item"><div class="word">${x.text}</div><div class="ptype">${x.pos}</div></div>`).join("");
-  $("componentBox").classList.add("hidden-block");$("posBox").classList.add("hidden-block");
-  $("showComponents").textContent="문장 성분 보기";$("showPos").textContent="품사 보기";
-  $("sentencePinyin").classList.add("hidden");$("sentenceMeaning").classList.add("hidden");
-  $("showSentencePinyin").textContent="병음 보기 🔊";$("showSentenceMeaning").textContent="뜻 보기";
+  $("sentenceAnswerBox").classList.add("hidden-block");
+  $("showSentenceAnswer").textContent="정답 보기";
 }
 const categories=[...new Set(SENTENCES.map(s=>s.category))];
 categories.forEach(c=>{const o=document.createElement("option");o.value=o.textContent=c;$("categoryFilter").appendChild(o)});
@@ -262,8 +263,6 @@ $("levelFilter").onchange=e=>{currentLevel=e.target.value;learnPos=0;renderSente
 $("sentenceNext").onclick=()=>{const a=filteredIndices();learnPos=(learnPos+1)%a.length;renderSentence()};
 $("sentencePrev").onclick=()=>{const a=filteredIndices();learnPos=(learnPos-1+a.length)%a.length;renderSentence()};
 $("sentenceShuffle").onclick=()=>{learnOrder=buildSentenceOrder();learnPos=0;renderSentence()};
-$("showSentencePinyin").onclick=()=>{const s=currentSentence();$("sentencePinyin").classList.remove("hidden");$("showSentencePinyin").textContent="🔊 발음 다시 듣기";speakChinese(s.text)};
-$("showSentenceMeaning").onclick=()=>{$("sentenceMeaning").classList.toggle("hidden");$("showSentenceMeaning").textContent=$("sentenceMeaning").classList.contains("hidden")?"뜻 보기":"뜻 숨기기"};
 $("sentenceUnknown").onclick=()=>{
  const s=currentSentence();sentenceStates[s.id]="unknown";localStorage.setItem("sentenceStatesV1",JSON.stringify(sentenceStates));
  upsertReviewItem({
@@ -278,25 +277,17 @@ $("sentenceKnown").onclick=()=>{
 };
 
 
-$("showComponents").onclick=()=>{
-  $("componentBox").classList.toggle("hidden-block");
-  $("showComponents").textContent=$("componentBox").classList.contains("hidden-block")?"문장 성분 보기":"문장 성분 숨기기";
-};
-$("showPos").onclick=()=>{
-  $("posBox").classList.toggle("hidden-block");
-  $("showPos").textContent=$("posBox").classList.contains("hidden-block")?"품사 보기":"품사 숨기기";
+
+$("showSentenceAnswer").onclick=()=>{
+ const s=currentSentence();
+ $("sentenceAnswerBox").classList.toggle("hidden-block");
+ const opened=!$("sentenceAnswerBox").classList.contains("hidden-block");
+ $("showSentenceAnswer").textContent=opened?"정답 숨기기":"정답 보기";
+ if(opened && s) speakChinese(s.text);
 };
 
 document.querySelectorAll(".sentence-tab").forEach(b=>b.onclick=()=>{
  
-$("showComponents").onclick=()=>{
-  $("componentBox").classList.toggle("hidden-block");
-  $("showComponents").textContent=$("componentBox").classList.contains("hidden-block")?"문장 성분 보기":"문장 성분 숨기기";
-};
-$("showPos").onclick=()=>{
-  $("posBox").classList.toggle("hidden-block");
-  $("showPos").textContent=$("posBox").classList.contains("hidden-block")?"품사 보기":"품사 숨기기";
-};
 
 document.querySelectorAll(".sentence-tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");
  const learn=b.dataset.tab==="learn";$("learnPane").classList.toggle("hidden-block",!learn);$("quizPane").classList.toggle("hidden-block",learn);

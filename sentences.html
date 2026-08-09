@@ -187,6 +187,17 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
 .focus-box{margin-top:24px;border-top:1px solid var(--border);padding-top:18px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
 .focus-box span{font-size:13px;color:var(--muted)}
 .focus-word{background:#fff7df;color:#8f6300;padding:7px 11px;border-radius:999px;font-weight:900}
+.answer-reveal{margin-top:24px;border-top:1px solid var(--border);padding-top:20px;text-align:left}
+.answer-row{display:grid;grid-template-columns:110px 1fr;gap:16px;align-items:flex-start;padding:12px 0;border-bottom:1px solid #eef1f6}
+.answer-row:last-child{border-bottom:0;padding-bottom:0}
+.answer-label{font-size:13px;font-weight:900;color:#6e7584;padding-top:6px}
+.answer-original{background:#fafbff;border:1px solid var(--border);border-radius:16px;padding:18px 18px 16px}
+.answer-pinyin{font-size:20px;line-height:1.7;color:var(--accent);font-weight:800;text-align:center;margin-bottom:8px}
+.answer-cn{font-size:28px;font-weight:900;line-height:1.6;text-align:center;letter-spacing:.01em}
+.answer-value{font-size:18px;line-height:1.7;font-weight:700;color:#222a3d}
+.answer-reveal .tag-row{justify-content:flex-start}
+.answer-reveal .pos-grid{width:100%}
+
 .sentence-rate{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
 .sentence-rate button{border:0;border-radius:14px;padding:13px;font-weight:900}
 .snav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
@@ -220,6 +231,11 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
 @media(max-width:760px){
  .sentence-cn{font-size:27px}.options{grid-template-columns:1fr}.quiz-mode-cards{grid-template-columns:1fr 1fr}
  .sentence-card,.quiz-panel{padding:20px}
+ .answer-row{grid-template-columns:1fr;gap:8px}
+ .answer-label{padding-top:0}
+ .answer-cn{font-size:24px}
+ .answer-pinyin{font-size:17px}
+ .answer-value{font-size:16px}
 }
 
 .grammar-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}
@@ -347,20 +363,31 @@ body{
   <article class="sentence-card">
     <div class="sentence-meta"><span id="sentenceCount">1 / 150</span><div class="sentence-badges"><span id="categoryBadge" class="sbadge"></span><span id="levelBadge" class="sbadge"></span></div></div>
     <div id="sentenceCn" class="sentence-cn"></div>
-    <div id="sentencePinyin" class="sentence-pinyin hidden"></div>
-    <div id="sentenceMeaning" class="sentence-meaning hidden"></div>
-    <div class="sentence-actions"><button id="showSentencePinyin">병음 보기 🔊</button><button id="showSentenceMeaning">뜻 보기</button></div>
-    <div class="focus-box"><span>핵심 단어</span><strong id="focusWord" class="focus-word"></strong></div>
-    <div class="grammar-actions">
-      <button id="showComponents">문장 성분 보기</button>
-      <button id="showPos">품사 보기</button>
-    </div>
-    <div id="componentBox" class="grammar-box hidden-block">
-      <div id="componentTags" class="tag-row"></div>
-    </div>
-    <div id="posBox" class="grammar-box hidden-block">
-      <h3>품사</h3>
-      <div id="posGrid" class="pos-grid"></div>
+    <div class="sentence-actions"><button id="showSentenceAnswer">정답 보기</button></div>
+    <div id="sentenceAnswerBox" class="answer-reveal hidden-block">
+      <div class="answer-row answer-original-wrap">
+        <div class="answer-label">원문</div>
+        <div class="answer-original">
+          <div id="answerPinyin" class="answer-pinyin"></div>
+          <div id="answerCn" class="answer-cn"></div>
+        </div>
+      </div>
+      <div class="answer-row">
+        <div class="answer-label">뜻</div>
+        <div id="answerMeaning" class="answer-value"></div>
+      </div>
+      <div class="answer-row">
+        <div class="answer-label">핵심 단어</div>
+        <div><strong id="focusWord" class="focus-word"></strong></div>
+      </div>
+      <div class="answer-row">
+        <div class="answer-label">문장 성분</div>
+        <div id="componentTags" class="tag-row"></div>
+      </div>
+      <div class="answer-row">
+        <div class="answer-label">품사</div>
+        <div id="posGrid" class="pos-grid"></div>
+      </div>
     </div>
 
     <div class="sentence-rate"><button id="sentenceUnknown" class="unknown">다시 보기</button><button id="sentenceKnown" class="known">이해했음</button></div>
