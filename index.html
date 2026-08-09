@@ -1890,13 +1890,70 @@ html.play-intro .home-shell{
   .calendar-feature .calendar-legend{padding:0 20px 20px !important}
 }
 
+
+/* ===== v43 structure rebuild safety ===== */
+html,body{scroll-behavior:auto!important}
+#introSplash{
+  position:fixed!important;
+  inset:0!important;
+  z-index:20000!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  pointer-events:auto!important;
+}
+#introSplash .intro-inner{
+  display:block!important;
+  position:relative!important;
+  z-index:2!important;
+  opacity:1!important;
+  visibility:visible!important;
+}
+#introSplash .intro-seal,
+#introSplash .intro-kicker,
+#introSplash .intro-title,
+#introSplash .intro-sub,
+#introSplash .intro-line,
+#introSplash .intro-sound-hint,
+#introSplash .intro-enter-wrap{
+  visibility:visible!important;
+}
+.home-shell.intro-hidden{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+.home-shell.intro-show{
+  visibility:visible!important;
+  pointer-events:auto!important;
+}
+
 </style>
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%234568f2"/><text x="32" y="43" text-anchor="middle" font-size="38" font-weight="700" fill="white">中</text></svg>'>
 
 </head>
 <body>
 
+<div id="introSplash" class="intro-splash" aria-hidden="false">
+  <div class="intro-inner">
+    <div class="intro-seal">中</div>
+    <p class="intro-kicker">MEOHO CHINESE STUDY</p>
+    <h1 class="intro-title">每天一点，慢慢进步。</h1>
+    <p class="intro-sub">매일 조금씩, 천천히 실력을 쌓아가는 머호의 중국어 학습 공간.</p>
+    <div class="intro-line"></div>
+    <p class="intro-sound-hint">아래 카드를 눌러 학습을 시작하세요.</p>
 
+    <div class="intro-enter-wrap">
+      <button id="introEnterCard" class="intro-enter-card" type="button">
+        <span class="intro-enter-icon">入</span>
+        <span class="intro-enter-copy">
+          <strong>메인으로 들어가기</strong>
+          <small>点击进入 · 학습을 시작합니다</small>
+        </span>
+        <span class="intro-enter-arrow">→</span>
+      </button>
+    </div>
+  </div>
 </div>
 
 <div class="shell home-shell intro-hidden">
@@ -2038,6 +2095,30 @@ html.play-intro .home-shell{
 
 </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <script>
 (function(){
   const STORAGE_KEY="meohoDailyStudyCompletedV1";
@@ -2149,220 +2230,13 @@ html.play-intro .home-shell{
 })();
 </script>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 <script>
 (function(){
-  try{if("scrollRestoration" in history)history.scrollRestoration="manual"}catch(e){}
+  try{
+    if("scrollRestoration" in history) history.scrollRestoration="manual";
+  }catch(e){}
+
   const forceTop=()=>window.scrollTo({top:0,left:0,behavior:"auto"});
-  forceTop();
-  window.addEventListener("pageshow",()=>setTimeout(forceTop,0));
-  window.addEventListener("load",()=>{forceTop();setTimeout(forceTop,80);setTimeout(forceTop,300)});
-
-  const splash=document.getElementById("introSplash");
-  const shell=document.querySelector(".home-shell");
-  const enterCard=document.getElementById("introEnterCard");
-  const muteBtn=document.getElementById("bgmMuteBtn");
-  const volumeInput=document.getElementById("bgmVolume");
-
-  let ctx=null,master=null,bgmStarted=false,muted=false,bgmTimer=null,bgmStep=0;
-  const pentatonic=[0,2,4,7,9];
-  const midiHz=m=>440*Math.pow(2,(m-69)/12);
-
-  function ensureAudio(){
-    if(ctx)return true;
-    const AC=window.AudioContext||window.webkitAudioContext;
-    if(!AC)return false;
-    ctx=new AC();
-    master=ctx.createGain();
-    master.gain.value=(Number(volumeInput?.value||32)/100)*0.42;
-    master.connect(ctx.destination);
-    return true;
-  }
-
-  function tone(freq,when,dur=.24,level=.13,type="triangle",cutoff=2200){
-    if(!ctx||!master)return;
-    const osc=ctx.createOscillator();
-    const gain=ctx.createGain();
-    const filter=ctx.createBiquadFilter();
-    osc.type=type;
-    osc.frequency.setValueAtTime(freq,when);
-    filter.type="lowpass";
-    filter.frequency.setValueAtTime(cutoff,when);
-    gain.gain.setValueAtTime(.0001,when);
-    gain.gain.exponentialRampToValueAtTime(level,when+.01);
-    gain.gain.exponentialRampToValueAtTime(.0001,when+dur);
-    osc.connect(filter);
-    filter.connect(gain);
-    gain.connect(master);
-    osc.start(when);
-    osc.stop(when+dur+.03);
-  }
-
-  function pluck(freq,when,dur=.22,level=.12){
-    tone(freq,when,dur,level,"triangle",2600);
-    tone(freq*2,when+.004,dur*.72,level*.20,"sine",3200);
-  }
-
-  function softBeat(when,strong=false){
-    if(!ctx||!master)return;
-    const osc=ctx.createOscillator();
-    const gain=ctx.createGain();
-    osc.type="sine";
-    osc.frequency.setValueAtTime(strong?115:145,when);
-    osc.frequency.exponentialRampToValueAtTime(72,when+.09);
-    gain.gain.setValueAtTime(strong?.07:.04,when);
-    gain.gain.exponentialRampToValueAtTime(.0001,when+.12);
-    osc.connect(gain);
-    gain.connect(master);
-    osc.start(when);
-    osc.stop(when+.13);
-  }
-
-  function chime(freq,when,dur=.5,level=.035){
-    tone(freq,when,dur,level,"sine",4200);
-  }
-
-  function bgmTick(){
-    if(!ctx||muted)return;
-    const t=ctx.currentTime+.025;
-
-    // Bright pentatonic melody in 16-step phrases.
-    const melody=[
-      0,2,4,2, 4,7,9,7,
-      4,2,0,2, 4,2,0,9,
-      0,4,7,9, 7,4,2,4,
-      7,9,7,4, 2,0,2,4
-    ];
-    const octaves=[
-      0,0,0,0, 0,0,0,0,
-      0,0,0,0, 0,0,0,-3,
-      0,0,0,0, 12,0,0,0,
-      0,12,0,0, 0,0,0,0
-    ];
-
-    const deg=melody[bgmStep%melody.length];
-    const octave=octaves[bgmStep%octaves.length];
-    const noteSemitone=pentatonic.find(x=>x===deg) ?? deg;
-
-    // Main lead, a little higher and clearer.
-    pluck(midiHz(64+noteSemitone+octave),t,.21,.14);
-
-    // Light rhythmic pulse every beat, stronger on phrase starts.
-    softBeat(t,bgmStep%4===0);
-
-    // Bass answer every second beat.
-    if(bgmStep%2===0){
-      const bassDeg=pentatonic[(Math.floor(bgmStep/2))%pentatonic.length];
-      tone(midiHz(43+bassDeg),t,.34,.055,"sine",900);
-    }
-
-    // Small upper chime at phrase accents.
-    if(bgmStep%8===3 || bgmStep%8===7){
-      chime(midiHz(76+noteSemitone),t+.035,.38,.026);
-    }
-
-    bgmStep++;
-  }
-
-  async function startBgm(){
-    if(!ensureAudio())return false;
-    try{
-      if(ctx.state==="suspended")await ctx.resume();
-      muted=false;
-      if(!bgmStarted){
-        bgmStarted=true;
-        bgmTick();
-        bgmTimer=setInterval(bgmTick,290);
-      }
-      updateMute();
-      return ctx.state==="running";
-    }catch(e){return false}
-  }
-
-  function updateMute(){
-    if(muteBtn)muteBtn.textContent=muted?"🔇":"🔊";
-    if(!master||!ctx)return;
-    const target=muted?0:(Number(volumeInput?.value||32)/100)*0.42;
-    master.gain.cancelScheduledValues(ctx.currentTime);
-    master.gain.linearRampToValueAtTime(target,ctx.currentTime+.05);
-  }
-
-  function clickSound(){
-    if(!ctx||!master||ctx.state!=="running"||muted)return;
-    const t=ctx.currentTime,osc=ctx.createOscillator(),gain=ctx.createGain();
-    osc.type="sine";osc.frequency.setValueAtTime(740,t);osc.frequency.exponentialRampToValueAtTime(1030,t+.05);
-    gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.045,t+.007);gain.gain.exponentialRampToValueAtTime(.0001,t+.085);
-    osc.connect(gain);gain.connect(master);osc.start(t);osc.stop(t+.095);
-  }
-
-  if(muteBtn)muteBtn.addEventListener("click",async e=>{
-    e.stopPropagation();
-    if(!bgmStarted){await startBgm();return}
-    muted=!muted;updateMute();
-  });
-  if(volumeInput){
-    volumeInput.addEventListener("pointerdown",e=>e.stopPropagation());
-    volumeInput.addEventListener("click",e=>e.stopPropagation());
-    volumeInput.addEventListener("input",async e=>{
-      if(!bgmStarted)await startBgm();
-      muted=Number(e.target.value)===0;updateMute();
-    });
-  }
-
-  function enterMain(){
-    forceTop();
-    document.documentElement.classList.remove("play-intro");
-    splash?.classList.add("hide");
-    shell?.classList.remove("intro-hidden");
-    shell?.classList.add("intro-show","page-cinematic");
-    requestAnimationFrame(()=>requestAnimationFrame(()=>shell?.classList.add("reveal")));
-    setTimeout(()=>{splash?.remove();forceTop()},650);
-  }
-
-  // The intro is a hard modal: only the enter card or audio controls are interactive.
-  if(splash){
-    splash.addEventListener("click",e=>{
-      if(!e.target.closest("#introEnterCard,#globalSoundPanel"))e.stopPropagation();
-    });
-  }
-  enterCard?.addEventListener("click",async e=>{
-    e.preventDefault();e.stopPropagation();
-    await startBgm();
-    clickSound();
-    enterMain();
-  });
-
-  // Main-page card click sounds only.
-  const targets=[document.querySelector(".today-main-cta"),...document.querySelectorAll(".menu-grid .home-card")].filter(Boolean);
-  targets.forEach(el=>{
-    el.classList.add("home-click-target");
-    el.addEventListener("click",()=>{
-      clickSound();el.classList.add("clicking");setTimeout(()=>el.classList.remove("clicking"),120);
-    });
-  });
-})();
-</script>
-
-
-
-
-
-<script>
-(function(){
-  try{if("scrollRestoration" in history)history.scrollRestoration="manual"}catch(e){}
-  const forceTop=()=>window.scrollTo(0,0);
   forceTop();
 
   const splash=document.getElementById("introSplash");
@@ -2375,14 +2249,15 @@ html.play-intro .home-shell{
     shell.classList.add("intro-hidden");
   }
 
-  // Short UI click only. No background music.
+  // Small click sound only; there is no BGM.
   let audioCtx=null;
   function clickSound(){
     try{
       const AC=window.AudioContext||window.webkitAudioContext;
       if(!AC)return;
-      if(!audioCtx)audioCtx=new AC();
-      if(audioCtx.state==="suspended")audioCtx.resume();
+      if(!audioCtx) audioCtx=new AC();
+      if(audioCtx.state==="suspended") audioCtx.resume();
+
       const t=audioCtx.currentTime;
       const osc=audioCtx.createOscillator();
       const gain=audioCtx.createGain();
@@ -2392,14 +2267,15 @@ html.play-intro .home-shell{
       gain.gain.setValueAtTime(.0001,t);
       gain.gain.exponentialRampToValueAtTime(.055,t+.006);
       gain.gain.exponentialRampToValueAtTime(.0001,t+.085);
-      osc.connect(gain);gain.connect(audioCtx.destination);
-      osc.start(t);osc.stop(t+.095);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(t);
+      osc.stop(t+.095);
     }catch(e){}
   }
 
   function enterMain(){
     forceTop();
-    document.documentElement.classList.remove("play-intro");
 
     if(shell){
       shell.inert=false;
@@ -2408,31 +2284,39 @@ html.play-intro .home-shell{
       shell.classList.add("intro-show","page-cinematic");
     }
 
-    splash?.classList.add("hide");
-    requestAnimationFrame(()=>requestAnimationFrame(()=>shell?.classList.add("reveal")));
+    if(splash) splash.classList.add("hide");
+
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        if(shell) shell.classList.add("reveal");
+      });
+    });
 
     setTimeout(()=>{
-      splash?.remove();
+      if(splash) splash.remove();
       forceTop();
     },650);
   }
 
-  enterCard?.addEventListener("click",e=>{
-    e.preventDefault();
-    e.stopPropagation();
-    clickSound();
-    enterMain();
-  });
-
-  // Intro background itself never opens the main page.
-  splash?.addEventListener("click",e=>{
-    if(!e.target.closest("#introEnterCard")){
+  if(enterCard){
+    enterCard.addEventListener("click",e=>{
       e.preventDefault();
       e.stopPropagation();
-    }
-  });
+      clickSound();
+      enterMain();
+    });
+  }
 
-  // Click sound only on main action cards.
+  // Prevent clicks on the intro background from reaching the hidden main page.
+  if(splash){
+    splash.addEventListener("click",e=>{
+      if(!e.target.closest("#introEnterCard")){
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    });
+  }
+
   const homeTargets=[
     document.querySelector(".today-main-cta"),
     ...document.querySelectorAll(".menu-grid .home-card")
