@@ -169,6 +169,10 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
   .wrong-item{grid-template-columns:82px 1fr}.wrong-actions{grid-column:1/-1;justify-content:stretch}.wrong-actions button{flex:1}
 }
 
+
+.word-pos{margin-top:-5px;font-size:14px;color:var(--muted);font-weight:800}
+.word-pos::before{content:"품사 · ";color:var(--accent)}
+
 </style></head>
 <body>
 <main class="shell">
@@ -185,11 +189,11 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
 </section>
 <section class="study-panel">
   <div class="topline"><span id="progress">1 / 1</span><div class="controls"><button id="shuffleBtn" class="ghost">랜덤 섞기</button><select id="filterSelect"><option value="all">전체 단어</option><option value="unknown">모름만</option><option value="unsure">애매함만</option><option value="known">외운 단어만</option></select></div></div>
-  <article class="card"><div class="hanzi" id="hanzi"></div><button class="reveal" id="showPinyinBtn">병음 보기 🔊</button><div class="pinyin hidden" id="pinyin"></div><div class="voice-hint">병음 보기를 누르면 중국어 발음이 재생됩니다.</div><button class="reveal" id="showMeaningBtn">뜻 보기</button><div class="meaning hidden" id="meaning"></div></article>
+  <article class="card"><div class="hanzi" id="hanzi"></div><button class="reveal" id="showPinyinBtn">병음 보기 🔊</button><div class="pinyin hidden" id="pinyin"></div><div class="voice-hint">병음 보기를 누르면 중국어 발음이 재생됩니다.</div><button class="reveal" id="showMeaningBtn">뜻 보기</button><div class="meaning hidden" id="meaning"></div><div class="word-pos hidden" id="wordPos"></div></article>
   <div class="rating"><button data-status="unknown" class="rate unknown">모름</button><button data-status="unsure" class="rate unsure">애매함</button><button data-status="known" class="rate known">외움</button></div>
   <div class="nav"><button id="prevBtn">← 이전</button><button id="nextBtn">다음 →</button></div>
 </section>
 <section class="list-section"><div class="list-header"><h2>단어 목록</h2><input id="searchInput" placeholder="한자 / 병음 / 뜻 검색"></div><div id="wordList" class="word-list"></div></section>
 </main>
-<script src="data.js?v=11"></script><script src="review-store.js?v=11"></script><script src="study.js?v=11"></script>
+<script src="data.js?v=15"></script><script src="review-store.js?v=11"></script><script src="study.js?v=15"></script>
 </body></html>

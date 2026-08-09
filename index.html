@@ -75,7 +75,7 @@ h1,h2,h3,p{word-break:keep-all}
   border-radius:999px;padding:10px 15px;font-size:14px;
 }
 .stat-pill strong{font-size:16px;margin-right:4px}
-.menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .home-card{
   background:#fff;border:1px solid var(--border);border-radius:24px;
   padding:26px;min-height:220px;display:flex;flex-direction:column;
@@ -223,6 +223,14 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
  .sentence-card,.quiz-panel{padding:20px}
 }
 
+
+.today-main-cta{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:18px;background:#fff;color:var(--text);border-radius:18px;padding:18px 20px;position:relative;z-index:1;box-shadow:0 10px 28px rgba(0,0,0,.12)}
+.today-main-cta .left{display:flex;align-items:center;gap:14px}
+.today-main-cta .icon{width:48px;height:48px;border-radius:14px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:900}
+.today-main-cta h3{margin:0 0 4px;font-size:18px}.today-main-cta p{margin:0;color:var(--muted);font-size:13px}
+.today-main-cta .go{font-size:22px;color:var(--accent);font-weight:900}
+@media(max-width:760px){.today-main-cta{align-items:flex-start}.today-main-cta .left{align-items:flex-start}}
+
 </style>
 </head>
 <body>
@@ -248,6 +256,14 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
           <div id="todayKo" class="ko"></div>
         </div>
 
+        <a class="today-main-cta" href="today.html">
+          <div class="left">
+            <div class="icon">今</div>
+            <div><h3>오늘 학습 시작하기</h3><p>단어 50문제 + 문장 20문제 · 총 70문제</p></div>
+          </div>
+          <span class="go">→</span>
+        </a>
+
       </section>
       <section class="menu-grid">
         <a class="home-card" href="words.html">
@@ -268,16 +284,9 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
           <p>모른 단어·문장과 틀린 HSK 문제를 그 모습 그대로 저장해 다시 풀어봐요.</p>
           <div class="card-foot"><span>집중 복습</span><span>→</span></div>
         </a>
-      
-        <a class="home-card" href="today.html">
-          <div class="card-icon">今</div>
-          <h2>오늘 학습</h2>
-          <p>단어 50문제와 HSK형 문장 20문제를 랜덤으로 풀고, 틀린 문제는 해설과 함께 복습해요.</p>
-          <div class="card-foot"><span>오늘 70문제</span><span>→</span></div>
-        </a>
 </section>
     </div>
   </main>
 </div>
-<script src="sentences.js?v=10"></script><script>const d=new Date();const s=SENTENCES[(d.getFullYear()*372+d.getMonth()*31+d.getDate())%SENTENCES.length];document.getElementById("todayCn").textContent=s.text;document.getElementById("todayKo").textContent=s.meaning;</script></body>
+<script src="sentences.js?v=15"></script><script>const d=new Date();const s=SENTENCES[(d.getFullYear()*372+d.getMonth()*31+d.getDate())%SENTENCES.length];document.getElementById("todayCn").textContent=s.text;document.getElementById("todayKo").textContent=s.meaning;</script></body>
 </html>

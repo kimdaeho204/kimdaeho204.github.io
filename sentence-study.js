@@ -215,7 +215,7 @@ function explanationHtml(q,userAnswer,ok){
     <div class="quiz-explain-row"><strong>병음</strong><span class="quiz-pinyin">${pinyinFor(q.s.text)}</span></div>
     <div class="quiz-explain-row"><strong>해석</strong>${q.s.meaning}</div>
     <div class="quiz-explain-row"><strong>이유</strong>${e.why}</div>
-    <div class="quiz-explain-row"><strong>포인트</strong>${e.point}</div>
+    <div class="quiz-explain-row"><strong>포인트</strong>${e.point}</div><div class="quiz-explain-row"><strong>문장 성분</strong>${(q.s.components||[]).map(c=>`${c.text}(${c.role})`).join(" / ")}</div>
     <button class="quiz-explain-listen" onclick="speakChinese('${q.s.text.replace(/'/g,"\\'")}')">🔊 정답 문장 듣기</button>
   </div>`;
 }

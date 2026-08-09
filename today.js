@@ -91,6 +91,13 @@ function wordExplain(q,userAnswer,ok){
   <button class="quiz-explain-listen" onclick="speak('${esc(w.hanzi)}')">🔊 단어 듣기</button>
  </div>`;
 }
+
+function componentHtml(s){
+ const comps=(s.components||[]);
+ if(!comps.length)return "";
+ return `<div class="quiz-explain-row"><strong>문장 성분</strong>${comps.map(c=>`${esc(c.text)}(${esc(c.role)})`).join(" / ")}</div>`;
+}
+
 function sentenceExplain(q,userAnswer,ok){
  const s=q.sentence;
  const correct=q.type==="order"?s.text:q.answer;
@@ -106,7 +113,7 @@ function sentenceExplain(q,userAnswer,ok){
   <div class="quiz-explain-row"><strong>병음</strong><span class="quiz-pinyin">${esc(pinyinFor(s.text))}</span></div>
   <div class="quiz-explain-row"><strong>해석</strong>${esc(s.meaning)}</div>
   <div class="quiz-explain-row"><strong>이유</strong>${esc(why)}</div>
-  <div class="quiz-explain-row"><strong>포인트</strong>핵심 단어: ${esc(s.focus)}</div>
+  <div class="quiz-explain-row"><strong>포인트</strong>핵심 단어: ${esc(s.focus)}</div>${componentHtml(s)}
   <button class="quiz-explain-listen" onclick="speak('${esc(s.text)}')">🔊 정답 문장 듣기</button>
  </div>`;
 }
