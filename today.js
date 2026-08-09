@@ -25,6 +25,25 @@ function markTodayCompleted(){let a=loadArr(DAILY_COMPLETE_KEY);const k=todayLoc
 const pinyinMap=new Map();
 [...WORDS].sort((a,b)=>b.hanzi.length-a.hanzi.length).forEach(w=>{if(!pinyinMap.has(w.hanzi))pinyinMap.set(w.hanzi,w.pinyin)});
 const vocabSorted=[...pinyinMap.keys()].sort((a,b)=>b.length-a.length);
+const TODAY_SESSION_VERSION=61;
+
+// HSK 문장은 단어 공부 데이터에 포함된 어휘만으로 구성된 문장을 우선 사용한다.
+// chunks가 합성어처럼 묶여 있어도 단어장의 여러 항목으로 완전히 분해되면 허용한다.
+function chunkCoveredByWordBank(chunk){
+ if(punctuation.has(chunk))return true;
+ let i=0;
+ while(i<chunk.length){
+  let found=null;
+  for(const w of vocabSorted){if(chunk.startsWith(w,i)){found=w;break}}
+  if(!found)return false;
+  i+=found.length;
+ }
+ return true;
+}
+function sentenceCoveredByWordBank(sentence){
+ const chunks=(sentence&&Array.isArray(sentence.chunks)&&sentence.chunks.length)?sentence.chunks:[sentence?.text||""];
+ return chunks.every(chunkCoveredByWordBank);
+}
 function pinyinFor(text){
  let out=[],i=0;
  while(i<text.length){
@@ -147,9 +166,10 @@ function createFreshSession(){
  const wordPool=pickMixed(WORDS,30,SEEN_WORD_KEY,RECENT_WORD_KEY,w=>w.id,w=>rw.word.get(w.id)||0);
  const wordQuestions=makeWordQuestions(wordPool);
 
- const listenCandidates=SENTENCES.map(s=>({id:`${s.id}:listening`,s,type:"listening"}));
- const readCandidates=SENTENCES.map(s=>({id:`${s.id}:reading`,s,type:"reading"}));
- const orderCandidates=SENTENCES.map(s=>({id:`${s.id}:writing`,s,type:"writing"}));
+ const studySentencePool=SENTENCES.filter(sentenceCoveredByWordBank);
+ const listenCandidates=studySentencePool.map(s=>({id:`${s.id}:listening`,s,type:"listening"}));
+ const readCandidates=studySentencePool.map(s=>({id:`${s.id}:reading`,s,type:"reading"}));
+ const orderCandidates=studySentencePool.map(s=>({id:`${s.id}:writing`,s,type:"writing"}));
  const writeWordCandidates=WORDS.map(w=>({id:`writeword:${w.id}`,w,type:"writeword"}));
 
  const listenPool=pickMixed(listenCandidates,7,SEEN_HSK_KEY+":listen",RECENT_HSK_KEY+":listen",x=>x.id,x=>rw.hsk.get(x.id)||0);
@@ -162,13 +182,26 @@ function createFreshSession(){
  const writeQs=[...orderPool.map(x=>hskWritingOrder(x.s)),...writeWordPool.map(x=>hskWritingWord(x.w))];
 
  const hskQuestions=[...listenQs,...readQs,...writeQs];
- return {date:todayLocalKey(),started:true,section:"word",pos:0,wordScore:0,hskScore:0,wordQuestions,hskQuestions};
+ return {version:TODAY_SESSION_VERSION,date:todayLocalKey(),started:true,section:"word",pos:0,wordScore:0,hskScore:0,wordQuestions,hskQuestions};
 }
 function loadSession(){
  let s=null;
  try{s=JSON.parse(localStorage.getItem(TODAY_SESSION_KEY)||"null")}catch(e){}
  if(!s||s.date!==todayLocalKey()||!Array.isArray(s.wordQuestions)||s.wordQuestions.length!==30||!Array.isArray(s.hskQuestions)||s.hskQuestions.length!==20){
    s=createFreshSession();
+   localStorage.setItem(TODAY_SESSION_KEY,JSON.stringify(s));
+   return s;
+ }
+ // v61: 기존 오늘 학습 진행도는 유지하고, 아직 풀지 않은 HSK 문제만 새 어휘 기준으로 교체한다.
+ if((s.version||0)<TODAY_SESSION_VERSION){
+   const fresh=createFreshSession();
+   if(s.section==="hsk"){
+     const done=Math.max(0,Math.min(Number(s.pos)||0,20));
+     s.hskQuestions=[...s.hskQuestions.slice(0,done),...fresh.hskQuestions.slice(done)];
+   }else{
+     s.hskQuestions=fresh.hskQuestions;
+   }
+   s.version=TODAY_SESSION_VERSION;
    localStorage.setItem(TODAY_SESSION_KEY,JSON.stringify(s));
  }
  return s;
