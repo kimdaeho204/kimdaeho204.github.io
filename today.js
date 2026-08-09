@@ -10,6 +10,7 @@ const SEEN_HSK_KEY="meohoSeenTodayHskV2";
 const RECENT_WORD_KEY="meohoRecentTodayWordIdsV1";
 const RECENT_HSK_KEY="meohoRecentTodayHskV2";
 const TODAY_SESSION_KEY="meohoTodayStudySessionV2";
+function answerWithPos(text,pos){return `${esc(text)}${pos?` <span class="quiz-pos-badge">${esc(pos)}</span>`:""}`}
 
 function loadArr(key){try{return JSON.parse(localStorage.getItem(key)||"[]")}catch(e){return []}}
 function saveArr(key,a){localStorage.setItem(key,JSON.stringify(a))}
@@ -329,10 +330,11 @@ function wordExplain(q,userAnswer,ok){
  :`‘${w.hanzi}’의 표준 병음은 ‘${w.pinyin}’입니다.`;
  return `<div class="quiz-explain"><div class="quiz-explain-title">${ok?"✅ 정답":"❌ 오답"}</div>
  ${!ok?`<div class="quiz-explain-row"><strong>내 답</strong>${esc(userAnswer)}</div>`:""}
- <div class="quiz-explain-row"><strong>정답</strong>${esc(q.answer)}</div>
+ <div class="quiz-explain-row"><strong>정답</strong>${answerWithPos(q.answer,w.pos)}</div>
  <div class="quiz-explain-row"><strong>한자</strong>${esc(w.hanzi)}</div>
  <div class="quiz-explain-row"><strong>병음</strong><span class="quiz-pinyin">${esc(w.pinyin)}</span></div>
  <div class="quiz-explain-row"><strong>뜻</strong>${esc(w.meaning)}</div>
+ <div class="quiz-explain-row"><strong>품사</strong>${esc(w.pos||"-")}</div>
  <div class="quiz-explain-row"><strong>이유</strong>${esc(why)}</div>
  <button class="quiz-explain-listen" onclick="speak('${esc(w.hanzi)}')">🔊 단어 듣기</button></div>`;
 }
@@ -341,9 +343,10 @@ function hskExplain(q,userAnswer,ok){
    const w=q.word;
    return `<div class="quiz-explain"><div class="quiz-explain-title">${ok?"✅ 정답":"❌ 오답"}</div>
    ${!ok?`<div class="quiz-explain-row"><strong>내 답</strong>${esc(userAnswer)}</div>`:""}
-   <div class="quiz-explain-row"><strong>정답</strong>${esc(w.hanzi)}</div>
+   <div class="quiz-explain-row"><strong>정답</strong>${answerWithPos(w.hanzi,w.pos)}</div>
    <div class="quiz-explain-row"><strong>병음</strong>${esc(w.pinyin)}</div>
    <div class="quiz-explain-row"><strong>뜻</strong>${esc(w.meaning)}</div>
+ <div class="quiz-explain-row"><strong>품사</strong>${esc(w.pos||"-")}</div>
    <div class="quiz-explain-row"><strong>포인트</strong>병음과 한자를 함께 연결해서 기억하세요.</div>
    <button class="quiz-explain-listen" onclick="speak('${esc(w.hanzi)}')">🔊 듣기</button></div>`;
  }
