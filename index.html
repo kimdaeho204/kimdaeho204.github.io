@@ -1447,6 +1447,381 @@ html.play-intro .home-shell{
   }
 }
 
+
+/* ===== v39 intro copy restored / main copy differentiated ===== */
+.intro-title{
+  margin:0 !important;
+  font-size:44px !important;
+  line-height:1.18 !important;
+  letter-spacing:.035em !important;
+  color:#fff9ea !important;
+}
+.intro-sub{
+  margin:14px 0 0 !important;
+  color:#eadfce !important;
+  font-size:14px !important;
+  font-weight:700 !important;
+}
+.intro-line{
+  margin-top:20px !important;
+}
+.main-study-title{
+  margin:7px 0 7px !important;
+  font-size:34px !important;
+  line-height:1.22 !important;
+  font-family:"KaiTi","STKaiti","SimSun",serif !important;
+  color:#fff9ea !important;
+  letter-spacing:.015em !important;
+}
+.main-study-sub{
+  margin:0 0 22px !important;
+  color:#ded3c4 !important;
+  font-size:13px !important;
+  font-weight:700 !important;
+}
+@media(max-width:760px){
+  .intro-title{font-size:34px !important}
+  .intro-sub{font-size:12px !important}
+  .main-study-title{font-size:28px !important}
+}
+
+
+/* ===== v40 calendar-first dashboard ===== */
+.dashboard-stack{
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+  width:100%;
+  max-width:980px;
+  margin:0 auto;
+}
+
+/* Remove the old hero visually/structurally from the main dashboard */
+.hero,.hero-wrap{display:none!important}
+
+/* Progress summary integrated above the calendar */
+.calendar-feature{
+  order:1;
+  padding:0 !important;
+  overflow:hidden;
+  border-radius:26px !important;
+  background:linear-gradient(180deg,#fffdf9,#fbf5eb) !important;
+  box-shadow:0 18px 42px rgba(80,47,24,.10) !important;
+}
+.progress-summary{
+  padding:25px 28px 22px;
+  background:
+    radial-gradient(circle at 90% 0%,rgba(214,168,75,.14),transparent 30%),
+    linear-gradient(135deg,#211a16 0%,#3a2019 52%,#8d2119 100%);
+  color:#fff;
+}
+.progress-summary-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:18px;
+}
+.progress-summary-head .eyebrow{
+  margin:0 0 5px;
+  color:#e9c978 !important;
+  font-size:10px;
+  letter-spacing:.18em;
+  font-weight:900;
+}
+.progress-summary-head h2{
+  margin:0;
+  color:#fff8e9;
+  font-size:22px;
+  letter-spacing:-.03em;
+}
+.progress-summary-note{
+  color:#d9c8b6;
+  font-size:12px;
+  font-weight:700;
+}
+.progress-summary-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+.progress-stat{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-height:82px;
+  padding:14px 15px;
+  border-radius:17px;
+  border:1px solid rgba(232,198,117,.30);
+  background:rgba(255,250,238,.07);
+  backdrop-filter:blur(5px);
+}
+.progress-stat-icon{
+  width:42px;
+  height:42px;
+  flex:0 0 42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:13px;
+  background:rgba(179,38,30,.55);
+  border:1px solid rgba(239,201,121,.36);
+  color:#ffe9b0;
+  font-family:"KaiTi","STKaiti","SimSun",serif;
+  font-size:19px;
+  font-weight:900;
+}
+.progress-stat div{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+}
+.progress-stat strong{
+  color:#fff8e8;
+  font-size:25px;
+  line-height:1;
+  font-weight:950;
+}
+.progress-stat div span{
+  margin-top:6px;
+  color:#e6d9c8;
+  font-size:11px;
+  font-weight:800;
+}
+.calendar-divider{
+  height:1px;
+  background:#eadbc4;
+}
+.calendar-feature .calendar-head{
+  padding:22px 28px 0;
+}
+.calendar-feature .calendar-week,
+.calendar-feature .calendar-grid{
+  margin-left:28px;
+  margin-right:28px;
+}
+.calendar-feature .calendar-legend{
+  padding:0 28px 22px;
+}
+
+/* Today's study becomes the visual centerpiece */
+.today-feature-card{
+  order:2;
+  position:relative !important;
+  min-height:210px;
+  overflow:hidden;
+  padding:28px 30px !important;
+  border-radius:28px !important;
+  border:1px solid rgba(214,168,75,.45) !important;
+  background:
+    radial-gradient(circle at 82% 24%,rgba(239,201,121,.18),transparent 26%),
+    linear-gradient(135deg,#231914 0%,#5d2019 54%,#b32d22 100%) !important;
+  color:#fff !important;
+  box-shadow:0 22px 54px rgba(108,37,25,.20) !important;
+}
+.today-feature-card::before{
+  content:"今";
+  position:absolute;
+  right:42px;
+  bottom:-42px;
+  font-family:"KaiTi","STKaiti","SimSun",serif;
+  font-size:210px;
+  line-height:1;
+  color:rgba(255,231,178,.08);
+  pointer-events:none;
+}
+.today-feature-card::after{
+  display:none !important;
+}
+.today-feature-glow{
+  position:absolute;
+  width:240px;
+  height:240px;
+  right:-70px;
+  top:-90px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,223,153,.18),transparent 68%);
+  pointer-events:none;
+}
+.today-feature-card .today-main-left,
+.today-feature-card .today-main-right{
+  position:relative;
+  z-index:2;
+}
+.today-feature-card .today-main-left{
+  align-items:flex-start;
+  gap:20px;
+}
+.today-feature-card .today-main-icon{
+  width:70px !important;
+  height:70px !important;
+  flex:0 0 70px !important;
+  border-radius:20px !important;
+  background:linear-gradient(145deg,#b3261e,#d74b38) !important;
+  border:1px solid rgba(255,223,153,.60) !important;
+  color:#fff2c9 !important;
+  font-size:34px !important;
+  box-shadow:0 12px 28px rgba(0,0,0,.18);
+}
+.today-feature-card .today-main-kicker{
+  color:#efce82 !important;
+  font-size:11px !important;
+  letter-spacing:.18em !important;
+}
+.today-feature-card .today-main-copy h2{
+  margin:2px 0 8px !important;
+  color:#fffaf0 !important;
+  font-size:32px !important;
+  letter-spacing:-.04em !important;
+}
+.today-feature-desc{
+  margin:0 !important;
+  color:#ecdfd2 !important;
+  font-size:14px !important;
+  font-weight:700;
+}
+.today-feature-counts{
+  display:flex;
+  gap:9px;
+  flex-wrap:wrap;
+  margin-top:20px;
+}
+.today-feature-counts span{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:8px 11px;
+  border-radius:999px;
+  border:1px solid rgba(239,201,121,.28);
+  background:rgba(255,250,238,.08);
+  color:#eadfce;
+  font-size:11px;
+  font-weight:800;
+}
+.today-feature-counts strong{
+  color:#fff1bd;
+  font-size:15px;
+}
+.today-feature-card .today-main-right{
+  align-self:center;
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+.today-feature-card .today-status-badge{
+  background:rgba(255,246,225,.13) !important;
+  border:1px solid rgba(239,201,121,.26);
+  color:#f6e2b4 !important;
+}
+.today-feature-card .today-status-badge.done{
+  background:rgba(56,155,92,.22) !important;
+  color:#d8ffe4 !important;
+}
+.today-start-label{
+  color:#fff2c9;
+  font-size:12px;
+  font-weight:900;
+}
+.today-feature-card .today-main-arrow{
+  color:#ffe0a0 !important;
+  font-size:30px !important;
+}
+.today-feature-card:hover{
+  transform:translateY(-5px) !important;
+  box-shadow:0 28px 64px rgba(108,37,25,.26) !important;
+}
+
+/* Secondary menu */
+.study-menu-section{
+  order:3;
+}
+.section-heading{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:18px;
+  margin:4px 2px 12px;
+}
+.section-heading .eyebrow{
+  margin:0 0 4px;
+  color:#9b6c31 !important;
+  font-size:10px;
+  letter-spacing:.16em;
+  font-weight:900;
+}
+.section-heading h2{
+  margin:0;
+  font-size:21px;
+  color:#2a201a;
+}
+.section-heading>p{
+  margin:0;
+  color:#82776c;
+  font-size:12px;
+  font-weight:700;
+}
+.study-menu-section .menu-grid{
+  margin-top:0 !important;
+}
+
+/* Main reveal order after intro */
+.home-shell.page-cinematic .progress-summary,
+.home-shell.page-cinematic .calendar-head,
+.home-shell.page-cinematic .calendar-week,
+.home-shell.page-cinematic .calendar-grid,
+.home-shell.page-cinematic .calendar-legend,
+.home-shell.page-cinematic .today-feature-card,
+.home-shell.page-cinematic .study-menu-section{
+  opacity:0;
+  transform:translateY(20px);
+}
+.home-shell.page-cinematic.reveal .progress-summary{
+  animation:mainRise .52s cubic-bezier(.2,.75,.25,1) .12s forwards;
+}
+.home-shell.page-cinematic.reveal .calendar-head,
+.home-shell.page-cinematic.reveal .calendar-week,
+.home-shell.page-cinematic.reveal .calendar-grid,
+.home-shell.page-cinematic.reveal .calendar-legend{
+  animation:mainRise .55s cubic-bezier(.2,.75,.25,1) .28s forwards;
+}
+.home-shell.page-cinematic.reveal .today-feature-card{
+  animation:mainRise .65s cubic-bezier(.2,.75,.25,1) .50s forwards;
+}
+.home-shell.page-cinematic.reveal .study-menu-section{
+  animation:mainRise .62s cubic-bezier(.2,.75,.25,1) .76s forwards;
+}
+
+@media(max-width:760px){
+  .dashboard-stack{gap:16px}
+  .progress-summary{padding:22px 20px 18px}
+  .progress-summary-head{align-items:flex-start;flex-direction:column;gap:5px}
+  .progress-summary-note{display:none}
+  .progress-summary-grid{grid-template-columns:1fr}
+  .progress-stat{min-height:64px}
+  .calendar-feature .calendar-head{padding:20px 20px 0}
+  .calendar-feature .calendar-week,
+  .calendar-feature .calendar-grid{margin-left:20px;margin-right:20px}
+  .calendar-feature .calendar-legend{padding:0 20px 20px}
+  .today-feature-card{
+    min-height:auto;
+    padding:24px 21px !important;
+    flex-direction:column;
+    align-items:stretch !important;
+  }
+  .today-feature-card .today-main-left{gap:14px}
+  .today-feature-card .today-main-icon{
+    width:58px !important;height:58px !important;flex-basis:58px !important;font-size:28px !important
+  }
+  .today-feature-card .today-main-copy h2{font-size:28px !important}
+  .today-feature-card .today-main-right{
+    width:100%;
+    justify-content:flex-end;
+    margin-top:18px;
+  }
+  .section-heading{align-items:flex-start;flex-direction:column;gap:3px}
+  .section-heading>p{display:none}
+}
+
 </style>
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%234568f2"/><text x="32" y="43" text-anchor="middle" font-size="38" font-weight="700" fill="white">中</text></svg>'>
 
@@ -1467,6 +1842,8 @@ html.play-intro .home-shell{
   <div class="intro-inner">
     <div class="intro-seal">中</div>
     <p class="intro-kicker">MEOHO CHINESE STUDY</p>
+    <h1 class="intro-title">每天一点，慢慢进步。</h1>
+    <p class="intro-sub">매일 조금씩, 천천히 실력을 쌓아가는 머호의 중국어 학습 공간.</p>
     <div class="intro-line"></div>
     <p class="intro-sound-hint">아래 카드를 눌러 학습을 시작하세요 · BGM 기본 ON</p>
     <div class="intro-enter-wrap">
@@ -1487,69 +1864,47 @@ html.play-intro .home-shell{
   <nav class="topnav">
     <div class="brand"><div class="brand-mark">中</div>머호의 중국어 공부</div>
   </nav>
-  <main class="home-main">
-    <div class="hero-wrap">
-      <section class="hero">
-        <p class="eyebrow">MEOHO CHINESE STUDY</p>
-        <h1>每天一点，慢慢进步。</h1>
-        <p>매일 조금씩, 천천히 실력을 쌓아가는 머호의 중국어 학습 공간.</p>
-        <div class="hero-stats monthly-stats">
-          <span class="stat-pill"><strong id="monthStudyDays">0</strong><span id="monthStudyLabel">이번 달 학습일</span></span>
-          <span class="stat-pill"><strong id="currentStreak">0</strong><span>일 연속 학습</span></span>
-          <span class="stat-pill"><strong id="totalStudyDays">0</strong><span>누적 학습일</span></span>
-        </div>
-<div id="todayCn" class="cn"></div>
-          <div id="todayKo" class="ko"></div>
-        </div>
 
-        
-        <a class="today-main-cta today-main-big" href="today.html" title="단어 30문제 + HSK 20문제 · 오늘 총 50문제">
-          <div class="today-main-left">
-            <div class="today-main-icon">今</div>
-            <div class="today-main-copy">
-              <span class="today-main-kicker">TODAY'S STUDY</span>
-              <h2 id="todayMainTitle">오늘의 학습</h2><span id="todayResumeNote" class="resume-note" style="display:none"></span>
+  <main class="home-main">
+    <div class="dashboard-stack">
+
+      <section class="study-calendar calendar-feature">
+        <div class="progress-summary">
+          <div class="progress-summary-head">
+            <div>
+              <p class="eyebrow">LEARNING PROGRESS</p>
+              <h2>학습 진척률</h2>
+            </div>
+            <span class="progress-summary-note">꾸준히 쌓이는 학습 기록</span>
+          </div>
+
+          <div class="progress-summary-grid">
+            <div class="progress-stat">
+              <span class="progress-stat-icon">月</span>
+              <div>
+                <strong id="monthStudyDays">0</strong>
+                <span id="monthStudyLabel">이번 달 학습일</span>
+              </div>
+            </div>
+            <div class="progress-stat">
+              <span class="progress-stat-icon">连</span>
+              <div>
+                <strong id="currentStreak">0</strong>
+                <span>일 연속 학습</span>
+              </div>
+            </div>
+            <div class="progress-stat">
+              <span class="progress-stat-icon">总</span>
+              <div>
+                <strong id="totalStudyDays">0</strong>
+                <span>누적 학습일</span>
+              </div>
             </div>
           </div>
-          <div class="today-main-right">
-            <span id="todayStatusBadge" class="today-status-badge">오늘 학습 전</span>
-            <span class="today-main-arrow">→</span>
-          </div>
-        </a>
+        </div>
 
+        <div class="calendar-divider"></div>
 
-      </section>
-<section class="menu-grid">
-        <a class="home-card" href="words.html">
-          <div class="card-icon">字</div>
-          <h2>단어 공부</h2>
-          <p>한자, 병음, 뜻과 발음을 확인하고 모름·애매함·외움으로 학습 상태를 기록해요.</p>
-          <div class="card-foot"><span>960개 단어</span><span>→</span></div>
-        </a>
-        <a class="home-card" href="sentences.html">
-          <div class="card-icon">句</div>
-          <h2>문장 공부</h2>
-          <p>중국어 문장을 읽고 병음과 해석을 익히는 학습 공간이에요.</p>
-          <div class="card-foot"><span>500개 문장</span><span>→</span></div>
-        </a>
-        
-        <a class="home-card" href="listening.html">
-          <div class="card-icon">听</div>
-          <h2>듣기 공부</h2>
-          <p>HSK 3급 수준의 짧은 문장과 상황을 듣고 의미를 판단하는 연습이에요.</p>
-          <div class="card-foot"><span>HSK 3급 듣기 · 200문제</span><span>→</span></div>
-        </a>
-
-        <a class="home-card" href="wrong.html">
-          <div class="card-icon">错</div>
-          <h2>오답노트</h2>
-          <p>모른 단어·문장과 틀린 HSK 문제를 그 모습 그대로 저장해 다시 풀어봐요.</p>
-          <div class="card-foot"><span>집중 복습</span><span>→</span></div>
-        </a>
-</section>
-
-
-      <section class="study-calendar">
         <div class="calendar-head">
           <div>
             <p class="eyebrow">STUDY CALENDAR</p>
@@ -1572,9 +1927,73 @@ html.play-intro .home-shell{
         </div>
       </section>
 
-      
+      <a class="today-main-cta today-main-big today-feature-card" href="today.html" title="단어 30문제 + HSK 20문제 · 오늘 총 50문제">
+        <div class="today-feature-glow"></div>
+        <div class="today-main-left">
+          <div class="today-main-icon">今</div>
+          <div class="today-main-copy">
+            <span class="today-main-kicker">TODAY'S STUDY</span>
+            <h2 id="todayMainTitle">오늘의 학습</h2>
+            <p class="today-feature-desc">오늘의 핵심 학습을 한 번에 끝내보세요.</p>
+            <span id="todayResumeNote" class="resume-note" style="display:none"></span>
+
+            <div class="today-feature-counts">
+              <span><strong>30</strong> 단어</span>
+              <span><strong>20</strong> HSK</span>
+              <span><strong>50</strong> 총 문제</span>
+            </div>
+          </div>
+        </div>
+        <div class="today-main-right">
+          <span id="todayStatusBadge" class="today-status-badge">오늘 학습 전</span>
+          <span class="today-start-label">학습 시작</span>
+          <span class="today-main-arrow">→</span>
+        </div>
+      </a>
+
+      <section class="study-menu-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">MORE STUDY</p>
+            <h2>추가 학습</h2>
+          </div>
+          <p>필요한 영역을 골라 더 연습해보세요.</p>
+        </div>
+
+        <section class="menu-grid">
+          <a class="home-card" href="words.html">
+            <div class="card-icon">字</div>
+            <h2>단어 공부</h2>
+            <p>한자, 병음, 뜻과 발음을 확인하고 모름·애매함·외움으로 학습 상태를 기록해요.</p>
+            <div class="card-foot"><span>960개 단어</span><span>→</span></div>
+          </a>
+
+          <a class="home-card" href="sentences.html">
+            <div class="card-icon">句</div>
+            <h2>문장 공부</h2>
+            <p>중국어 문장을 읽고 병음과 해석을 익히는 학습 공간이에요.</p>
+            <div class="card-foot"><span>500개 문장</span><span>→</span></div>
+          </a>
+
+          <a class="home-card" href="listening.html">
+            <div class="card-icon">听</div>
+            <h2>듣기 공부</h2>
+            <p>HSK 3급 수준의 짧은 문장과 상황을 듣고 의미를 판단하는 연습이에요.</p>
+            <div class="card-foot"><span>HSK 3급 듣기 · 200문제</span><span>→</span></div>
+          </a>
+
+          <a class="home-card" href="wrong.html">
+            <div class="card-icon">错</div>
+            <h2>오답노트</h2>
+            <p>모른 단어·문장과 틀린 HSK 문제를 그 모습 그대로 저장해 다시 풀어봐요.</p>
+            <div class="card-foot"><span>집중 복습</span><span>→</span></div>
+          </a>
+        </section>
+      </section>
+
     </div>
   </main>
+
 </div>
 
 <script>
@@ -1716,7 +2135,7 @@ html.play-intro .home-shell{
   const volumeInput=document.getElementById("bgmVolume");
 
   let ctx=null,master=null,bgmStarted=false,muted=false,bgmTimer=null,bgmStep=0;
-  const scale=[0,2,4,7,9],baseMidi=57;
+  const pentatonic=[0,2,4,7,9];
   const midiHz=m=>440*Math.pow(2,(m-69)/12);
 
   function ensureAudio(){
@@ -1725,58 +2144,119 @@ html.play-intro .home-shell{
     if(!AC)return false;
     ctx=new AC();
     master=ctx.createGain();
-    master.gain.value=(Number(volumeInput?.value||32)/100)*0.22;
+    master.gain.value=(Number(volumeInput?.value||32)/100)*0.42;
     master.connect(ctx.destination);
     return true;
   }
-  function pluck(freq,when,dur=.42,level=.15){
+
+  function tone(freq,when,dur=.24,level=.13,type="triangle",cutoff=2200){
     if(!ctx||!master)return;
-    const osc=ctx.createOscillator(),gain=ctx.createGain(),filter=ctx.createBiquadFilter();
-    osc.type="triangle";osc.frequency.setValueAtTime(freq,when);
-    filter.type="lowpass";filter.frequency.setValueAtTime(1650,when);
+    const osc=ctx.createOscillator();
+    const gain=ctx.createGain();
+    const filter=ctx.createBiquadFilter();
+    osc.type=type;
+    osc.frequency.setValueAtTime(freq,when);
+    filter.type="lowpass";
+    filter.frequency.setValueAtTime(cutoff,when);
     gain.gain.setValueAtTime(.0001,when);
-    gain.gain.exponentialRampToValueAtTime(level,when+.018);
+    gain.gain.exponentialRampToValueAtTime(level,when+.01);
     gain.gain.exponentialRampToValueAtTime(.0001,when+dur);
-    osc.connect(filter);filter.connect(gain);gain.connect(master);
-    osc.start(when);osc.stop(when+dur+.03);
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(master);
+    osc.start(when);
+    osc.stop(when+dur+.03);
   }
-  function bell(freq,when,dur=.8,level=.055){
+
+  function pluck(freq,when,dur=.22,level=.12){
+    tone(freq,when,dur,level,"triangle",2600);
+    tone(freq*2,when+.004,dur*.72,level*.20,"sine",3200);
+  }
+
+  function softBeat(when,strong=false){
     if(!ctx||!master)return;
-    const osc=ctx.createOscillator(),gain=ctx.createGain();
-    osc.type="sine";osc.frequency.value=freq*2;
-    gain.gain.setValueAtTime(level,when);
-    gain.gain.exponentialRampToValueAtTime(.0001,when+dur);
-    osc.connect(gain);gain.connect(master);osc.start(when);osc.stop(when+dur+.03);
+    const osc=ctx.createOscillator();
+    const gain=ctx.createGain();
+    osc.type="sine";
+    osc.frequency.setValueAtTime(strong?115:145,when);
+    osc.frequency.exponentialRampToValueAtTime(72,when+.09);
+    gain.gain.setValueAtTime(strong?.07:.04,when);
+    gain.gain.exponentialRampToValueAtTime(.0001,when+.12);
+    osc.connect(gain);
+    gain.connect(master);
+    osc.start(when);
+    osc.stop(when+.13);
   }
+
+  function chime(freq,when,dur=.5,level=.035){
+    tone(freq,when,dur,level,"sine",4200);
+  }
+
   function bgmTick(){
     if(!ctx||muted)return;
-    const t=ctx.currentTime+.03;
-    const melody=[0,2,4,2,1,0,4,2,0,1,2,4,2,1,0,4];
-    const degree=scale[melody[bgmStep%melody.length]%scale.length];
-    const octave=(bgmStep%8===6)?12:0;
-    pluck(midiHz(baseMidi+degree+octave),t,.44,.11);
-    if(bgmStep%4===0){
-      pluck(midiHz(baseMidi-12+scale[(bgmStep/4)%scale.length|0]),t,.85,.055);
-      bell(midiHz(baseMidi+12+degree),t+.04,.72,.025);
+    const t=ctx.currentTime+.025;
+
+    // Bright pentatonic melody in 16-step phrases.
+    const melody=[
+      0,2,4,2, 4,7,9,7,
+      4,2,0,2, 4,2,0,9,
+      0,4,7,9, 7,4,2,4,
+      7,9,7,4, 2,0,2,4
+    ];
+    const octaves=[
+      0,0,0,0, 0,0,0,0,
+      0,0,0,0, 0,0,0,-3,
+      0,0,0,0, 12,0,0,0,
+      0,12,0,0, 0,0,0,0
+    ];
+
+    const deg=melody[bgmStep%melody.length];
+    const octave=octaves[bgmStep%octaves.length];
+    const noteSemitone=pentatonic.find(x=>x===deg) ?? deg;
+
+    // Main lead, a little higher and clearer.
+    pluck(midiHz(64+noteSemitone+octave),t,.21,.14);
+
+    // Light rhythmic pulse every beat, stronger on phrase starts.
+    softBeat(t,bgmStep%4===0);
+
+    // Bass answer every second beat.
+    if(bgmStep%2===0){
+      const bassDeg=pentatonic[(Math.floor(bgmStep/2))%pentatonic.length];
+      tone(midiHz(43+bassDeg),t,.34,.055,"sine",900);
     }
+
+    // Small upper chime at phrase accents.
+    if(bgmStep%8===3 || bgmStep%8===7){
+      chime(midiHz(76+noteSemitone),t+.035,.38,.026);
+    }
+
     bgmStep++;
   }
+
   async function startBgm(){
     if(!ensureAudio())return false;
     try{
       if(ctx.state==="suspended")await ctx.resume();
-      if(!bgmStarted){bgmStarted=true;bgmTick();bgmTimer=setInterval(bgmTick,430)}
+      muted=false;
+      if(!bgmStarted){
+        bgmStarted=true;
+        bgmTick();
+        bgmTimer=setInterval(bgmTick,290);
+      }
       updateMute();
       return ctx.state==="running";
     }catch(e){return false}
   }
+
   function updateMute(){
     if(muteBtn)muteBtn.textContent=muted?"🔇":"🔊";
     if(!master||!ctx)return;
-    const target=muted?0:(Number(volumeInput?.value||32)/100)*0.22;
+    const target=muted?0:(Number(volumeInput?.value||32)/100)*0.42;
     master.gain.cancelScheduledValues(ctx.currentTime);
     master.gain.linearRampToValueAtTime(target,ctx.currentTime+.05);
   }
+
   function clickSound(){
     if(!ctx||!master||ctx.state!=="running"||muted)return;
     const t=ctx.currentTime,osc=ctx.createOscillator(),gain=ctx.createGain();
@@ -1868,7 +2348,7 @@ html.play-intro .home-shell{
     if(!ctx){
       ctx=new AC();
       master=ctx.createGain();
-      master.gain.value=volumeLevel()*0.65;
+      master.gain.value=volumeLevel()*0.42;
       master.connect(ctx.destination);
     }
     return true;
@@ -1921,12 +2401,12 @@ html.play-intro .home-shell{
     }
     if(master){
       master.gain.cancelScheduledValues(ctx.currentTime);
-      master.gain.setTargetAtTime(volumeLevel()*0.65,ctx.currentTime,.02);
+      master.gain.setTargetAtTime(volumeLevel()*0.42,ctx.currentTime,.02);
     }
   }
   function updateVolume(){
     if(!ctx||!master)return;
-    const target=muted?0:volumeLevel()*0.65;
+    const target=muted?0:volumeLevel()*0.42;
     master.gain.cancelScheduledValues(ctx.currentTime);
     master.gain.setTargetAtTime(target,ctx.currentTime,.02);
   }
