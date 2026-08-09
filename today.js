@@ -35,6 +35,29 @@ function pinyinFor(text){
  return out.join(" ").replace(/\s+([，。？！])/g,"$1")
 }
 
+// Sentence chunks that are not standalone entries in the word bank.
+const sentencePinyinFallback={
+ "准时":"zhǔnshí","前":"qián","厨房":"chúfáng","变":"biàn","合适":"héshì","堵":"dǔ",
+ "学":"xué","店":"diàn","抱怨":"bàoyuàn","改":"gǎi","早":"zǎo","早睡":"zǎo shuì",
+ "早起":"zǎo qǐ","汤":"tāng","没":"méi","肚子":"dùzi","设置":"shèzhì","辣":"là",
+ "酒店":"jiǔdiàn","雨":"yǔ","鞋":"xié","风":"fēng","食堂":"shítáng","饭":"fàn"
+};
+function pinyinForChunk(chunk){
+ const exact=pinyinMap.get(chunk);
+ if(exact)return exact;
+ if(sentencePinyinFallback[chunk])return sentencePinyinFallback[chunk];
+ const built=pinyinFor(chunk);
+ return built||"";
+}
+function rubySentence(sentence){
+ const chunks=(sentence&&Array.isArray(sentence.chunks)&&sentence.chunks.length)?sentence.chunks:[sentence?.text||""];
+ return `<span class="ruby-sentence">${chunks.map(chunk=>{
+   if(punctuation.has(chunk))return `<span class="ruby-punct">${esc(chunk)}</span>`;
+   const py=pinyinForChunk(chunk);
+   return `<ruby class="ruby-word"><span>${esc(chunk)}</span>${py?`<rt>${esc(py)}</rt>`:""}</ruby>`;
+ }).join("")}</span>`;
+}
+
 function weightedPick(items,count,weightFn){
  const bag=[...items],out=[];
  while(bag.length&&out.length<count){
@@ -112,7 +135,7 @@ function hskReading(s){
 }
 function hskWritingOrder(s){
  const tokens=s.chunks.filter(x=>!punctuation.has(x));
- return {kind:"hsk",hskType:"writing",type:"order",label:"HSK 쓰기 · 어순 배열",sentence:s,question:"단어를 올바른 순서로 배열하세요.",sub:"HSK 3급 쓰기 유형처럼 문장을 완성하세요.",tokens:shuffled(tokens),answer:tokens.join("")};
+ return {kind:"hsk",hskType:"writing",type:"order",label:"HSK 쓰기 · 어순 배열",sentence:s,question:s.meaning,sub:"한국어 뜻에 맞게 아래 중국어 단어를 올바른 순서로 배열하세요.",tokens:shuffled(tokens),answer:tokens.join("")};
 }
 function hskWritingWord(w){
  const wrong=sample(WORDS.map(x=>x.hanzi),3,w.hanzi);
@@ -170,8 +193,8 @@ function render(){
  $("todayCount").textContent=`${pos+1} / ${qs.length}`;
  $("todayProgress").style.width=`${((pos+1)/qs.length)*100}%`;
  $("todayType").textContent=current.label;
- $("todayQuestion").textContent=current.question;
- $("todaySub").textContent=current.sub;
+ $("todayQuestion").textContent=current.type==="order"&&current.sentence?.meaning?current.sentence.meaning:current.question;
+ $("todaySub").textContent=current.type==="order"?"한국어 뜻에 맞게 아래 중국어 단어를 올바른 순서로 배열하세요.":current.sub;
  $("todayOptions").innerHTML="";$("todayAnswerBank").innerHTML="";$("todayTokenBank").innerHTML="";
  $("todayAnswerBank").classList.add("hidden-block");$("todayTokenBank").classList.add("hidden-block");$("todayListen").classList.add("hidden-block");
  $("todayFeedback").style.display="none";$("todayNext").style.display="none";
@@ -356,8 +379,7 @@ function hskExplain(q,userAnswer,ok){
  return `<div class="quiz-explain"><div class="quiz-explain-title">${ok?"✅ 정답":"❌ 오답"}</div>
  ${!ok?`<div class="quiz-explain-row"><strong>내 답</strong>${esc(userAnswer||"-")}</div>`:""}
  <div class="quiz-explain-row"><strong>정답</strong>${esc(correct)}</div>
- <div class="quiz-explain-row"><strong>원문</strong>${esc(s.text)}</div>
- <div class="quiz-explain-row"><strong>병음</strong><span class="quiz-pinyin">${esc(pinyinFor(s.text))}</span></div>
+ <div class="quiz-explain-row ruby-original-row"><strong>원문</strong>${rubySentence(s)}</div>
  <div class="quiz-explain-row"><strong>해석</strong>${esc(s.meaning)}</div>
  <div class="quiz-explain-row"><strong>포인트</strong>핵심 단어: ${esc(s.focus)}</div>
  <div class="quiz-explain-row"><strong>이유</strong>${why}</div>

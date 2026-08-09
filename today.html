@@ -502,6 +502,53 @@ body{
   .meoho-home-text{font-size:12px}
 }
 
+
+/* ===== v51 pinyin above each word in HSK original ===== */
+.ruby-original-row{
+  display:flex;
+  align-items:flex-start;
+  gap:0;
+  margin-top:12px!important;
+  margin-bottom:12px!important;
+}
+.ruby-original-row>strong{
+  flex:0 0 72px;
+  padding-top:13px;
+}
+.ruby-sentence{
+  display:flex;
+  align-items:flex-end;
+  flex-wrap:wrap;
+  column-gap:7px;
+  row-gap:12px;
+  padding:3px 0 0;
+  font-size:20px;
+  font-weight:900;
+  line-height:1.65;
+}
+.ruby-word{
+  ruby-position:over;
+  ruby-align:center;
+  white-space:nowrap;
+}
+.ruby-word rt{
+  color:#b3261e;
+  font-size:11px;
+  line-height:1.1;
+  font-weight:800;
+  letter-spacing:.01em;
+}
+.ruby-punct{
+  margin-left:-5px;
+  font-weight:900;
+}
+@media(max-width:760px){
+  .ruby-original-row{display:block}
+  .ruby-original-row>strong{display:block!important;padding-top:0;margin-bottom:10px}
+  .ruby-sentence{font-size:18px;column-gap:6px;row-gap:11px}
+  .ruby-word rt{font-size:10px}
+}
+
 </style><link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%234568f2"/><text x="32" y="43" text-anchor="middle" font-size="38" font-weight="700" fill="white">中</text></svg>'>
 </head>
 <body>
@@ -551,7 +598,7 @@ body{
 <script src="sentences.js?v=27"></script>
 <script src="listening.js?v=27"></script>
 <script src="review-store.js?v=27"></script>
-<script src="today.js?v=49"></script>
+<script src="today.js?v=52"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded",()=>{

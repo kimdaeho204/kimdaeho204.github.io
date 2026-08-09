@@ -63,6 +63,146 @@ const pinyinMap = new Map();
 });
 const vocabSorted=[...pinyinMap.keys()].sort((a,b)=>b.length-a.length);
 
+
+// ===== v50 complete sentence analysis =====
+// The original sentence bank contains some simplified "어휘" placeholders and
+// partial component annotations.  Build learner-friendly display annotations at
+// render time so every chunk receives both a POS label and a sentence role.
+const POS_OVERRIDES={
+  "我":"대명사","我们":"대명사","你":"대명사","你们":"대명사","他":"대명사","他们":"대명사","她":"대명사","她们":"대명사","它":"대명사","谁":"대명사","什么":"대명사","哪儿":"대명사","哪里":"대명사","怎么":"대명사","为什么":"대명사","多少":"대명사","几":"대명사","这个":"대명사","那个":"대명사","这些":"대명사","那些":"대명사",
+  "的":"구조조사","地":"구조조사","得":"구조조사","了":"조사","过":"동태조사","着":"동태조사","吗":"어기조사","呢":"어기조사","吧":"어기조사",
+  "和":"접속사","但是":"접속사","可是":"접속사","虽然":"접속사","如果":"접속사","因为":"접속사","所以":"접속사","而且":"접속사","或者":"접속사","还是":"접속사","然后":"접속사",
+  "在":"개사/동사","从":"개사","跟":"개사","给":"개사/동사","对":"개사","向":"개사","往":"개사","离":"개사","把":"개사","被":"개사","为了":"개사","关于":"개사","除了":"개사",
+  "很":"부사","太":"부사","非常":"부사","更":"부사","最":"부사","不":"부사","没":"부사","也":"부사","都":"부사","就":"부사","才":"부사","还":"부사","又":"부사","再":"부사","先":"부사","已经":"부사","正在":"부사","常常":"부사","经常":"부사","刚刚":"부사","马上":"부사","突然":"부사","终于":"부사","一直":"부사","总是":"부사","一起":"부사","只好":"부사","别":"부사","越来越":"부사","可能":"부사","每周":"부사",
+  "今天":"명사(시간)","明天":"명사(시간)","昨天":"명사(시간)","现在":"명사(시간)","时候":"명사(시간)","时间":"명사(시간)","上午":"명사(시간)","下午":"명사(시간)","晚上":"명사(시간)","早上":"명사(시간)","今年":"명사(시간)","去年":"명사(시간)","最近":"명사(시간)","一天":"수량구(시간)",
+  "上":"방위사/동사","下":"방위사/동사","里":"방위사","外":"방위사","前":"방위사","后":"방위사","左":"방위사","右":"방위사","附近":"방위사",
+  "个":"양사","家":"양사/명사","本":"양사","次":"양사","杯":"양사","瓶":"양사","张":"양사","双":"양사","副":"양사","件":"양사","条":"양사","位":"양사","只":"양사","座":"양사","点":"양사(시간)",
+  "看书":"동사","请问":"동사","请":"동사","带":"동사","打电话":"동사","下课":"동사","不用":"조동사/부사","吃过":"동사","我要":"대명사+조동사","下车":"동사","打折":"동사","听说":"동사","恭喜":"동사","关心":"동사","看起来":"동사","生气":"형용사/동사","谢谢":"동사","长得":"동사","住得":"동사","早睡":"동사","头疼":"형용사/동사","变":"동사","下着":"동사","雨":"명사","饭":"명사","好处":"명사",
+  "干净":"형용사","开心":"형용사","合适":"형용사","大":"형용사","新":"형용사","痒":"형용사","多长":"의문대명사",
+  "妈妈":"명사","学校":"명사","晚饭":"명사","站":"명사","我家":"명사구",
+  "看书":"동사","开始":"동사","感兴趣":"동사","爬山":"동사","出门":"동사","迟到":"동사"
+};
+const NUM_CHARS="零〇一二两三四五六七八九十百千万半几";
+const MEASURE_CHARS="个家本次杯瓶张双副件条位只座辆节岁米公斤斤块元角分分钟小时天周月年口间层份封盘碗盒包把支枝棵朵门课";
+const PREP_WORDS=new Set(["在","从","跟","给","对","向","往","离","把","被","为了","关于","除了"]);
+const LINK_WORDS=new Set(["和","但是","可是","虽然","如果","因为","所以","而且","或者","还是","然后"]);
+const posByHanzi=new Map(DEFAULT_WORDS.map(w=>[w.hanzi,w.pos]));
+
+function normalizePosLabel(p){
+  if(!p||p==="어휘")return "";
+  const map={
+    "시간명사/부사어":"명사(시간)","양사/시간표현":"양사(시간)","수식구/구조조사":"수식구(대명사+구조조사)",
+    "진행부사":"부사","시간부사":"부사","빈도부사":"부사","정도부사":"부사","어기/동태조사":"조사"
+  };
+  return map[p]||p;
+}
+function quantityPos(t){
+  const qty=new RegExp(`^[${NUM_CHARS}]+[${MEASURE_CHARS}]+$`);
+  if(qty.test(t))return "수량구(수사+양사)";
+  if(new RegExp(`^[${NUM_CHARS}]+$`).test(t))return "수사";
+  if(new RegExp(`^[${MEASURE_CHARS}]$`).test(t))return "양사";
+  return "";
+}
+function sentencePosMap(s){
+  const m=new Map();
+  (s.pos||[]).forEach(x=>m.set(x.text,x.pos));
+  return m;
+}
+function smartPos(s,t,i,tokens){
+  if(POS_OVERRIDES[t]){
+    // Resolve a few context-sensitive items.
+    if(t==="上"){
+      const prev=tokens[i-1]||"",next=tokens[i+1]||"";
+      if(["班","课","车","网","大学","大一","大二","大三","大四"].some(x=>next.includes(x)))return "동사";
+      if(prev && !PREP_WORDS.has(prev))return "방위사/동사";
+    }
+    if(t==="家" && i>0 && new RegExp(`^[${NUM_CHARS}]+$`).test(tokens[i-1]))return "양사";
+    return POS_OVERRIDES[t];
+  }
+  const q=quantityPos(t);if(q)return q;
+  const original=sentencePosMap(s).get(t);
+  const normalized=normalizePosLabel(original);
+  if(normalized)return normalized;
+  const dict=normalizePosLabel(posByHanzi.get(t));
+  if(dict)return dict;
+  // Phrase-level patterns that occur in the generated sentence bank.
+  if(/^(这|那|哪)[个家件条双份本张杯瓶副]$/.test(t))return "지시대명사+양사";
+  if(/^我.+/.test(t))return "명사구";
+  if(/^(一|两|三|四|五|六|七|八|九|十|半).+/.test(t))return "수량구";
+  // Last-resort contextual inference avoids the old generic "어휘" placeholder.
+  const prev=tokens[i-1]||"",next=tokens[i+1]||"";
+  if(prev==="很"||prev==="太"||prev==="非常"||prev==="更"||prev==="最")return "형용사";
+  if(next==="的")return "명사/동사(수식어)";
+  if(i>0 && PREP_WORDS.has(prev))return "명사";
+  return "명사/동사(문맥)";
+}
+function displayPosItems(s){
+  const tokens=(s.chunks||[]).filter(t=>!punctuation.has(t));
+  return tokens.map((text,i)=>({text,pos:smartPos(s,text,i,tokens)}));
+}
+function displayComponents(s){
+  const tokens=(s.chunks||[]).filter(t=>!punctuation.has(t));
+  const posItems=displayPosItems(s);
+  const roles=new Array(tokens.length).fill("");
+  const comps=s.components||[];
+
+  // Reuse the bank's existing analysis, including phrase annotations such as 在一家.
+  tokens.forEach((t,i)=>{
+    const exact=comps.find(c=>c.text===t);
+    if(exact){roles[i]=exact.role;return;}
+    const containing=comps.find(c=>c.text.includes(t));
+    if(containing)roles[i]=containing.role;
+  });
+
+  // Prepositional phrases function as adverbials. Include every word in the phrase.
+  for(let i=0;i<tokens.length;i++){
+    if(!PREP_WORDS.has(tokens[i]))continue;
+    roles[i]="부사어";
+    for(let j=i+1;j<tokens.length;j++){
+      const p=posItems[j].pos;
+      if(p.includes("동사") && j>i+1)break;
+      if(LINK_WORDS.has(tokens[j]))break;
+      roles[j]="부사어";
+    }
+  }
+
+  const firstPredicate=()=>{
+    for(let i=0;i<tokens.length;i++){
+      const p=posItems[i].pos;
+      if((p.includes("동사")||p.includes("형용사"))&&!p.includes("개사"))return i;
+    }
+    return -1;
+  };
+  const pred=firstPredicate();
+
+  // Fill every remaining token with a learner-friendly sentence role.
+  for(let i=0;i<tokens.length;i++){
+    if(roles[i])continue;
+    const t=tokens[i],p=posItems[i].pos,prev=tokens[i-1]||"",next=tokens[i+1]||"";
+    if(LINK_WORDS.has(t)||p.includes("접속사")){roles[i]="연결어";continue;}
+    if(p.includes("조사")){roles[i]=t==="的"?"관형어 표지":t==="得"?"보어 표지":"조사";continue;}
+    if(p.includes("부사")||p.includes("시간")||p.includes("개사")){roles[i]="부사어";continue;}
+    if(p.includes("수량")||p==="수사"||p.includes("양사")||p.includes("지시대명사+양사")){
+      roles[i]=(i+1<tokens.length && posItems[i+1].pos.includes("명사"))?"관형어":(i>pred?"목적어":"관형어");continue;
+    }
+    if(next==="的"){roles[i]="관형어";continue;}
+    if(p.includes("형용사")){
+      roles[i]=(i>0 && ["很","太","非常","更","最"].includes(prev))?"술어":"술어";continue;
+    }
+    if(p.includes("동사")&&!p.includes("명사")){
+      roles[i]=(pred>=0&&i>pred&&["去","来","到","完","好","懂","见","开","上","下"].includes(t))?"보어":"술어";continue;
+    }
+    if(p.includes("대명사")||p.includes("명사")||p.includes("명사구")){
+      if(i<pred || pred<0){roles[i]="주어";continue;}
+      if(i>0 && tokens[i-1]==="的"){roles[i]=i<pred?"주어":"목적어";continue;}
+      roles[i]="목적어";continue;
+    }
+    roles[i]=i<pred?"주어":"목적어";
+  }
+  return tokens.map((text,i)=>({text,role:roles[i]||"문장 요소"}));
+}
+function componentSummary(s){return displayComponents(s).map(c=>`${c.text}(${c.role})`).join(" / ");}
+
 function pinyinFor(text){
   let out=[], i=0;
   while(i<text.length){
@@ -108,8 +248,8 @@ function renderSentence(){
   $("categoryBadge").textContent=s.category;$("levelBadge").textContent=s.level;
   $("sentenceCn").textContent=s.text;$("sentencePinyin").textContent=pinyinFor(s.text);
   $("sentenceMeaning").textContent=s.meaning;$("focusWord").textContent=s.focus;
-  $("componentTags").innerHTML=(s.components||[]).map(x=>`<span class="grammar-tag"><strong>${x.text}</strong>${x.role}</span>`).join("");
-  $("posGrid").innerHTML=(s.pos||[]).map(x=>`<div class="pos-item"><div class="word">${x.text}</div><div class="ptype">${x.pos}</div></div>`).join("");
+  $("componentTags").innerHTML=displayComponents(s).map(x=>`<span class="grammar-tag"><strong>${x.text}</strong>${x.role}</span>`).join("");
+  $("posGrid").innerHTML=displayPosItems(s).map(x=>`<div class="pos-item"><div class="word">${x.text}</div><div class="ptype">${x.pos}</div></div>`).join("");
   $("componentBox").classList.add("hidden-block");$("posBox").classList.add("hidden-block");
   $("showComponents").textContent="문장 성분 보기";$("showPos").textContent="품사 보기";
   $("sentencePinyin").classList.add("hidden");$("sentenceMeaning").classList.add("hidden");
@@ -273,7 +413,7 @@ function explanationHtml(q,userAnswer,ok){
     <div class="quiz-explain-row"><strong>병음</strong><span class="quiz-pinyin">${pinyinFor(q.s.text)}</span></div>
     <div class="quiz-explain-row"><strong>해석</strong>${q.s.meaning}</div>
     <div class="quiz-explain-row"><strong>이유</strong>${e.why}</div>
-    <div class="quiz-explain-row"><strong>포인트</strong>${e.point}</div><div class="quiz-explain-row"><strong>문장 성분</strong>${(q.s.components||[]).map(c=>`${c.text}(${c.role})`).join(" / ")}</div>
+    <div class="quiz-explain-row"><strong>포인트</strong>${e.point}</div><div class="quiz-explain-row"><strong>문장 성분</strong>${componentSummary(q.s)}</div>
     <button class="quiz-explain-listen" onclick="speakChinese('${q.s.text.replace(/'/g,"\\'")}')">🔊 정답 문장 듣기</button>
   </div>`;
 }
