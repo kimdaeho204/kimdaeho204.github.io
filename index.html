@@ -1986,6 +1986,42 @@ html,body{scroll-behavior:auto!important}
 body.intro-active #meohoHomeButton{display:none!important}
 body.main-active #meohoHomeButton{display:inline-flex!important}
 
+
+/* ===== v53 calendar completion badge ===== */
+.calendar-day.done{
+  position:relative !important;
+  padding:7px 7px 24px !important;
+}
+.calendar-day.done .day-num{
+  position:relative !important;
+  z-index:2 !important;
+  display:inline-block !important;
+  font-size:12px !important;
+  line-height:1 !important;
+}
+.calendar-check{
+  position:absolute !important;
+  left:5px !important;
+  right:5px !important;
+  bottom:4px !important;
+  padding:3px 3px !important;
+  min-height:0 !important;
+  border-radius:6px !important;
+  font-size:8px !important;
+  line-height:1.15 !important;
+  font-weight:900 !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:clip !important;
+  background:rgba(255,255,255,.94) !important;
+  color:#8a1d16 !important;
+  box-shadow:none !important;
+}
+@media(max-width:760px){
+  .calendar-day.done{padding:5px 4px 20px !important}
+  .calendar-check{left:3px !important;right:3px !important;bottom:3px !important;font-size:7px !important;padding:2px !important}
+}
+
 </style>
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%234568f2"/><text x="32" y="43" text-anchor="middle" font-size="38" font-weight="700" fill="white">中</text></svg>'>
 
@@ -2284,7 +2320,7 @@ body.main-active #meohoHomeButton{display:inline-flex!important}
       el.className="calendar-day";
       if(key===today)el.classList.add("today");
       if(doneSet.has(key))el.classList.add("done");
-      el.innerHTML=`<span class="day-num">${d}</span>${doneSet.has(key)?'<span class="calendar-check">✓ 완료</span>':""}`;
+      el.innerHTML=`<span class="day-num">${d}</span>${doneSet.has(key)?'<span class="calendar-check">오늘의 학습 완료</span>':""}`;
       grid.appendChild(el);
     }
   }
