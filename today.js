@@ -154,7 +154,7 @@ let session=loadSession();
 let section=session.section||"word",pos=session.pos||0;
 let wordScore=session.wordScore||0,hskScore=session.hskScore||0;
 const wordQuestions=session.wordQuestions,hskQuestions=session.hskQuestions;
-let answered=false,current=null,chosenTokens=[];
+let answered=false,current=null,chosenTokens=[],selectedOption=null;
 
 function persist(){session.section=section;session.pos=pos;session.wordScore=wordScore;session.hskScore=hskScore;localStorage.setItem(TODAY_SESSION_KEY,JSON.stringify(session))}
 function questions(){return section==="word"?wordQuestions:hskQuestions}
@@ -164,7 +164,7 @@ function syncTab(){document.querySelectorAll(".today-tab").forEach(b=>b.classLis
 function render(){
  const qs=questions();
  if(!qs||!qs.length||!qs[pos]){localStorage.removeItem(TODAY_SESSION_KEY);location.reload();return}
- current=qs[pos];answered=false;chosenTokens=[];syncTab();
+ current=qs[pos];answered=false;chosenTokens=[];selectedOption=null;syncTab();
  $("todayPart").textContent=sectionLabel();
  $("todayCount").textContent=`${pos+1} / ${qs.length}`;
  $("todayProgress").style.width=`${((pos+1)/qs.length)*100}%`;
@@ -187,7 +187,35 @@ function render(){
    controls.appendChild(undo);controls.appendChild(reset);$("todayOptions").appendChild(controls);
    const check=document.createElement("button");check.className="today-option order-check-btn";check.textContent="배열 확인";check.onclick=checkOrder;$("todayOptions").appendChild(check);
  }else{
-   current.options.forEach(o=>{const b=document.createElement("button");b.className="today-option";b.textContent=o;b.onclick=()=>answerOption(o,b);$("todayOptions").appendChild(b)});
+   const optionWrap=document.createElement("div");
+   optionWrap.className="today-choice-wrap";
+
+   current.options.forEach((o,idx)=>{
+     const b=document.createElement("button");
+     b.className="today-option today-choice-option";
+     b.type="button";
+     b.textContent=o;
+     b.dataset.optionIndex=String(idx);
+     b.onclick=()=>{
+       if(answered)return;
+       selectedOption=o;
+       optionWrap.querySelectorAll(".today-choice-option").forEach(x=>x.classList.remove("selected"));
+       b.classList.add("selected");
+       submitBtn.disabled=false;
+       submitBtn.textContent="답안 제출";
+     };
+     optionWrap.appendChild(b);
+   });
+
+   $("todayOptions").appendChild(optionWrap);
+
+   const submitBtn=document.createElement("button");
+   submitBtn.className="today-submit-answer";
+   submitBtn.type="button";
+   submitBtn.textContent="답을 선택해주세요";
+   submitBtn.disabled=true;
+   submitBtn.onclick=()=>submitSelectedOption(optionWrap,submitBtn);
+   $("todayOptions").appendChild(submitBtn);
  }
  persist();
 }
@@ -345,13 +373,30 @@ function saveWrong(q,userAnswer){
  }
 }
 function addScore(){if(section==="word")wordScore++;else hskScore++}
-function answerOption(opt,btn){
- if(answered)return;answered=true;const ok=opt===current.answer;
- if(ok){addScore();btn.classList.add("correct")}
- else{btn.classList.add("wrong");saveWrong(current,opt);[...$("todayOptions").children].forEach(b=>{if(b.textContent===current.answer)b.classList.add("correct")})}
+function submitSelectedOption(optionWrap,submitBtn){
+ if(answered||selectedOption===null)return;
+ answered=true;
+ const opt=selectedOption;
+ const ok=opt===current.answer;
+
+ const buttons=[...optionWrap.querySelectorAll(".today-choice-option")];
+ buttons.forEach(b=>{
+   b.disabled=true;
+   if(b.textContent===current.answer)b.classList.add("correct");
+   if(b.textContent===opt&&!ok)b.classList.add("wrong");
+   b.classList.remove("selected");
+ });
+
+ submitBtn.disabled=true;
+ submitBtn.textContent=ok?"정답 확인 완료":"오답 확인 완료";
+
+ if(ok)addScore();
+ else saveWrong(current,opt);
+
  $("todayFeedback").style.display="block";
  $("todayFeedback").innerHTML=current.kind==="word"?wordExplain(current,opt,ok):hskExplain(current,opt,ok);
- $("todayNext").style.display="block";persist();
+ $("todayNext").style.display="block";
+ persist();
 }
 function checkOrder(){
  if(answered)return;

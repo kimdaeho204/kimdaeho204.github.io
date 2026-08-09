@@ -388,6 +388,59 @@ body{
 .today-progress,.progress-bar{background:#b3261e!important}
 .quiz-type,.eyebrow{color:#b3261e}
 
+
+/* ===== v42 choose first, submit later ===== */
+.today-choice-wrap{
+  display:grid;
+  gap:10px;
+}
+.today-choice-option{
+  position:relative;
+  transition:border-color .14s ease,background .14s ease,transform .08s ease,box-shadow .14s ease;
+}
+.today-choice-option:not(:disabled):hover{
+  transform:translateY(-1px);
+}
+.today-choice-option.selected{
+  border-color:#b3261e !important;
+  background:#fff1ed !important;
+  color:#8f2018 !important;
+  box-shadow:0 0 0 3px rgba(179,38,30,.10) !important;
+}
+.today-choice-option.selected::after{
+  content:"✓ 선택";
+  position:absolute;
+  right:13px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#b3261e;
+  font-size:11px;
+  font-weight:900;
+}
+.today-submit-answer{
+  width:100%;
+  margin-top:14px;
+  padding:14px 16px;
+  border:0;
+  border-radius:14px;
+  background:linear-gradient(135deg,#a9231b,#c93a2c);
+  color:#fff;
+  font-size:14px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 8px 20px rgba(169,35,27,.18);
+  transition:transform .1s ease,opacity .14s ease,box-shadow .14s ease;
+}
+.today-submit-answer:not(:disabled):hover{
+  transform:translateY(-1px);
+  box-shadow:0 11px 24px rgba(169,35,27,.23);
+}
+.today-submit-answer:disabled{
+  cursor:not-allowed;
+  opacity:.45;
+  box-shadow:none;
+}
+
 </style><link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%234568f2"/><text x="32" y="43" text-anchor="middle" font-size="38" font-weight="700" fill="white">中</text></svg>'>
 </head>
 <body>
@@ -431,5 +484,5 @@ body{
 <script src="sentences.js?v=27"></script>
 <script src="listening.js?v=27"></script>
 <script src="review-store.js?v=27"></script>
-<script src="today.js?v=29"></script>
+<script src="today.js?v=42"></script>
 </body></html>
