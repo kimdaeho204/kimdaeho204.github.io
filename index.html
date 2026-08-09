@@ -2230,6 +2230,7 @@ html,body{scroll-behavior:auto!important}
 })();
 </script>
 
+
 <script>
 (function(){
   try{
@@ -2243,13 +2244,13 @@ html,body{scroll-behavior:auto!important}
   const shell=document.querySelector(".home-shell");
   const enterCard=document.getElementById("introEnterCard");
 
-  if(shell){
-    shell.inert=true;
-    shell.setAttribute("aria-hidden","true");
-    shell.classList.add("intro-hidden");
-  }
+  // Intro is shown only once per browser tab/session.
+  let introSeen=false;
+  try{
+    introSeen=sessionStorage.getItem("meohoIntroSeenV1")==="1";
+  }catch(e){}
 
-  // Small click sound only; there is no BGM.
+  // Small click sound only; no BGM.
   let audioCtx=null;
   function clickSound(){
     try{
@@ -2274,49 +2275,78 @@ html,body{scroll-behavior:auto!important}
     }catch(e){}
   }
 
-  function enterMain(){
+  function showMain(withAnimation){
     forceTop();
 
     if(shell){
       shell.inert=false;
       shell.removeAttribute("aria-hidden");
       shell.classList.remove("intro-hidden");
-      shell.classList.add("intro-show","page-cinematic");
+
+      if(withAnimation){
+        shell.classList.add("intro-show","page-cinematic");
+        requestAnimationFrame(()=>{
+          requestAnimationFrame(()=>shell.classList.add("reveal"));
+        });
+      }else{
+        // Refresh after already entering: show main immediately.
+        shell.classList.remove("intro-show","page-cinematic");
+        shell.classList.add("reveal");
+        shell.style.opacity="1";
+        shell.style.visibility="visible";
+        shell.style.transform="none";
+      }
     }
 
-    if(splash) splash.classList.add("hide");
+    if(splash){
+      if(withAnimation){
+        splash.classList.add("hide");
+        setTimeout(()=>splash.remove(),650);
+      }else{
+        splash.remove();
+      }
+    }
 
-    requestAnimationFrame(()=>{
-      requestAnimationFrame(()=>{
-        if(shell) shell.classList.add("reveal");
-      });
-    });
-
-    setTimeout(()=>{
-      if(splash) splash.remove();
-      forceTop();
-    },650);
+    setTimeout(forceTop,0);
   }
 
-  if(enterCard){
-    enterCard.addEventListener("click",e=>{
-      e.preventDefault();
-      e.stopPropagation();
-      clickSound();
-      enterMain();
-    });
-  }
+  if(introSeen){
+    // User has already entered the main page in this tab.
+    showMain(false);
+  }else{
+    // First visit in this tab: keep main inaccessible behind intro.
+    if(shell){
+      shell.inert=true;
+      shell.setAttribute("aria-hidden","true");
+      shell.classList.add("intro-hidden");
+    }
 
-  // Prevent clicks on the intro background from reaching the hidden main page.
-  if(splash){
-    splash.addEventListener("click",e=>{
-      if(!e.target.closest("#introEnterCard")){
+    if(enterCard){
+      enterCard.addEventListener("click",e=>{
         e.preventDefault();
         e.stopPropagation();
-      }
-    });
+
+        try{
+          sessionStorage.setItem("meohoIntroSeenV1","1");
+        }catch(err){}
+
+        clickSound();
+        showMain(true);
+      });
+    }
+
+    // Clicking the intro background does nothing.
+    if(splash){
+      splash.addEventListener("click",e=>{
+        if(!e.target.closest("#introEnterCard")){
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      });
+    }
   }
 
+  // Click sound only on main action cards.
   const homeTargets=[
     document.querySelector(".today-main-cta"),
     ...document.querySelectorAll(".menu-grid .home-card")
@@ -2335,6 +2365,7 @@ html,body{scroll-behavior:auto!important}
   window.addEventListener("load",()=>{forceTop();setTimeout(forceTop,80)});
 })();
 </script>
+
 
 </body>
 </html>
