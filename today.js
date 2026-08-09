@@ -49,8 +49,8 @@ function pickPriority(pool,count,seenKey,idFn){
  return chosen;
 }
 
-const wordPool=pickPriority(WORDS,Math.min(50,WORDS.length),SEEN_WORD_KEY,w=>w.id);
-const sentencePool=pickPriority(SENTENCES,Math.min(20,SENTENCES.length),SEEN_SENT_KEY,s=>s.id);
+const wordPool=pickPriority(WORDS,Math.min(30,WORDS.length),SEEN_WORD_KEY,w=>w.id);
+const sentencePool=pickPriority(SENTENCES,Math.min(10,SENTENCES.length),SEEN_SENT_KEY,s=>s.id);
 
 // HSK candidate bank: each sentence can generate 3 problem types.
 const hskCandidates=[];
@@ -170,10 +170,10 @@ function finishSection(){
  document.querySelectorAll(".today-tab").forEach(b=>b.classList.toggle("active",b.dataset.section===section));render();
 }
 function showResult(){
- markTodayCompleted();$("todayPart").textContent="오늘의 학습 완료";$("todayCount").textContent="80 / 80";$("todayProgress").style.width="100%";
+ markTodayCompleted();$("todayPart").textContent="오늘의 학습 완료";$("todayCount").textContent="50 / 50";$("todayProgress").style.width="100%";
  $("todayCard").innerHTML=`<div class="today-result"><h2>오늘의 학습 완료 🎉</h2><p>틀린 문제는 오답노트에 자동 저장됐어요.</p>
  <div class="today-result-grid" style="grid-template-columns:repeat(3,1fr);max-width:700px">
- <div><strong>${wordScore} / 50</strong><span>단어</span></div><div><strong>${sentenceScore} / 20</strong><span>문장</span></div><div><strong>${hskScore} / 10</strong><span>HSK</span></div>
+ <div><strong>${wordScore} / 30</strong><span>단어</span></div><div><strong>${sentenceScore} / 10</strong><span>문장</span></div><div><strong>${hskScore} / 10</strong><span>HSK</span></div>
  </div><button class="today-restart" onclick="location.reload()">미출제 우선 새 문제 풀기</button></div>`;
 }
 $("todayNext").onclick=()=>{if(pos+1>=questions().length)finishSection();else{pos++;render()}};

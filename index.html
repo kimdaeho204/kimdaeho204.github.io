@@ -312,6 +312,290 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
   .calendar-check{font-size:9px;left:5px;right:5px;bottom:5px;padding:3px}
 }
 
+
+/* ===== v18 CLEAN HOME LAYOUT ===== */
+.home-shell{
+  min-height:100vh;
+  display:block;
+}
+.home-main{
+  display:block;
+  width:100%;
+}
+.hero-wrap{
+  width:100%;
+  max-width:900px;
+  margin:0 auto;
+}
+.hero{
+  width:100%;
+  margin:0 0 20px;
+  padding:48px 44px;
+  border-radius:30px;
+  min-height:auto;
+}
+.hero h1{
+  font-size:46px;
+  line-height:1.2;
+  margin:0 0 16px;
+}
+.hero-stats{
+  margin-top:26px;
+}
+
+/* Today study = one clean large card under hero */
+.today-main-cta,
+.today-main-big{
+  position:relative;
+  width:100%;
+  min-height:118px;
+  margin:0 0 20px;
+  padding:24px 26px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  border-radius:22px;
+  background:#fff;
+  color:var(--text);
+  border:1px solid var(--border);
+  box-shadow:0 10px 30px rgba(34,45,85,.07);
+  overflow:visible;
+}
+.today-main-left{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  min-width:0;
+}
+.today-main-icon{
+  flex:0 0 62px;
+  width:62px;
+  height:62px;
+  border-radius:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--accent-soft);
+  color:var(--accent);
+  font-size:31px;
+  font-weight:900;
+}
+.today-main-copy h2{
+  margin:0;
+  font-size:24px;
+  letter-spacing:-.03em;
+}
+.today-main-copy p,
+.today-main-kicker{
+  display:none !important;
+}
+.today-main-right{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+.today-main-arrow{
+  font-size:26px;
+  color:var(--accent);
+  font-weight:900;
+}
+.today-status-badge{
+  padding:8px 11px;
+  border-radius:999px;
+  background:#f1f3f8;
+  color:#737b8c;
+  font-size:12px;
+  font-weight:900;
+  white-space:nowrap;
+}
+.today-status-badge.done{
+  background:#eaf8ef;
+  color:#247343;
+}
+
+/* Hover tooltip */
+.today-main-cta::after{
+  content:"단어 30문제 + 문장 10문제 + HSK 10문제 · 오늘 총 50문제";
+  position:absolute;
+  left:50%;
+  bottom:-48px;
+  transform:translateX(-50%) translateY(-4px);
+  width:max-content;
+  max-width:calc(100vw - 40px);
+  padding:10px 14px;
+  border-radius:12px;
+  background:#151a2d;
+  color:#fff;
+  font-size:13px;
+  font-weight:800;
+  line-height:1.4;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .15s ease, transform .15s ease;
+  z-index:30;
+  box-shadow:0 10px 25px rgba(0,0,0,.18);
+}
+.today-main-cta::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:-10px;
+  transform:translateX(-50%);
+  border-left:7px solid transparent;
+  border-right:7px solid transparent;
+  border-bottom:7px solid #151a2d;
+  opacity:0;
+  transition:opacity .15s ease;
+  z-index:31;
+}
+.today-main-cta:hover::after,
+.today-main-cta:hover::before{
+  opacity:1;
+}
+.today-main-cta:hover::after{
+  transform:translateX(-50%) translateY(0);
+}
+
+/* Calendar stacked full-width */
+.study-calendar{
+  width:100%;
+  margin:0 0 20px;
+  padding:24px;
+  border-radius:24px;
+  background:#fff;
+  border:1px solid var(--border);
+  box-shadow:0 8px 28px rgba(34,45,85,.045);
+}
+.calendar-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:20px;
+}
+.calendar-head h2{
+  font-size:23px;
+}
+.calendar-grid,
+.calendar-week{
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:8px;
+}
+.calendar-day{
+  min-width:0;
+  min-height:74px;
+}
+
+/* Lower menu: three equal cards */
+.menu-grid{
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:16px;
+}
+.home-card{
+  min-width:0;
+  min-height:210px;
+  width:100%;
+}
+
+/* Ensure nothing floats horizontally */
+.hero,
+.today-main-cta,
+.study-calendar,
+.menu-grid{
+  float:none !important;
+  position:relative;
+  left:auto;
+  right:auto;
+  top:auto;
+}
+
+@media(max-width:760px){
+  .hero-wrap{max-width:100%}
+  .hero{
+    padding:36px 24px;
+    border-radius:24px;
+  }
+  .hero h1{font-size:36px}
+  .today-main-cta,
+  .today-main-big{
+    min-height:100px;
+    padding:20px;
+  }
+  .today-main-left{gap:14px}
+  .today-main-icon{
+    flex-basis:52px;
+    width:52px;
+    height:52px;
+    font-size:26px;
+  }
+  .today-main-copy h2{font-size:21px}
+  .today-main-right{
+    flex-direction:row;
+    align-items:center;
+  }
+  .today-status-badge{display:none}
+  .today-main-cta::after{
+    display:none;
+  }
+  .today-main-cta::before{
+    display:none;
+  }
+  .calendar-head{
+    flex-direction:column;
+  }
+  .calendar-nav{
+    width:100%;
+    justify-content:space-between;
+  }
+  .calendar-day{
+    min-height:58px;
+    padding:6px;
+  }
+  .menu-grid{
+    grid-template-columns:1fr;
+  }
+  .home-card{
+    min-height:170px;
+  }
+}
+
+
+/* v19 Today study as main */
+.hero{
+  margin-bottom:16px;
+}
+.today-main-cta,
+.today-main-big{
+  min-height:150px;
+  padding:30px 32px;
+  border:2px solid #dbe3ff;
+  box-shadow:0 18px 44px rgba(45,72,170,.12);
+}
+.today-main-icon{
+  width:74px;height:74px;flex-basis:74px;
+  font-size:36px;border-radius:21px;
+}
+.today-main-copy h2{
+  font-size:30px;
+}
+.today-main-right .today-main-arrow{
+  font-size:32px;
+}
+.menu-grid{
+  margin-top:0;
+}
+.study-calendar{
+  margin-top:0;
+}
+@media(max-width:760px){
+  .today-main-cta,.today-main-big{min-height:120px;padding:22px}
+  .today-main-icon{width:58px;height:58px;flex-basis:58px;font-size:28px}
+  .today-main-copy h2{font-size:24px}
+}
+
 </style>
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%234568f2"/><text x="32" y="43" text-anchor="middle" font-size="38" font-weight="700" fill="white">中</text></svg>'>
 </head>
@@ -336,13 +620,12 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
         </div>
 
         
-        <a class="today-main-cta today-main-big" href="today.html">
+        <a class="today-main-cta today-main-big" href="today.html" title="단어 30문제 + 문장 10문제 + HSK 10문제 · 오늘 총 50문제">
           <div class="today-main-left">
             <div class="today-main-icon">今</div>
             <div class="today-main-copy">
               <span class="today-main-kicker">TODAY'S STUDY</span>
               <h2>오늘의 학습</h2>
-              <p>단어 50문제 + 문장 20문제 + HSK 10문제 · 오늘 총 80문제</p>
             </div>
           </div>
           <div class="today-main-right">
@@ -359,7 +642,7 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
           <div>
             <p class="eyebrow">STUDY CALENDAR</p>
             <h2>학습 달력</h2>
-            <p>오늘의 학습 80문제를 모두 끝내면 해당 날짜에 완료 표시가 남아요.</p>
+            <p>오늘의 학습 50문제를 모두 끝내면 해당 날짜에 완료 표시가 남아요.</p>
           </div>
           <div class="calendar-nav">
             <button id="prevMonth" aria-label="이전 달">←</button>
