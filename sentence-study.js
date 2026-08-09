@@ -2,7 +2,58 @@
 const $ = id => document.getElementById(id);
 const punctuation = new Set(["。","，","？","！",",",".","?","!"]);
 let sentenceStates = JSON.parse(localStorage.getItem("sentenceStatesV1") || "{}");
-let learnOrder = [...Array(SENTENCES.length).keys()];
+const SENTENCE_SEEN_KEY="meohoSentenceStudySeenV1";
+const SENTENCE_RECENT_KEY="meohoSentenceStudyRecentV1";
+function loadSentenceSeen(){try{return JSON.parse(localStorage.getItem(SENTENCE_SEEN_KEY)||"[]")}catch(e){return []}}
+function saveSentenceSeen(a){localStorage.setItem(SENTENCE_SEEN_KEY,JSON.stringify(a))}
+function sentenceWrongWeights(){
+ const m=new Map();
+ const rs=typeof getReviewItems==="function"?getReviewItems():[];
+ rs.filter(x=>!x.resolved).forEach(r=>{
+   const w=Math.max(1,r.wrongCount||1);
+   const sid=r.sentenceId||(r.quiz&&r.quiz.sentence&&r.quiz.sentence.id);
+   if(sid)m.set(sid,(m.get(sid)||0)+w);
+ });
+ return m;
+}
+function weightedSentenceOrder(list,weights){
+ const bag=[...list],out=[];
+ while(bag.length){
+   const ws=bag.map(i=>Math.max(1,weights.get(SENTENCES[i].id)||1));
+   const total=ws.reduce((a,b)=>a+b,0);let r=Math.random()*total,idx=0;
+   for(;idx<bag.length;idx++){r-=ws[idx];if(r<=0)break}
+   out.push(bag.splice(Math.min(idx,bag.length-1),1)[0]);
+ }
+ return out;
+}
+function buildSentenceOrder(){
+ const seen=new Set(loadSentenceSeen());
+ const recent=new Set((()=>{try{return JSON.parse(localStorage.getItem(SENTENCE_RECENT_KEY)||"[]")}catch(e){return []}})());
+ const weights=sentenceWrongWeights();
+ const unseen=[],wrong=[],other=[];
+ SENTENCES.forEach((s,i)=>{
+   if(!seen.has(s.id))unseen.push(i);
+   else if((weights.get(s.id)||0)>0)wrong.push(i);
+   else other.push(i);
+ });
+ const sh=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+ if(!unseen.length){
+   saveSentenceSeen([]);
+   return [...weightedSentenceOrder(wrong.filter(i=>!recent.has(SENTENCES[i].id)),weights),...sh(other),...weightedSentenceOrder(wrong.filter(i=>recent.has(SENTENCES[i].id)),weights)];
+ }
+ const u=sh(unseen.filter(i=>!recent.has(SENTENCES[i].id)));
+ const w=weightedSentenceOrder(wrong.filter(i=>!recent.has(SENTENCES[i].id)),weights);
+ const out=[];let ui=0,wi=0;
+ while(ui<u.length||wi<w.length){
+   for(let k=0;k<2&&ui<u.length;k++)out.push(u[ui++]);
+   if(wi<w.length)out.push(w[wi++]);
+ }
+ out.push(...sh(unseen.filter(i=>recent.has(SENTENCES[i].id))));
+ const used=new Set(out);
+ out.push(...sh(other.filter(i=>!used.has(i))));
+ return out;
+}
+let learnOrder = buildSentenceOrder();
 let learnPos = 0;
 let currentCategory = "all", currentLevel = "all";
 
@@ -44,6 +95,13 @@ function currentSentence(){
 }
 function renderSentence(){
   const arr=filteredIndices(), s=currentSentence();
+  if(s){
+    const seen=new Set(loadSentenceSeen());seen.add(s.id);
+    if(seen.size>=SENTENCES.length)saveSentenceSeen([]);else saveSentenceSeen([...seen]);
+    let recent=[];try{recent=JSON.parse(localStorage.getItem(SENTENCE_RECENT_KEY)||"[]")}catch(e){}
+    recent=[s.id,...recent.filter(x=>x!==s.id)].slice(0,8);
+    localStorage.setItem(SENTENCE_RECENT_KEY,JSON.stringify(recent));
+  }
   if(!s)return;
   $("sentenceCount").textContent=`${learnPos+1} / ${arr.length}`;
   $("sentenceProgress").style.width=`${((learnPos+1)/arr.length)*100}%`;
@@ -63,7 +121,7 @@ $("categoryFilter").onchange=e=>{currentCategory=e.target.value;learnPos=0;rende
 $("levelFilter").onchange=e=>{currentLevel=e.target.value;learnPos=0;renderSentence()};
 $("sentenceNext").onclick=()=>{const a=filteredIndices();learnPos=(learnPos+1)%a.length;renderSentence()};
 $("sentencePrev").onclick=()=>{const a=filteredIndices();learnPos=(learnPos-1+a.length)%a.length;renderSentence()};
-$("sentenceShuffle").onclick=()=>{const a=filteredIndices();learnPos=Math.floor(Math.random()*a.length);renderSentence()};
+$("sentenceShuffle").onclick=()=>{learnOrder=buildSentenceOrder();learnPos=0;renderSentence()};
 $("showSentencePinyin").onclick=()=>{const s=currentSentence();$("sentencePinyin").classList.remove("hidden");$("showSentencePinyin").textContent="🔊 발음 다시 듣기";speakChinese(s.text)};
 $("showSentenceMeaning").onclick=()=>{$("sentenceMeaning").classList.toggle("hidden");$("showSentenceMeaning").textContent=$("sentenceMeaning").classList.contains("hidden")?"뜻 보기":"뜻 숨기기"};
 $("sentenceUnknown").onclick=()=>{

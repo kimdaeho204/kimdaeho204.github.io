@@ -75,7 +75,7 @@ h1,h2,h3,p{word-break:keep-all}
   border-radius:999px;padding:10px 15px;font-size:14px;
 }
 .stat-pill strong{font-size:16px;margin-right:4px}
-.menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
 .home-card{
   background:#fff;border:1px solid var(--border);border-radius:24px;
   padding:26px;min-height:220px;display:flex;flex-direction:column;
@@ -416,7 +416,7 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
 
 /* Hover tooltip */
 .today-main-cta::after{
-  content:"단어 30문제 + 문장 10문제 + HSK 10문제 · 오늘 총 50문제";
+  content:"단어 30문제 + 문장 10문제 + HSK 10문제 + 듣기 5문제 · 오늘 총 55문제";
   position:absolute;
   left:50%;
   bottom:-48px;
@@ -491,7 +491,7 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
 .menu-grid{
   width:100%;
   display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
+  grid-template-columns:repeat(2,minmax(0,1fr));
   gap:16px;
 }
 .home-card{
@@ -596,6 +596,124 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
   .today-main-copy h2{font-size:24px}
 }
 
+
+/* ===== v20 CALENDAR POLISH ===== */
+.study-calendar{
+  margin:24px 0 0 !important;
+  padding:20px !important;
+  border-radius:20px !important;
+  box-shadow:0 6px 20px rgba(34,45,85,.04) !important;
+}
+.calendar-head{
+  margin-bottom:14px !important;
+  align-items:center !important;
+}
+.calendar-head .eyebrow{
+  margin-bottom:3px !important;
+  font-size:10px !important;
+}
+.calendar-head h2{
+  margin:0 0 3px !important;
+  font-size:20px !important;
+}
+.calendar-head p{
+  font-size:12px !important;
+}
+.calendar-nav button{
+  width:34px !important;
+  height:34px !important;
+}
+.calendar-nav strong{
+  font-size:14px !important;
+  min-width:94px !important;
+}
+.calendar-week{
+  margin-bottom:6px !important;
+  gap:6px !important;
+}
+.calendar-week span{
+  font-size:11px !important;
+  padding:3px 0 !important;
+}
+.calendar-grid{
+  gap:6px !important;
+}
+.calendar-day{
+  min-height:52px !important;
+  padding:7px !important;
+  border-radius:11px !important;
+}
+.calendar-day .day-num{
+  font-size:12px !important;
+}
+.calendar-day.today{
+  border:2px solid var(--accent) !important;
+  background:#f7f9ff !important;
+}
+.calendar-day.done{
+  background:linear-gradient(135deg,#25a35a,#3cc779) !important;
+  border:1px solid #20914f !important;
+  box-shadow:0 6px 14px rgba(37,163,90,.24) !important;
+}
+.calendar-day.done .day-num{
+  color:#fff !important;
+  font-weight:900 !important;
+}
+.calendar-check{
+  left:6px !important;
+  right:6px !important;
+  bottom:6px !important;
+  padding:4px 5px !important;
+  background:rgba(255,255,255,.94) !important;
+  color:#168044 !important;
+  font-size:10px !important;
+  border-radius:7px !important;
+  box-shadow:0 2px 6px rgba(0,0,0,.08) !important;
+}
+.calendar-day.today.done{
+  outline:3px solid #b9c8ff !important;
+  outline-offset:2px !important;
+}
+.calendar-legend{
+  margin-top:10px !important;
+  font-size:11px !important;
+}
+.done-dot{
+  background:#25a35a !important;
+  box-shadow:0 0 0 3px rgba(37,163,90,.13) !important;
+}
+
+@media(max-width:760px){
+  .study-calendar{padding:16px !important}
+  .calendar-day{min-height:46px !important;padding:5px !important}
+  .calendar-check{font-size:8px !important;left:4px !important;right:4px !important;bottom:4px !important;padding:3px !important}
+}
+
+
+/* ===== v21 LIVE STUDY STATS ===== */
+.monthly-stats .stat-pill{
+  display:flex;
+  align-items:baseline;
+  gap:5px;
+  padding:10px 15px;
+}
+.monthly-stats .stat-pill strong{
+  font-size:20px;
+  margin:0;
+}
+.monthly-stats .stat-pill span{
+  font-size:12px;
+  color:#dce2f4;
+  font-weight:700;
+}
+.resume-note{
+  display:block;
+  margin-top:6px;
+  font-size:12px;
+  color:var(--accent);
+  font-weight:900;
+}
+
 </style>
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%234568f2"/><text x="32" y="43" text-anchor="middle" font-size="38" font-weight="700" fill="white">中</text></svg>'>
 </head>
@@ -610,39 +728,68 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
         <p class="eyebrow">MEOHO CHINESE STUDY</p>
         <h1>每天一点，慢慢进步。</h1>
         <p>매일 조금씩, 천천히 실력을 쌓아가는 머호의 중국어 학습 공간.</p>
-        <div class="hero-stats">
-          <span class="stat-pill"><strong>960</strong> 단어</span>
-          <span class="stat-pill">🔊 중국어 발음 지원</span>
-          <span class="stat-pill">✓ 오답 복습</span>
+        <div class="hero-stats monthly-stats">
+          <span class="stat-pill"><strong id="monthStudyDays">0</strong><span id="monthStudyLabel">이번 달 학습일</span></span>
+          <span class="stat-pill"><strong id="currentStreak">0</strong><span>일 연속 학습</span></span>
+          <span class="stat-pill"><strong id="totalStudyDays">0</strong><span>누적 학습일</span></span>
         </div>
 <div id="todayCn" class="cn"></div>
           <div id="todayKo" class="ko"></div>
         </div>
 
         
-        <a class="today-main-cta today-main-big" href="today.html" title="단어 30문제 + 문장 10문제 + HSK 10문제 · 오늘 총 50문제">
+        <a class="today-main-cta today-main-big" href="today.html" title="단어 30문제 + 문장 10문제 + HSK 10문제 + 듣기 5문제 · 오늘 총 55문제">
           <div class="today-main-left">
             <div class="today-main-icon">今</div>
             <div class="today-main-copy">
               <span class="today-main-kicker">TODAY'S STUDY</span>
-              <h2>오늘의 학습</h2>
+              <h2 id="todayMainTitle">오늘의 학습</h2><span id="todayResumeNote" class="resume-note" style="display:none"></span>
             </div>
           </div>
           <div class="today-main-right">
-            <span id="todayStatusBadge" class="today-status-badge">오늘의 학습 전</span>
+            <span id="todayStatusBadge" class="today-status-badge">오늘 학습 전</span>
             <span class="today-main-arrow">→</span>
           </div>
         </a>
 
 
       </section>
+<section class="menu-grid">
+        <a class="home-card" href="words.html">
+          <div class="card-icon">字</div>
+          <h2>단어 공부</h2>
+          <p>한자, 병음, 뜻과 발음을 확인하고 모름·애매함·외움으로 학습 상태를 기록해요.</p>
+          <div class="card-foot"><span>960개 단어</span><span>→</span></div>
+        </a>
+        <a class="home-card" href="sentences.html">
+          <div class="card-icon">句</div>
+          <h2>문장 공부</h2>
+          <p>중국어 문장을 읽고 병음과 해석을 익히는 학습 공간이에요.</p>
+          <div class="card-foot"><span>500개 문장</span><span>→</span></div>
+        </a>
+        
+        <a class="home-card" href="listening.html">
+          <div class="card-icon">听</div>
+          <h2>듣기 공부</h2>
+          <p>HSK 3급 수준의 짧은 문장과 상황을 듣고 의미를 판단하는 연습이에요.</p>
+          <div class="card-foot"><span>HSK 3급 듣기 · 200문제</span><span>→</span></div>
+        </a>
+
+        <a class="home-card" href="wrong.html">
+          <div class="card-icon">错</div>
+          <h2>오답노트</h2>
+          <p>모른 단어·문장과 틀린 HSK 문제를 그 모습 그대로 저장해 다시 풀어봐요.</p>
+          <div class="card-foot"><span>집중 복습</span><span>→</span></div>
+        </a>
+</section>
+
 
       <section class="study-calendar">
         <div class="calendar-head">
           <div>
             <p class="eyebrow">STUDY CALENDAR</p>
             <h2>학습 달력</h2>
-            <p>오늘의 학습 50문제를 모두 끝내면 해당 날짜에 완료 표시가 남아요.</p>
+            <p>오늘의 학습 55문제를 모두 끝내면 해당 날짜에 완료 표시가 남아요.</p>
           </div>
           <div class="calendar-nav">
             <button id="prevMonth" aria-label="이전 달">←</button>
@@ -660,26 +807,7 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
         </div>
       </section>
 
-      <section class="menu-grid">
-        <a class="home-card" href="words.html">
-          <div class="card-icon">字</div>
-          <h2>단어 공부</h2>
-          <p>한자, 병음, 뜻과 발음을 확인하고 모름·애매함·외움으로 학습 상태를 기록해요.</p>
-          <div class="card-foot"><span>960개 단어</span><span>→</span></div>
-        </a>
-        <a class="home-card" href="sentences.html">
-          <div class="card-icon">句</div>
-          <h2>문장 공부</h2>
-          <p>중국어 문장을 읽고 병음과 해석을 익히는 학습 공간이에요.</p>
-          <div class="card-foot"><span>150개 문장</span><span>→</span></div>
-        </a>
-        <a class="home-card" href="wrong.html">
-          <div class="card-icon">错</div>
-          <h2>오답노트</h2>
-          <p>모른 단어·문장과 틀린 HSK 문제를 그 모습 그대로 저장해 다시 풀어봐요.</p>
-          <div class="card-foot"><span>집중 복습</span><span>→</span></div>
-        </a>
-</section>
+      
     </div>
   </main>
 </div>
@@ -699,11 +827,72 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
     const d=new Date();
     return dateKey(d.getFullYear(),d.getMonth(),d.getDate());
   }
+
+  const TODAY_SESSION_KEY="meohoTodayStudySessionV1";
+  function parseKey(k){
+    const [y,m,d]=k.split("-").map(Number);
+    return new Date(y,m-1,d);
+  }
+  function daysBetween(a,b){
+    const ms=24*60*60*1000;
+    const aa=new Date(a.getFullYear(),a.getMonth(),a.getDate());
+    const bb=new Date(b.getFullYear(),b.getMonth(),b.getDate());
+    return Math.round((bb-aa)/ms);
+  }
+  function renderStudyStats(){
+    const all=completed().slice().sort();
+    const now=new Date(), y=now.getFullYear(), m=now.getMonth()+1;
+    const prefix=`${y}-${String(m).padStart(2,"0")}-`;
+    const monthCount=all.filter(k=>k.startsWith(prefix)).length;
+
+    let streak=0;
+    const doneSet=new Set(all);
+    let cursor=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+    // If today isn't completed yet, streak starts from yesterday.
+    if(!doneSet.has(localToday())) cursor.setDate(cursor.getDate()-1);
+    while(true){
+      const k=dateKey(cursor.getFullYear(),cursor.getMonth(),cursor.getDate());
+      if(!doneSet.has(k))break;
+      streak++;
+      cursor.setDate(cursor.getDate()-1);
+    }
+
+    const md=document.getElementById("monthStudyDays");
+    const ml=document.getElementById("monthStudyLabel");
+    const cs=document.getElementById("currentStreak");
+    const ts=document.getElementById("totalStudyDays");
+    if(md)md.textContent=monthCount;
+    if(ml)ml.textContent=`${m}월 학습일`;
+    if(cs)cs.textContent=streak;
+    if(ts)ts.textContent=all.length;
+  }
+  function renderResumeState(){
+    const note=document.getElementById("todayResumeNote");
+    const title=document.getElementById("todayMainTitle");
+    if(!note||!title)return;
+    if(completed().includes(localToday())){
+      title.textContent="오늘의 학습";
+      note.style.display="none";
+      return;
+    }
+    let s=null;
+    try{s=JSON.parse(localStorage.getItem(TODAY_SESSION_KEY)||"null")}catch(e){}
+    if(s && s.date===localToday() && s.started){
+      const done=(s.section==="word"?s.pos:(s.section==="sentence"?30+s.pos:(s.section==="hsk"?40+s.pos:50+s.pos)));
+      title.textContent="오늘의 학습 이어하기";
+      note.textContent=`${Math.min(done,54)} / 55 진행 중`;
+      note.style.display="block";
+    }else{
+      title.textContent="오늘의 학습";
+      note.style.display="none";
+    }
+  }
+
   function renderStatus(){
     const badge=document.getElementById("todayStatusBadge");
     if(!badge)return;
     const done=completed().includes(localToday());
-    badge.textContent=done?"✓ 오늘의 학습 완료":"오늘의 학습 전";
+    badge.textContent=done?"✓ 오늘 학습 완료":"오늘 학습 전";
     badge.classList.toggle("done",done);
   }
   function renderCalendar(){
@@ -730,7 +919,7 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
   }
   document.getElementById("prevMonth").onclick=()=>{viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth()-1,1);renderCalendar()};
   document.getElementById("nextMonth").onclick=()=>{viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth()+1,1);renderCalendar()};
-  renderStatus();renderCalendar();
+  renderStatus();renderCalendar();renderStudyStats();renderResumeState();
 })();
 </script>
 
