@@ -173,6 +173,27 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
 .word-pos{margin-top:-5px;font-size:14px;color:var(--muted);font-weight:800}
 .word-pos::before{content:"품사 · ";color:var(--accent)}
 
+
+/* v30 shared Chinese-inspired accents */
+:root{--accent:#b3261e;--accent-soft:#fff0ea}
+body{
+  background:
+    radial-gradient(circle at 12% 7%,rgba(214,168,75,.08),transparent 23%),
+    #f7f3ec !important;
+}
+.brand-mark{background:linear-gradient(145deg,#b3261e,#d74732)!important;box-shadow:0 6px 16px rgba(179,38,30,.22)}
+.topnav .brand{color:#251d18!important}
+.today-hero,.listen-hero,.sentence-hero,.word-hero{
+  background:linear-gradient(125deg,#17191f 0%,#2c211a 52%,#861d16 100%)!important;
+  border:1px solid rgba(214,168,75,.25);
+}
+.today-tab.active{
+  background:#b3261e!important;
+}
+.today-option.correct,.listen-option.correct{background:#eaf8ef!important}
+.today-progress,.progress-bar{background:#b3261e!important}
+.quiz-type,.eyebrow{color:#b3261e}
+
 </style><link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%234568f2"/><text x="32" y="43" text-anchor="middle" font-size="38" font-weight="700" fill="white">中</text></svg>'>
 </head>
 <body>
