@@ -251,7 +251,7 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
 .today-hero .eyebrow{color:#c6d0ff}
 .today-hero h1{font-size:38px;margin:0 0 10px;letter-spacing:-.04em}
 .today-hero p{color:#dbe0f0;margin:0;line-height:1.7}
-.today-overview{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+.today-overview{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:22px}
 .today-overview div{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:15px;padding:14px;text-align:center}
 .today-overview strong{display:block;font-size:23px}.today-overview span{font-size:12px;color:#dce1f3}
 .today-tabs{display:flex;gap:10px;margin:18px 0}
@@ -280,25 +280,28 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
 .today-result-grid strong{display:block;font-size:26px}
 .today-restart{border:0;background:var(--accent);color:#fff;border-radius:14px;padding:13px 18px;font-weight:900}
 @media(max-width:760px){.today-overview{grid-template-columns:1fr}.today-options{grid-template-columns:1fr}.today-question{font-size:25px}}
-</style></head>
+</style><link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%234568f2"/><text x="32" y="43" text-anchor="middle" font-size="38" font-weight="700" fill="white">中</text></svg>'>
+</head>
 <body>
 <main class="shell">
 <nav class="topnav"><a class="brand" href="index.html"><div class="brand-mark">中</div>머호의 중국어 공부</a><a class="nav-home" href="index.html">← 홈</a></nav>
 
 <section class="today-hero">
  <p class="eyebrow">TODAY'S STUDY</p>
- <h1>오늘 학습</h1>
- <p>단어 50문제와 HSK형 문장 20문제를 랜덤으로 풀어보세요. 틀린 문제는 바로 해설하고 오답노트에도 자동 저장됩니다.</p>
+ <h1>오늘의 학습</h1>
+ <p>단어 50문제, 문장 20문제, HSK 10문제를 풀어보세요. 아직 출제되지 않은 문제가 우선 나오고, 틀린 문제는 해설과 함께 오답노트에 저장됩니다.</p>
  <div class="today-overview">
   <div><strong>50</strong><span>단어 문제</span></div>
   <div><strong>20</strong><span>문장 문제</span></div>
-  <div><strong>70</strong><span>오늘 총 문제</span></div>
+  <div><strong>10</strong><span>HSK 문제</span></div>
+  <div><strong>80</strong><span>오늘 총 문제</span></div>
  </div>
 </section>
 
 <div class="today-tabs">
  <button class="today-tab active" data-section="word">단어 50문제</button>
  <button class="today-tab" data-section="sentence">문장 20문제</button>
+ <button class="today-tab" data-section="hsk">HSK 10문제</button>
 </div>
 
 <div class="today-progress-line"><span id="todayPart">단어 학습</span><span id="todayCount">1 / 50</span></div>
@@ -316,8 +319,8 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
  <button id="todayNext" class="today-next">다음 문제 →</button>
 </section>
 </main>
-<script src="data.js?v=15"></script>
-<script src="sentences.js?v=15"></script>
-<script src="review-store.js?v=15"></script>
-<script src="today.js?v=15"></script>
+<script src="data.js?v=17"></script>
+<script src="sentences.js?v=17"></script>
+<script src="review-store.js?v=17"></script>
+<script src="today.js?v=17"></script>
 </body></html>
