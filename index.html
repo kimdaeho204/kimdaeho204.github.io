@@ -1265,15 +1265,191 @@ body:not(:has(.intro-splash)) .global-sound-panel,
 .intro-enter-wrap{animation-delay:2.4s!important}
 .intro-sound-hint{animation-delay:1.9s!important}
 
+
+/* ===== v36 robust intro + audible BGM ===== */
+
+/* Intro is a true modal. Main page cannot receive pointer/focus until entry. */
+html.play-intro,
+html.play-intro body{
+  overflow:hidden !important;
+}
+html.play-intro .home-shell{
+  pointer-events:none !important;
+  user-select:none !important;
+}
+#introSplash{
+  position:fixed !important;
+  inset:0 !important;
+  z-index:20000 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  pointer-events:auto !important;
+}
+#globalSoundPanel{
+  z-index:21000 !important;
+}
+
+/* Do not let OS/browser reduced-motion settings leave the intro invisible. */
+.intro-inner{
+  display:block !important;
+  position:relative !important;
+  z-index:3 !important;
+  opacity:1 !important;
+  visibility:visible !important;
+}
+.intro-seal,
+.intro-kicker,
+.intro-title,
+.intro-line,
+.intro-sub,
+.intro-sound-hint,
+.intro-enter-wrap{
+  visibility:visible !important;
+}
+
+/* Rebuild the intro timing without relying on an opacity:0 base state. */
+.intro-seal{
+  opacity:1 !important;
+  transform:none !important;
+  animation:v36Seal .78s cubic-bezier(.16,.9,.28,1.15) .10s both !important;
+}
+.intro-kicker{
+  opacity:1 !important;
+  transform:none !important;
+  animation:v36Rise .48s ease .48s both !important;
+}
+.intro-title{
+  opacity:1 !important;
+  transform:none !important;
+  animation:v36Rise .58s ease .72s both !important;
+}
+.intro-line{
+  opacity:1 !important;
+  width:210px !important;
+  transform-origin:center !important;
+  animation:v36Line .48s ease 1.02s both !important;
+}
+.intro-sub{
+  opacity:1 !important;
+  animation:v36Fade .42s ease 1.18s both !important;
+}
+.intro-sound-hint{
+  opacity:1 !important;
+  animation:v36Fade .42s ease 1.32s both !important;
+}
+.intro-enter-wrap{
+  opacity:1 !important;
+  transform:none !important;
+  animation:v36Rise .55s ease 1.48s both !important;
+}
+
+@keyframes v36Seal{
+  from{opacity:0;transform:scale(.55) rotate(-9deg)}
+  70%{opacity:1;transform:scale(1.06) rotate(1deg)}
+  to{opacity:1;transform:scale(1) rotate(0)}
+}
+@keyframes v36Rise{
+  from{opacity:0;transform:translateY(14px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes v36Line{
+  from{opacity:0;transform:scaleX(.05)}
+  to{opacity:1;transform:scaleX(1)}
+}
+@keyframes v36Fade{
+  from{opacity:0}
+  to{opacity:1}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .intro-seal,
+  .intro-kicker,
+  .intro-title,
+  .intro-line,
+  .intro-sub,
+  .intro-sound-hint,
+  .intro-enter-wrap{
+    opacity:1 !important;
+    transform:none !important;
+    animation:none !important;
+  }
+  .intro-line{width:210px !important}
+}
+
+/* Keep the enter card obvious and always usable. */
+.intro-enter-card{
+  position:relative !important;
+  z-index:5 !important;
+  pointer-events:auto !important;
+  min-height:78px;
+}
+.intro-enter-card:focus-visible{
+  outline:3px solid #f0ca74;
+  outline-offset:4px;
+}
+
+/* Sound panel remains available after entering main. */
+.global-sound-panel{
+  pointer-events:auto !important;
+}
+
+
+/* ===== v37 cleaner main hero ===== */
+.hero{
+  min-height:auto !important;
+  padding:34px 38px 30px !important;
+  display:block !important;
+}
+.hero .eyebrow{
+  margin-bottom:9px !important;
+}
+.hero-mini-title{
+  margin:0 0 6px !important;
+  font-size:31px !important;
+  line-height:1.18 !important;
+  font-family:inherit !important;
+  font-weight:900 !important;
+  letter-spacing:-.035em !important;
+  color:#fffaf0 !important;
+}
+.hero-mini-sub{
+  margin:0 0 22px !important;
+  color:#dfd5c8 !important;
+  font-size:13px !important;
+  font-weight:700 !important;
+}
+.hero-stats{
+  margin-top:0 !important;
+  display:flex !important;
+  gap:10px !important;
+  flex-wrap:wrap !important;
+}
+.hero-stats .stat-pill{
+  min-width:0 !important;
+  padding:11px 15px !important;
+  border-radius:15px !important;
+}
+.hero::after{
+  font-size:150px !important;
+  right:26px !important;
+  bottom:-24px !important;
+}
+@media(max-width:760px){
+  .hero{
+    padding:28px 24px 25px !important;
+  }
+  .hero-mini-title{
+    font-size:27px !important;
+  }
+  .hero-mini-sub{
+    margin-bottom:18px !important;
+  }
+}
+
 </style>
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%234568f2"/><text x="32" y="43" text-anchor="middle" font-size="38" font-weight="700" fill="white">中</text></svg>'>
-<script>
-(function(){
-  try{if("scrollRestoration" in history)history.scrollRestoration="manual"}catch(e){}
-  window.scrollTo(0,0);
-  document.documentElement.classList.add("play-intro");
-})();
-</script>
+
 </head>
 <body>
 
@@ -1291,9 +1467,7 @@ body:not(:has(.intro-splash)) .global-sound-panel,
   <div class="intro-inner">
     <div class="intro-seal">中</div>
     <p class="intro-kicker">MEOHO CHINESE STUDY</p>
-    <h1 class="intro-title">每天一点，慢慢进步。</h1>
     <div class="intro-line"></div>
-    <p class="intro-sub">매일 조금씩, 천천히 실력을 쌓아가는 중국어 공부</p>
     <p class="intro-sound-hint">아래 카드를 눌러 학습을 시작하세요 · BGM 기본 ON</p>
     <div class="intro-enter-wrap">
       <button id="introEnterCard" class="intro-enter-card" type="button">
@@ -1656,6 +1830,195 @@ body:not(:has(.intro-splash)) .global-sound-panel,
       clickSound();el.classList.add("clicking");setTimeout(()=>el.classList.remove("clicking"),120);
     });
   });
+})();
+</script>
+
+
+<script>
+(function(){
+  try{ if("scrollRestoration" in history) history.scrollRestoration="manual"; }catch(e){}
+  const forceTop=()=>window.scrollTo(0,0);
+  forceTop();
+
+  const splash=document.getElementById("introSplash");
+  const shell=document.querySelector(".home-shell");
+  const enterCard=document.getElementById("introEnterCard");
+  const muteBtn=document.getElementById("bgmMuteBtn");
+  const volumeInput=document.getElementById("bgmVolume");
+
+  // Make the intro a real modal until the user presses the enter card.
+  if(shell){
+    shell.inert=true;
+    shell.setAttribute("aria-hidden","true");
+    shell.classList.add("intro-hidden");
+  }
+
+  let ctx=null, master=null, timer=null, step=0;
+  let started=false, muted=false;
+  const scale=[0,2,4,7,9];
+  const melody=[0,2,4,2,1,0,4,2,0,1,2,4,2,1,0,4];
+  const midiHz=m=>440*Math.pow(2,(m-69)/12);
+
+  function volumeLevel(){
+    return Math.max(0,Math.min(1,Number(volumeInput?.value||32)/100));
+  }
+  function ensureAudio(){
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC) return false;
+    if(!ctx){
+      ctx=new AC();
+      master=ctx.createGain();
+      master.gain.value=volumeLevel()*0.65;
+      master.connect(ctx.destination);
+    }
+    return true;
+  }
+  function note(freq, when, dur=.34, level=.18, type="triangle"){
+    if(!ctx||!master)return;
+    const o=ctx.createOscillator();
+    const g=ctx.createGain();
+    const f=ctx.createBiquadFilter();
+    o.type=type;
+    o.frequency.setValueAtTime(freq,when);
+    f.type="lowpass";
+    f.frequency.setValueAtTime(1900,when);
+    g.gain.setValueAtTime(.0001,when);
+    g.gain.exponentialRampToValueAtTime(level,when+.012);
+    g.gain.exponentialRampToValueAtTime(.0001,when+dur);
+    o.connect(f);f.connect(g);g.connect(master);
+    o.start(when);o.stop(when+dur+.04);
+  }
+  function playStep(){
+    if(!ctx||ctx.state!=="running"||muted)return;
+    const now=ctx.currentTime+.025;
+    const degree=scale[melody[step%melody.length]%scale.length];
+    const high=(step%8===6)?12:0;
+    note(midiHz(57+degree+high),now,.36,.20,"triangle");
+    if(step%4===0){
+      note(midiHz(45+scale[(step/4)%scale.length|0]),now,.78,.11,"sine");
+      note(midiHz(69+degree),now+.035,.55,.055,"sine");
+    }
+    step++;
+  }
+  function beginLoop(){
+    if(started)return;
+    started=true;
+    playStep();
+    timer=setInterval(playStep,420);
+  }
+  function startBgmFromGesture(){
+    if(!ensureAudio())return;
+    muted=false;
+    if(muteBtn)muteBtn.textContent="🔊";
+
+    // resume() is called synchronously from the user's click.
+    const resumeResult=ctx.resume();
+    if(ctx.state==="running") beginLoop();
+    if(resumeResult && typeof resumeResult.then==="function"){
+      resumeResult.then(()=>{
+        if(ctx.state==="running")beginLoop();
+      }).catch(()=>{});
+    }
+    if(master){
+      master.gain.cancelScheduledValues(ctx.currentTime);
+      master.gain.setTargetAtTime(volumeLevel()*0.65,ctx.currentTime,.02);
+    }
+  }
+  function updateVolume(){
+    if(!ctx||!master)return;
+    const target=muted?0:volumeLevel()*0.65;
+    master.gain.cancelScheduledValues(ctx.currentTime);
+    master.gain.setTargetAtTime(target,ctx.currentTime,.02);
+  }
+  function clickSound(){
+    if(!ctx||ctx.state!=="running"||!master||muted)return;
+    const t=ctx.currentTime;
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.type="sine";
+    o.frequency.setValueAtTime(650,t);
+    o.frequency.exponentialRampToValueAtTime(980,t+.055);
+    g.gain.setValueAtTime(.0001,t);
+    g.gain.exponentialRampToValueAtTime(.12,t+.006);
+    g.gain.exponentialRampToValueAtTime(.0001,t+.09);
+    o.connect(g);g.connect(master);
+    o.start(t);o.stop(t+.10);
+  }
+
+  muteBtn?.addEventListener("click",e=>{
+    e.preventDefault();
+    e.stopPropagation();
+    if(!started){
+      startBgmFromGesture();
+      return;
+    }
+    muted=!muted;
+    muteBtn.textContent=muted?"🔇":"🔊";
+    updateVolume();
+  });
+
+  volumeInput?.addEventListener("input",e=>{
+    e.stopPropagation();
+    if(!started)startBgmFromGesture();
+    muted=Number(volumeInput.value)===0;
+    if(muteBtn)muteBtn.textContent=muted?"🔇":"🔊";
+    updateVolume();
+  });
+
+  function enterMain(){
+    forceTop();
+    document.documentElement.classList.remove("play-intro");
+
+    if(shell){
+      shell.inert=false;
+      shell.removeAttribute("aria-hidden");
+      shell.classList.remove("intro-hidden");
+      shell.classList.add("intro-show","page-cinematic");
+    }
+
+    splash?.classList.add("hide");
+    requestAnimationFrame(()=>requestAnimationFrame(()=>shell?.classList.add("reveal")));
+
+    setTimeout(()=>{
+      splash?.remove();
+      forceTop();
+    },650);
+  }
+
+  enterCard?.addEventListener("click",e=>{
+    e.preventDefault();
+    e.stopPropagation();
+
+    // This one user gesture both unlocks the BGM and enters the main page.
+    startBgmFromGesture();
+    clickSound();
+    enterMain();
+  });
+
+  // Background clicks never pass through to the hidden main page.
+  splash?.addEventListener("click",e=>{
+    if(!e.target.closest("#introEnterCard")) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  });
+
+  // Home-page card sounds only.
+  const homeTargets=[
+    document.querySelector(".today-main-cta"),
+    ...document.querySelectorAll(".menu-grid .home-card")
+  ].filter(Boolean);
+
+  homeTargets.forEach(el=>{
+    el.classList.add("home-click-target");
+    el.addEventListener("click",()=>{
+      clickSound();
+      el.classList.add("clicking");
+      setTimeout(()=>el.classList.remove("clicking"),120);
+    });
+  });
+
+  window.addEventListener("pageshow",()=>setTimeout(forceTop,0));
+  window.addEventListener("load",()=>{forceTop();setTimeout(forceTop,80)});
 })();
 </script>
 
