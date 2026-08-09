@@ -194,11 +194,30 @@ body{
 .today-progress,.progress-bar{background:#b3261e!important}
 .quiz-type,.eyebrow{color:#b3261e}
 
+
+/* ===== v45 clickable brand home link ===== */
+.brand-home-link,
+a.brand{
+  text-decoration:none !important;
+  color:inherit !important;
+  cursor:pointer;
+}
+.brand-home-link:hover,
+a.brand:hover{
+  opacity:.88;
+}
+.brand-home-link:focus-visible,
+a.brand:focus-visible{
+  outline:2px solid #b3261e;
+  outline-offset:4px;
+  border-radius:10px;
+}
+
 </style><link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%234568f2"/><text x="32" y="43" text-anchor="middle" font-size="38" font-weight="700" fill="white">中</text></svg>'>
 </head>
 <body>
 <main class="shell">
-<nav class="topnav"><a class="brand" href="index.html"><div class="brand-mark">中</div>머호의 중국어 공부</a><a class="nav-home" href="index.html">← 홈</a></nav>
+<nav class="topnav"><a class="brand brand-home-link" href="index.html"><div class="brand-mark">中</div>머호의 중국어 공부</a><a class="nav-home" href="index.html">← 홈</a></nav>
 <div class="page-head">
   <div><p class="eyebrow">VOCABULARY</p><h1 class="page-title">단어 공부</h1><p class="page-sub">한자를 보고 병음과 뜻을 떠올려보세요. 병음 보기에서는 발음도 함께 들을 수 있어요.</p></div>
   <button id="resetBtn" class="ghost">학습기록 초기화</button>
@@ -218,4 +237,15 @@ body{
 <section class="list-section"><div class="list-header"><h2>단어 목록</h2><input id="searchInput" placeholder="한자 / 병음 / 뜻 검색"></div><div id="wordList" class="word-list"></div></section>
 </main>
 <script src="data.js?v=27"></script><script src="review-store.js?v=27"></script><script src="study.js?v=15"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+  document.querySelectorAll(".brand-home-link, a.brand[href='index.html']").forEach(el=>{
+    el.addEventListener("click",()=>{
+      try{sessionStorage.setItem("meohoIntroSeenV1","1")}catch(e){}
+    });
+  });
+});
+</script>
+
 </body></html>

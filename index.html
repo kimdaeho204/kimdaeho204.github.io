@@ -1928,6 +1928,25 @@ html,body{scroll-behavior:auto!important}
   pointer-events:auto!important;
 }
 
+
+/* ===== v45 clickable brand home link ===== */
+.brand-home-link,
+a.brand{
+  text-decoration:none !important;
+  color:inherit !important;
+  cursor:pointer;
+}
+.brand-home-link:hover,
+a.brand:hover{
+  opacity:.88;
+}
+.brand-home-link:focus-visible,
+a.brand:focus-visible{
+  outline:2px solid #b3261e;
+  outline-offset:4px;
+  border-radius:10px;
+}
+
 </style>
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%234568f2"/><text x="32" y="43" text-anchor="middle" font-size="38" font-weight="700" fill="white">中</text></svg>'>
 
@@ -1959,7 +1978,7 @@ html,body{scroll-behavior:auto!important}
 <div class="shell home-shell intro-hidden">
 
   <nav class="topnav">
-    <div class="brand"><div class="brand-mark">中</div>머호의 중국어 공부</div>
+    <a class="brand brand-home-link" href="index.html"><div class="brand-mark">中</a>머호의 중국어 공부</div>
   </nav>
 
 

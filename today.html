@@ -441,11 +441,30 @@ body{
   box-shadow:none;
 }
 
+
+/* ===== v45 clickable brand home link ===== */
+.brand-home-link,
+a.brand{
+  text-decoration:none !important;
+  color:inherit !important;
+  cursor:pointer;
+}
+.brand-home-link:hover,
+a.brand:hover{
+  opacity:.88;
+}
+.brand-home-link:focus-visible,
+a.brand:focus-visible{
+  outline:2px solid #b3261e;
+  outline-offset:4px;
+  border-radius:10px;
+}
+
 </style><link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%234568f2"/><text x="32" y="43" text-anchor="middle" font-size="38" font-weight="700" fill="white">中</text></svg>'>
 </head>
 <body>
 <main class="shell">
-<nav class="topnav"><a class="brand" href="index.html"><div class="brand-mark">中</div>머호의 중국어 공부</a><a class="nav-home" href="index.html">← 홈</a></nav>
+<nav class="topnav"><a class="brand brand-home-link" href="index.html"><div class="brand-mark">中</div>머호의 중국어 공부</a><a class="nav-home" href="index.html">← 홈</a></nav>
 
 <section class="today-hero">
  <p class="eyebrow">TODAY'S STUDY</p>
@@ -485,4 +504,15 @@ body{
 <script src="listening.js?v=27"></script>
 <script src="review-store.js?v=27"></script>
 <script src="today.js?v=42"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+  document.querySelectorAll(".brand-home-link, a.brand[href='index.html']").forEach(el=>{
+    el.addEventListener("click",()=>{
+      try{sessionStorage.setItem("meohoIntroSeenV1","1")}catch(e){}
+    });
+  });
+});
+</script>
+
 </body></html>
