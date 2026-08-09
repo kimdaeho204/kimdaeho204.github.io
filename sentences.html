@@ -169,11 +169,110 @@ select{border:1px solid var(--border);background:#fff;border-radius:12px;padding
   .wrong-item{grid-template-columns:82px 1fr}.wrong-actions{grid-column:1/-1;justify-content:stretch}.wrong-actions button{flex:1}
 }
 
+
+.sentence-tabs{display:flex;gap:10px;margin:22px 0}
+.sentence-tab{border:1px solid var(--border);background:#fff;border-radius:14px;padding:12px 18px;font-weight:900;color:#5b6475}
+.sentence-tab.active{background:var(--accent);color:white;border-color:var(--accent)}
+.sentence-toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.sentence-toolbar .group{display:flex;gap:9px;flex-wrap:wrap}
+.sentence-card{background:#fff;border:1px solid var(--border);border-radius:26px;padding:28px;box-shadow:var(--shadow)}
+.sentence-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;color:var(--muted);font-size:13px;margin-bottom:24px}
+.sentence-badges{display:flex;gap:7px;flex-wrap:wrap}
+.sbadge{padding:6px 9px;border-radius:999px;background:#f0f2f6;font-weight:800}
+.sentence-cn{font-size:34px;font-weight:900;line-height:1.55;letter-spacing:.01em;text-align:center;margin:34px 0 20px}
+.sentence-pinyin{font-size:20px;line-height:1.7;color:var(--accent);font-weight:800;text-align:center;margin:14px 0}
+.sentence-meaning{font-size:20px;line-height:1.65;text-align:center;font-weight:700;margin:14px 0}
+.sentence-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:22px}
+.sentence-actions button{border:0;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:10px 16px;font-weight:900}
+.focus-box{margin-top:24px;border-top:1px solid var(--border);padding-top:18px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
+.focus-box span{font-size:13px;color:var(--muted)}
+.focus-word{background:#fff7df;color:#8f6300;padding:7px 11px;border-radius:999px;font-weight:900}
+.sentence-rate{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.sentence-rate button{border:0;border-radius:14px;padding:13px;font-weight:900}
+.snav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.snav button{border:1px solid var(--border);background:#fff;border-radius:14px;padding:13px;font-weight:900}
+.progress-track{height:8px;background:#edf0f5;border-radius:999px;overflow:hidden;margin:15px 0 24px}
+.progress-bar{height:100%;background:var(--accent);width:0}
+.quiz-panel{background:#fff;border:1px solid var(--border);border-radius:26px;padding:28px;box-shadow:var(--shadow)}
+.quiz-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:18px}
+.quiz-type{font-size:13px;font-weight:900;color:var(--accent);background:var(--accent-soft);padding:7px 10px;border-radius:999px}
+.quiz-question{font-size:27px;font-weight:900;line-height:1.55;margin:28px 0;text-align:center}
+.quiz-sub{color:var(--muted);text-align:center;margin-top:-14px;margin-bottom:24px}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.option{border:1px solid var(--border);background:#fff;border-radius:15px;padding:15px;text-align:left;font-weight:800;line-height:1.45}
+.option:hover{border-color:#cfd7ff;background:#fafbff}
+.option.correct{background:#eaf8ef;border-color:#c9e8d5;color:#247343}
+.option.wrong{background:#fff0f0;border-color:#efd1d1;color:#b63b3b}
+.quiz-feedback{margin-top:16px;padding:14px 16px;border-radius:14px;background:#f7f8fb;line-height:1.6;display:none}
+.quiz-next{width:100%;border:0;background:var(--accent);color:#fff;border-radius:14px;padding:14px;font-weight:900;margin-top:14px;display:none}
+.token-bank,.answer-bank{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;min-height:58px;padding:12px;border-radius:15px;border:1px dashed var(--border);margin:12px 0}
+.token{border:1px solid var(--border);background:#fff;border-radius:11px;padding:9px 12px;font-weight:900}
+.answer-bank{background:#fafbff;border-style:solid}
+.quiz-mode-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.quiz-mode-card{border:1px solid var(--border);background:#fff;border-radius:16px;padding:14px;text-align:center;font-weight:900}
+.quiz-mode-card.active{border-color:#cbd4ff;background:var(--accent-soft);color:var(--accent)}
+.listen-btn{border:0;background:var(--accent);color:#fff;border-radius:999px;padding:12px 18px;font-weight:900;display:block;margin:8px auto 22px}
+.hidden-block{display:none!important}
+.today-box{margin-top:18px;background:#fff;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.10);border-radius:18px;padding:15px 17px;position:relative;z-index:1}
+.today-box .label{font-size:12px;color:#cdd5ff;font-weight:900;margin-bottom:5px}
+.today-box .cn{font-size:18px;font-weight:900}
+.today-box .ko{font-size:13px;color:#d9def0;margin-top:5px}
+@media(max-width:760px){
+ .sentence-cn{font-size:27px}.options{grid-template-columns:1fr}.quiz-mode-cards{grid-template-columns:1fr 1fr}
+ .sentence-card,.quiz-panel{padding:20px}
+}
 </style></head>
 <body>
 <main class="shell">
 <nav class="topnav"><a class="brand" href="index.html"><div class="brand-mark">中</div>머호의 중국어 공부</a><a class="nav-home" href="index.html">← 홈</a></nav>
-<div class="page-head"><div><p class="eyebrow">SENTENCE</p><h1 class="page-title">문장 공부</h1><p class="page-sub">문장 학습 기능을 추가할 준비가 되어 있어요.</p></div></div>
-<section class="coming"><div class="coming-icon">句</div><h2>다음은 문장 공부를 만들 차례예요</h2><p>중국어 문장 · 병음 · 한국어 해석 · 음성 듣기 기능을 이 페이지에 넣을 수 있어요.</p></section>
+<div class="page-head"><div><p class="eyebrow">HSK SENTENCE TRAINING</p><h1 class="page-title">문장 공부</h1><p class="page-sub">단어장에서 배운 어휘를 문장 안에서 익히고, HSK형 문제로 바로 확인해보세요.</p></div></div>
+
+<div class="sentence-tabs">
+  <button class="sentence-tab active" data-tab="learn">문장 학습</button>
+  <button class="sentence-tab" data-tab="quiz">HSK 연습</button>
+</div>
+
+<section id="learnPane">
+  <div class="sentence-toolbar">
+    <div class="group">
+      <select id="categoryFilter"><option value="all">전체 주제</option></select>
+      <select id="levelFilter"><option value="all">전체 난이도</option><option>쉬움</option><option>보통</option><option>어려움</option></select>
+    </div>
+    <button id="sentenceShuffle" class="ghost">랜덤 문장</button>
+  </div>
+  <div class="progress-track"><div id="sentenceProgress" class="progress-bar"></div></div>
+  <article class="sentence-card">
+    <div class="sentence-meta"><span id="sentenceCount">1 / 150</span><div class="sentence-badges"><span id="categoryBadge" class="sbadge"></span><span id="levelBadge" class="sbadge"></span></div></div>
+    <div id="sentenceCn" class="sentence-cn"></div>
+    <div id="sentencePinyin" class="sentence-pinyin hidden"></div>
+    <div id="sentenceMeaning" class="sentence-meaning hidden"></div>
+    <div class="sentence-actions"><button id="showSentencePinyin">병음 보기 🔊</button><button id="showSentenceMeaning">뜻 보기</button></div>
+    <div class="focus-box"><span>핵심 단어</span><strong id="focusWord" class="focus-word"></strong></div>
+    <div class="sentence-rate"><button id="sentenceUnknown" class="unknown">다시 보기</button><button id="sentenceKnown" class="known">이해했음</button></div>
+    <div class="snav"><button id="sentencePrev">← 이전</button><button id="sentenceNext">다음 →</button></div>
+  </article>
+</section>
+
+<section id="quizPane" class="hidden-block">
+  <div class="quiz-mode-cards">
+    <button class="quiz-mode-card active" data-mode="mixed">혼합 10문제</button>
+    <button class="quiz-mode-card" data-mode="reading">독해·뜻</button>
+    <button class="quiz-mode-card" data-mode="order">문장 배열</button>
+    <button class="quiz-mode-card" data-mode="listening">듣기</button>
+  </div>
+  <div class="progress-track"><div id="quizProgress" class="progress-bar"></div></div>
+  <section class="quiz-panel">
+    <div class="quiz-head"><span id="quizType" class="quiz-type">HSK 연습</span><strong id="quizScore">0 / 0</strong></div>
+    <div id="quizQuestion" class="quiz-question"></div>
+    <div id="quizSub" class="quiz-sub"></div>
+    <button id="listenQuestion" class="listen-btn hidden-block">🔊 문장 듣기</button>
+    <div id="options" class="options"></div>
+    <div id="answerBank" class="answer-bank hidden-block"></div>
+    <div id="tokenBank" class="token-bank hidden-block"></div>
+    <div id="quizFeedback" class="quiz-feedback"></div>
+    <button id="quizNext" class="quiz-next">다음 문제 →</button>
+  </section>
+</section>
 </main>
+<script src="data.js?v=11"></script><script src="sentences.js?v=11"></script><script src="review-store.js?v=11"></script><script src="sentence-study.js?v=11"></script>
 </body></html>

@@ -35,7 +35,21 @@ $("showPinyinBtn").onclick=()=>{const w=currentWord();if(!w)return;if(pinyin.cla
 $("showMeaningBtn").onclick=()=>{meaning.classList.toggle("hidden");$("showMeaningBtn").textContent=meaning.classList.contains("hidden")?"뜻 보기":"뜻 숨기기"}
 $("nextBtn").onclick=()=>{const a=filteredOrder();if(a.length){current=(current+1)%a.length;renderCard()}}
 $("prevBtn").onclick=()=>{const a=filteredOrder();if(a.length){current=(current-1+a.length)%a.length;renderCard()}}
-document.querySelectorAll(".rate").forEach(b=>b.onclick=()=>{const w=currentWord();if(!w)return;states[w.id]=b.dataset.status;saveStates();if(filter==="all")current=(current+1)%filteredOrder().length;else current=Math.min(current,Math.max(0,filteredOrder().length-1));renderStats();renderList();renderCard()})
+document.querySelectorAll(".rate").forEach(b=>b.onclick=()=>{
+ const w=currentWord();if(!w)return;
+ states[w.id]=b.dataset.status;saveStates();
+ if(b.dataset.status==="unknown"){
+   upsertReviewItem({
+     key:"word:"+w.id,type:"word",source:"단어 공부",
+     wordId:w.id,hanzi:w.hanzi,pinyin:w.pinyin,meaning:w.meaning
+   });
+ }else if(b.dataset.status==="known"){
+   resolveReviewItem("word:"+w.id);
+ }
+ if(filter==="all")current=(current+1)%filteredOrder().length;
+ else current=Math.min(current,Math.max(0,filteredOrder().length-1));
+ renderStats();renderList();renderCard();
+})
 $("shuffleBtn").onclick=()=>{for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}current=0;renderCard()}
 $("filterSelect").onchange=e=>{filter=e.target.value;current=0;renderCard()}
 $("searchInput").oninput=renderList
