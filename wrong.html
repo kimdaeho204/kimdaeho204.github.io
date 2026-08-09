@@ -302,99 +302,56 @@ body{
 .quiz-type,.eyebrow{color:#b3261e}
 
 
-/* ===== v45 clickable brand home link ===== */
-.brand-home-link,
-a.brand{
-  text-decoration:none !important;
-  color:inherit !important;
-  cursor:pointer;
-}
-.brand-home-link:hover,
-a.brand:hover{
-  opacity:.88;
-}
-.brand-home-link:focus-visible,
-a.brand:focus-visible{
-  outline:2px solid #b3261e;
-  outline-offset:4px;
-  border-radius:10px;
-}
-
-
-/* ===== v46 fixed top-left home button ===== */
+/* ===== v47 stable floating home button ===== */
 .meoho-home-button{
   position:fixed;
-  top:16px;
-  left:24px;
+  top:18px;
+  left:22px;
   z-index:30000;
   display:inline-flex;
   align-items:center;
-  gap:10px;
-  max-width:calc(100vw - 48px);
-  padding:8px 12px 8px 8px;
-  border:1px solid rgba(218,196,159,.72);
-  border-radius:15px;
-  background:rgba(255,251,244,.94);
+  gap:9px;
+  padding:7px 11px 7px 7px;
+  border:1px solid #e4d3b7;
+  border-radius:14px;
+  background:rgba(255,251,244,.96);
   color:#2a201a !important;
   text-decoration:none !important;
-  box-shadow:0 8px 24px rgba(86,48,25,.10);
-  backdrop-filter:blur(12px);
+  box-shadow:0 8px 22px rgba(86,48,25,.10);
+  backdrop-filter:blur(10px);
   white-space:nowrap;
   cursor:pointer;
-  transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease;
+  transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
 }
 .meoho-home-button:hover{
   transform:translateY(-1px);
-  border-color:#cf9e5e;
-  box-shadow:0 11px 27px rgba(86,48,25,.14);
+  border-color:#c99958;
+  box-shadow:0 11px 26px rgba(86,48,25,.14);
 }
-.meoho-home-button:active{
-  transform:scale(.98);
-}
-.meoho-home-button:focus-visible{
-  outline:3px solid rgba(179,38,30,.25);
-  outline-offset:3px;
-}
+.meoho-home-button:active{transform:scale(.98)}
 .meoho-home-mark{
-  width:34px;
-  height:34px;
-  flex:0 0 34px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  width:34px;height:34px;flex:0 0 34px;
+  display:flex;align-items:center;justify-content:center;
   border-radius:10px;
   background:linear-gradient(145deg,#b3261e,#d74732);
-  border:1px solid rgba(239,201,121,.48);
+  border:1px solid rgba(239,201,121,.5);
   color:#fff4d4;
   font-family:"KaiTi","STKaiti","SimSun",serif;
-  font-size:20px;
-  font-weight:900;
-  box-shadow:0 5px 12px rgba(179,38,30,.18);
+  font-size:20px;font-weight:900;
 }
 .meoho-home-text{
-  display:block;
   color:#2a201a;
   font-size:14px;
   line-height:1;
-  font-weight:950;
+  font-weight:900;
   letter-spacing:-.025em;
 }
+/* Keep old header markup intact but hide its old brand, preventing DOM damage. */
+.topnav .brand{visibility:hidden!important}
 @media(max-width:620px){
-  .meoho-home-button{
-    top:10px;
-    left:10px;
-    padding:6px 9px 6px 6px;
-    gap:7px;
-  }
-  .meoho-home-mark{
-    width:30px;
-    height:30px;
-    flex-basis:30px;
-    font-size:18px;
-  }
-  .meoho-home-text{
-    font-size:12px;
-  }
+  .meoho-home-button{top:10px;left:10px;padding:6px 9px 6px 6px;gap:7px}
+  .meoho-home-mark{width:30px;height:30px;flex-basis:30px;font-size:18px}
+  .meoho-home-text{font-size:12px}
 }
 
 </style><link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%234568f2"/><text x="32" y="43" text-anchor="middle" font-size="38" font-weight="700" fill="white">中</text></svg>'>
@@ -407,7 +364,7 @@ a.brand:focus-visible{
 </a>
 
 <main class="shell">
-<nav class="topnav"><a class="nav-home" href="index.html">← 홈</a></nav>
+<nav class="topnav"><a class="brand" href="index.html"><div class="brand-mark">中</div>머호의 중국어 공부</a><a class="nav-home" href="index.html">← 홈</a></nav>
 <div class="page-head"><div><p class="eyebrow">SMART REVIEW</p><h1 class="page-title">오답노트</h1><p class="page-sub">단어와 문장에서 모른다고 체크한 항목, HSK 연습에서 틀린 문제를 그때의 형태 그대로 다시 풀어보세요.</p></div></div>
 
 <section class="review-summary">
@@ -439,23 +396,11 @@ a.brand:focus-visible{
 
 <script>
 document.addEventListener("DOMContentLoaded",()=>{
-  document.querySelectorAll(".brand-home-link, a.brand[href='index.html']").forEach(el=>{
-    el.addEventListener("click",()=>{
-      try{sessionStorage.setItem("meohoIntroSeenV1","1")}catch(e){}
-    });
+  const btn=document.getElementById("meohoHomeButton");
+  if(!btn)return;
+  btn.addEventListener("click",()=>{
+    try{sessionStorage.setItem("meohoIntroSeenV1","1")}catch(err){}
   });
-});
-</script>
-
-
-<script>
-document.addEventListener("DOMContentLoaded",()=>{
-  const homeBtn=document.getElementById("meohoHomeButton");
-  if(homeBtn){
-    homeBtn.addEventListener("click",()=>{
-      try{sessionStorage.setItem("meohoIntroSeenV1","1")}catch(err){}
-    });
-  }
 });
 </script>
 
