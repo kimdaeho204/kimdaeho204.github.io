@@ -992,6 +992,137 @@ html.play-intro .home-shell{opacity:0;transform:translateY(8px)}
   }
 }
 
+
+/* ===== v31 5-second intro + audio controls + page motion ===== */
+.intro-audio{
+  position:absolute;
+  top:24px;
+  right:26px;
+  z-index:5;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 11px;
+  border:1px solid rgba(239,201,121,.34);
+  border-radius:999px;
+  background:rgba(21,13,10,.38);
+  backdrop-filter:blur(10px);
+}
+.audio-icon-btn{
+  width:34px;
+  height:34px;
+  border:0;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(255,255,255,.1);
+  color:#fff5dc;
+  cursor:pointer;
+  font-size:16px;
+}
+.audio-volume-wrap{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#ecd9b5;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+.audio-volume-wrap input{
+  width:94px;
+  accent-color:#e4bd67;
+  cursor:pointer;
+}
+.intro-sound-hint{
+  margin:14px 0 0;
+  color:rgba(245,225,189,.62);
+  font-size:11px;
+  opacity:0;
+  animation:introFade .55s ease 1.5s forwards;
+}
+
+/* Longer cinematic intro */
+.intro-seal{animation-delay:.2s!important;animation-duration:.95s!important}
+.intro-kicker{animation-delay:1.15s!important;animation-duration:.7s!important}
+.intro-title{animation-delay:1.8s!important;animation-duration:.8s!important}
+.intro-line{animation-delay:2.55s!important;animation-duration:.8s!important}
+.intro-sub{animation-delay:3.05s!important;animation-duration:.7s!important}
+
+/* Main page cinematic reveal */
+.home-shell.page-cinematic .topnav,
+.home-shell.page-cinematic .hero,
+.home-shell.page-cinematic .today-main-cta,
+.home-shell.page-cinematic .menu-grid .home-card,
+.home-shell.page-cinematic .study-calendar{
+  opacity:0;
+  transform:translateY(22px) scale(.985);
+}
+.home-shell.page-cinematic.reveal .topnav{
+  animation:mainRise .55s cubic-bezier(.2,.75,.25,1) .06s forwards;
+}
+.home-shell.page-cinematic.reveal .hero{
+  animation:mainRise .72s cubic-bezier(.2,.75,.25,1) .20s forwards;
+}
+.home-shell.page-cinematic.reveal .today-main-cta{
+  animation:mainRise .64s cubic-bezier(.2,.75,.25,1) .48s forwards;
+}
+.home-shell.page-cinematic.reveal .menu-grid .home-card:nth-child(1){
+  animation:mainRise .58s cubic-bezier(.2,.75,.25,1) .68s forwards;
+}
+.home-shell.page-cinematic.reveal .menu-grid .home-card:nth-child(2){
+  animation:mainRise .58s cubic-bezier(.2,.75,.25,1) .78s forwards;
+}
+.home-shell.page-cinematic.reveal .menu-grid .home-card:nth-child(3){
+  animation:mainRise .58s cubic-bezier(.2,.75,.25,1) .88s forwards;
+}
+.home-shell.page-cinematic.reveal .menu-grid .home-card:nth-child(4){
+  animation:mainRise .58s cubic-bezier(.2,.75,.25,1) .98s forwards;
+}
+.home-shell.page-cinematic.reveal .study-calendar{
+  animation:mainRise .65s cubic-bezier(.2,.75,.25,1) 1.10s forwards;
+}
+@keyframes mainRise{
+  from{opacity:0;transform:translateY(22px) scale(.985)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+/* subtle living hero */
+.home-shell.page-cinematic.reveal .hero::after{
+  animation:fuFloat 5.5s ease-in-out infinite alternate;
+}
+@keyframes fuFloat{
+  from{transform:rotate(-6deg) translateY(0)}
+  to{transform:rotate(-4deg) translateY(-8px)}
+}
+
+/* click feedback only on home action cards */
+.home-click-target{
+  transition:transform .11s ease,filter .11s ease,box-shadow .18s ease!important;
+}
+.home-click-target.clicking{
+  transform:scale(.975)!important;
+  filter:brightness(.97);
+}
+
+@media(max-width:760px){
+  .intro-audio{top:14px;right:14px;padding:6px 8px}
+  .audio-volume-wrap input{width:70px}
+  .intro-sound-hint{font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){
+  .home-shell.page-cinematic .topnav,
+  .home-shell.page-cinematic .hero,
+  .home-shell.page-cinematic .today-main-cta,
+  .home-shell.page-cinematic .menu-grid .home-card,
+  .home-shell.page-cinematic .study-calendar{
+    opacity:1!important;
+    transform:none!important;
+    animation:none!important;
+  }
+}
+
 </style>
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%234568f2"/><text x="32" y="43" text-anchor="middle" font-size="38" font-weight="700" fill="white">中</text></svg>'>
 <script>
@@ -1007,12 +1138,21 @@ html.play-intro .home-shell{opacity:0;transform:translateY(8px)}
 <body>
 
 <div id="introSplash" class="intro-splash" aria-hidden="true">
+
+<div class="intro-audio" id="introAudioControls">
+  <button id="bgmMuteBtn" class="audio-icon-btn" type="button" aria-label="BGM 켜기/끄기" title="BGM 켜기/끄기">🔊</button>
+  <label class="audio-volume-wrap" for="bgmVolume">
+    <span>BGM</span>
+    <input id="bgmVolume" type="range" min="0" max="100" value="32" aria-label="BGM 볼륨">
+  </label>
+</div>
+
   <div class="intro-inner">
     <div class="intro-seal">中</div>
     <p class="intro-kicker">MEOHO CHINESE STUDY</p>
     <h1 class="intro-title">每天一点，慢慢进步。</h1>
     <div class="intro-line"></div>
-    <p class="intro-sub">매일 조금씩, 천천히 실력을 쌓아가는 중국어 공부</p>
+    <p class="intro-sub">매일 조금씩, 천천히 실력을 쌓아가는 중국어 공부</p><p class="intro-sound-hint">화면을 클릭하면 BGM이 시작돼요 · 클릭하면 인트로 건너뛰기</p>
   </div>
 </div>
 
@@ -1222,32 +1362,170 @@ html.play-intro .home-shell{opacity:0;transform:translateY(8px)}
 </script>
 
 
+
+
+
 <script>
 (function(){
   const splash=document.getElementById("introSplash");
   const shell=document.querySelector(".home-shell");
+  const muteBtn=document.getElementById("bgmMuteBtn");
+  const volumeInput=document.getElementById("bgmVolume");
+
   let shouldPlay=false;
   try{shouldPlay=!sessionStorage.getItem("meohoIntroSeenV1")}catch(e){}
+
+  // ---------- Original Chinese-inspired Web Audio BGM ----------
+  let ctx=null,master=null,bgmStarted=false,muted=false;
+  let bgmTimer=null,bgmStep=0;
+  const scale=[0,2,4,7,9]; // pentatonic
+  const baseMidi=57; // A3
+  function midiHz(m){return 440*Math.pow(2,(m-69)/12)}
+  function ensureAudio(){
+    if(ctx)return;
+    ctx=new (window.AudioContext||window.webkitAudioContext)();
+    master=ctx.createGain();
+    master.gain.value=(Number(volumeInput?.value||32)/100)*0.22;
+    master.connect(ctx.destination);
+  }
+  function pluck(freq,when,dur=.42,level=.15){
+    if(!ctx||!master)return;
+    const osc=ctx.createOscillator();
+    const gain=ctx.createGain();
+    const filter=ctx.createBiquadFilter();
+    osc.type="triangle";
+    osc.frequency.setValueAtTime(freq,when);
+    filter.type="lowpass";filter.frequency.setValueAtTime(1700,when);
+    gain.gain.setValueAtTime(.0001,when);
+    gain.gain.exponentialRampToValueAtTime(level,when+.018);
+    gain.gain.exponentialRampToValueAtTime(.0001,when+dur);
+    osc.connect(filter);filter.connect(gain);gain.connect(master);
+    osc.start(when);osc.stop(when+dur+.03);
+  }
+  function bell(freq,when,dur=.8,level=.055){
+    if(!ctx||!master)return;
+    const osc=ctx.createOscillator(),gain=ctx.createGain();
+    osc.type="sine";osc.frequency.value=freq*2;
+    gain.gain.setValueAtTime(level,when);
+    gain.gain.exponentialRampToValueAtTime(.0001,when+dur);
+    osc.connect(gain);gain.connect(master);osc.start(when);osc.stop(when+dur+.03);
+  }
+  function bgmTick(){
+    if(!ctx||muted)return;
+    const t=ctx.currentTime+.03;
+    const melody=[0,2,4,2,1,0,4,2, 0,1,2,4,2,1,0,4];
+    const degree=scale[melody[bgmStep%melody.length]%scale.length];
+    const octave=(bgmStep%8===6)?12:0;
+    pluck(midiHz(baseMidi+degree+octave),t,.44,.11);
+    if(bgmStep%4===0){
+      pluck(midiHz(baseMidi-12+scale[(bgmStep/4)%scale.length|0]),t,.85,.055);
+      bell(midiHz(baseMidi+12+degree),t+.04,.72,.025);
+    }
+    bgmStep++;
+  }
+  function startBgm(){
+    ensureAudio();
+    if(ctx.state==="suspended")ctx.resume();
+    if(bgmStarted)return;
+    bgmStarted=true;
+    bgmTick();
+    bgmTimer=setInterval(bgmTick,430);
+  }
+  function updateMute(){
+    if(!master)return;
+    const target=muted?0:(Number(volumeInput?.value||32)/100)*0.22;
+    master.gain.cancelScheduledValues(ctx.currentTime);
+    master.gain.linearRampToValueAtTime(target,ctx.currentTime+.06);
+    if(muteBtn)muteBtn.textContent=muted?"🔇":"🔊";
+  }
+  function clickSound(){
+    ensureAudio();
+    if(ctx.state==="suspended")ctx.resume();
+    const t=ctx.currentTime;
+    const osc=ctx.createOscillator(),gain=ctx.createGain();
+    osc.type="sine";
+    osc.frequency.setValueAtTime(760,t);
+    osc.frequency.exponentialRampToValueAtTime(1080,t+.055);
+    gain.gain.setValueAtTime(.0001,t);
+    gain.gain.exponentialRampToValueAtTime(.045,t+.008);
+    gain.gain.exponentialRampToValueAtTime(.0001,t+.09);
+    osc.connect(gain);gain.connect(master);
+    osc.start(t);osc.stop(t+.1);
+  }
+
+  // First user gesture starts audio, due to browser autoplay policy.
+  const gestureStart=()=>{
+    startBgm();
+    document.removeEventListener("pointerdown",gestureStart,true);
+    document.removeEventListener("keydown",gestureStart,true);
+  };
+  document.addEventListener("pointerdown",gestureStart,true);
+  document.addEventListener("keydown",gestureStart,true);
+
+  if(muteBtn){
+    muteBtn.addEventListener("click",e=>{
+      e.stopPropagation();
+      startBgm();
+      muted=!muted;
+      updateMute();
+    });
+  }
+  if(volumeInput){
+    volumeInput.addEventListener("pointerdown",e=>e.stopPropagation());
+    volumeInput.addEventListener("input",e=>{
+      startBgm();
+      muted=Number(e.target.value)===0;
+      updateMute();
+    });
+  }
+
+  function startMainAnimation(){
+    if(!shell)return;
+    shell.classList.remove("intro-hidden");
+    shell.classList.add("intro-show","page-cinematic");
+    requestAnimationFrame(()=>requestAnimationFrame(()=>shell.classList.add("reveal")));
+  }
+
   if(!shouldPlay){
     if(splash)splash.remove();
     document.documentElement.classList.remove("play-intro");
-    if(shell)shell.style.opacity="";
-    return;
+    startMainAnimation();
+  }else{
+    if(shell)shell.classList.add("intro-hidden");
+    let finished=false;
+    const finish=()=>{
+      if(finished)return;
+      finished=true;
+      try{sessionStorage.setItem("meohoIntroSeenV1","1")}catch(e){}
+      document.documentElement.classList.remove("play-intro");
+      if(splash)splash.classList.add("hide");
+      startMainAnimation();
+      setTimeout(()=>{if(splash)splash.remove()},650);
+    };
+    const reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setTimeout(finish,reduced?300:5000);
+    // click anywhere except controls = skip intro, and audio starts from same gesture
+    if(splash)splash.addEventListener("click",e=>{
+      if(e.target.closest(".intro-audio"))return;
+      startBgm();
+      finish();
+    });
   }
-  if(shell)shell.classList.add("intro-hidden");
-  const finish=()=>{
-    try{sessionStorage.setItem("meohoIntroSeenV1","1")}catch(e){}
-    document.documentElement.classList.remove("play-intro");
-    if(splash)splash.classList.add("hide");
-    if(shell){
-      shell.classList.remove("intro-hidden");
-      shell.classList.add("intro-show");
-    }
-    setTimeout(()=>{if(splash)splash.remove()},650);
-  };
-  const reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  setTimeout(finish,reduced?150:1850);
-  if(splash)splash.addEventListener("click",finish,{once:true});
+
+  // Home page only: click sounds on action cards.
+  const targets=[
+    document.querySelector(".today-main-cta"),
+    ...document.querySelectorAll(".menu-grid .home-card")
+  ].filter(Boolean);
+  targets.forEach(el=>{
+    el.classList.add("home-click-target");
+    el.addEventListener("click",e=>{
+      clickSound();
+      el.classList.add("clicking");
+      setTimeout(()=>el.classList.remove("clicking"),120);
+      // Let browser navigation happen normally; sound is intentionally very short.
+    });
+  });
 })();
 </script>
 
