@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>중국어 단어 공부</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div>
+        <p class="eyebrow">CHINESE VOCAB STUDY</p>
+        <h1>중국어 단어 공부</h1>
+        <p class="sub">한자 → 병음 → 뜻 순서로 확인하고, 기억 상태를 체크해보세요.</p>
+      </div>
+      <button id="resetBtn" class="ghost">학습기록 초기화</button>
+    </header>
+
+    <section class="stats">
+      <div><strong id="totalCount">0</strong><span>전체</span></div>
+      <div><strong id="knownCount">0</strong><span>외움</span></div>
+      <div><strong id="unsureCount">0</strong><span>애매함</span></div>
+      <div><strong id="unknownCount">0</strong><span>모름</span></div>
+    </section>
+
+    <section class="study-panel">
+      <div class="topline">
+        <span id="progress">1 / 1</span>
+        <div class="controls">
+          <button id="shuffleBtn" class="ghost">랜덤 섞기</button>
+          <select id="filterSelect">
+            <option value="all">전체 단어</option>
+            <option value="unknown">모름만</option>
+            <option value="unsure">애매함만</option>
+            <option value="known">외운 단어만</option>
+          </select>
+        </div>
+      </div>
+
+      <article class="card" id="card">
+        <div class="hanzi" id="hanzi">实习</div>
+        <button class="reveal" id="showPinyinBtn">병음 보기</button>
+        <div class="pinyin hidden" id="pinyin">shíxí</div>
+        <button class="reveal" id="showMeaningBtn">뜻 보기</button>
+        <div class="meaning hidden" id="meaning">실습, 인턴</div>
+      </article>
+
+      <div class="rating">
+        <button data-status="unknown" class="rate unknown">모름</button>
+        <button data-status="unsure" class="rate unsure">애매함</button>
+        <button data-status="known" class="rate known">외움</button>
+      </div>
+
+      <div class="nav">
+        <button id="prevBtn">← 이전</button>
+        <button id="nextBtn">다음 →</button>
+      </div>
+    </section>
+
+    <section class="list-section">
+      <div class="list-header">
+        <h2>단어 목록</h2>
+        <input id="searchInput" placeholder="한자 / 병음 / 뜻 검색" />
+      </div>
+      <div id="wordList" class="word-list"></div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
