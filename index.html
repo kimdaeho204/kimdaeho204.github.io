@@ -1974,23 +1974,57 @@ html,body{scroll-behavior:auto!important}
   letter-spacing:-.025em;
 }
 /* Keep old header markup intact but hide its old brand, preventing DOM damage. */
-.topnav{display:none!important}.topnav .brand{visibility:hidden!important}
-#meohoHomeButton{display:none!important}
+.topnav .brand{visibility:hidden!important}
 @media(max-width:620px){
   .meoho-home-button{top:10px;left:10px;padding:6px 9px 6px 6px;gap:7px}
   .meoho-home-mark{width:30px;height:30px;flex-basis:30px;font-size:18px}
   .meoho-home-text{font-size:12px}
 }
 
+
+/* ===== v49 intro has no home button; button appears from main ===== */
+body.intro-active #meohoHomeButton{display:none!important}
+body.main-active #meohoHomeButton{display:inline-flex!important}
+
 </style>
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%234568f2"/><text x="32" y="43" text-anchor="middle" font-size="38" font-weight="700" fill="white">中</text></svg>'>
 
 </head>
-<body>
+<body class="intro-active">
+
+<a id="meohoHomeButton" class="meoho-home-button" href="index.html" aria-label="머호의 중국어 공부 홈으로 이동">
+  <span class="meoho-home-mark">中</span>
+  <span class="meoho-home-text">머호의 중국어 공부</span>
+</a>
 
 
+<div id="introSplash" class="intro-splash" aria-hidden="false">
+  <div class="intro-inner">
+    <div class="intro-seal">中</div>
+    <p class="intro-kicker">MEOHO CHINESE STUDY</p>
+    <h1 class="intro-title">每天一点，慢慢进步。</h1>
+    <p class="intro-sub">매일 조금씩, 천천히 실력을 쌓아가는 머호의 중국어 학습 공간.</p>
+    <div class="intro-line"></div>
+    <p class="intro-sound-hint">아래 카드를 눌러 학습을 시작하세요.</p>
 
-<div class="shell home-shell reveal">
+    <div class="intro-enter-wrap">
+      <button id="introEnterCard" class="intro-enter-card" type="button">
+        <span class="intro-enter-icon">入</span>
+        <span class="intro-enter-copy">
+          <strong>메인으로 들어가기</strong>
+          <small>点击进入 · 학습을 시작합니다</small>
+        </span>
+        <span class="intro-enter-arrow">→</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="shell home-shell intro-hidden">
+
+  <nav class="topnav">
+    <div class="brand"><div class="brand-mark">中</div>머호의 중국어 공부</div>
+  </nav>
 
 
   <main class="home-main">
@@ -2275,8 +2309,10 @@ html,body{scroll-behavior:auto!important}
   const enterCard=document.getElementById("introEnterCard");
 
   // Intro is shown only once per browser tab/session.
-  let introSeen=true;
-  try{ introSeen=true; }catch(e){}
+  let introSeen=false;
+  try{
+    introSeen=sessionStorage.getItem("meohoIntroSeenV1")==="1";
+  }catch(e){}
 
   // Small click sound only; no BGM.
   let audioCtx=null;
@@ -2305,6 +2341,8 @@ html,body{scroll-behavior:auto!important}
 
   function showMain(withAnimation){
     forceTop();
+    document.body.classList.remove("intro-active");
+    document.body.classList.add("main-active");
 
     if(shell){
       shell.inert=false;

@@ -346,7 +346,6 @@ function hskExplain(q,userAnswer,ok){
    <div class="quiz-explain-row"><strong>정답</strong>${answerWithPos(w.hanzi,w.pos)}</div>
    <div class="quiz-explain-row"><strong>병음</strong>${esc(w.pinyin)}</div>
    <div class="quiz-explain-row"><strong>뜻</strong>${esc(w.meaning)}</div>
- <div class="quiz-explain-row"><strong>품사</strong>${esc(w.pos||"-")}</div>
    <div class="quiz-explain-row"><strong>포인트</strong>병음과 한자를 함께 연결해서 기억하세요.</div>
    <button class="quiz-explain-listen" onclick="speak('${esc(w.hanzi)}')">🔊 듣기</button></div>`;
  }
