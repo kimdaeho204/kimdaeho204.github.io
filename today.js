@@ -25,7 +25,7 @@ function markTodayCompleted(){let a=loadArr(DAILY_COMPLETE_KEY);const k=todayLoc
 const pinyinMap=new Map();
 [...WORDS].sort((a,b)=>b.hanzi.length-a.hanzi.length).forEach(w=>{if(!pinyinMap.has(w.hanzi))pinyinMap.set(w.hanzi,w.pinyin)});
 const vocabSorted=[...pinyinMap.keys()].sort((a,b)=>b.length-a.length);
-const TODAY_SESSION_VERSION=61;
+const TODAY_SESSION_VERSION=64;
 
 // HSK 문장은 단어 공부 데이터에 포함된 어휘만으로 구성된 문장을 우선 사용한다.
 // chunks가 합성어처럼 묶여 있어도 단어장의 여러 항목으로 완전히 분해되면 허용한다.
@@ -126,16 +126,20 @@ function pickMixed(pool,count,seenKey,recentKey,idFn,weightFn){
 function makeWordQuestions(pool){
  return pool.map((w,i)=>{
    const type=["meaning","hanzi","pinyin"][i%3];
+   let choiceWords=[];
    if(type==="meaning"){
-     const wrong=sample(WORDS.map(x=>x.meaning),3,w.meaning);
-     return {kind:"word",type,label:"단어 · 뜻 고르기",word:w,question:w.hanzi,sub:"이 단어의 뜻으로 알맞은 것을 고르세요.",options:shuffled([w.meaning,...wrong]),answer:w.meaning};
+     const wrongWords=sample(WORDS.filter(x=>x.id!==w.id),3,null);
+     choiceWords=shuffled([w,...wrongWords]);
+     return {kind:"word",type,label:"단어 · 뜻 고르기",word:w,question:w.hanzi,sub:"이 단어의 뜻으로 알맞은 것을 고르세요.",options:choiceWords.map(x=>x.meaning),optionWordIds:choiceWords.map(x=>x.id),answer:w.meaning};
    }
    if(type==="hanzi"){
-     const wrong=sample(WORDS.map(x=>x.hanzi),3,w.hanzi);
-     return {kind:"word",type,label:"단어 · 한자 고르기",word:w,question:w.meaning,sub:"뜻에 맞는 중국어 단어를 고르세요.",options:shuffled([w.hanzi,...wrong]),answer:w.hanzi};
+     const wrongWords=sample(WORDS.filter(x=>x.id!==w.id),3,null);
+     choiceWords=shuffled([w,...wrongWords]);
+     return {kind:"word",type,label:"단어 · 한자 고르기",word:w,question:w.meaning,sub:"뜻에 맞는 중국어 단어를 고르세요.",options:choiceWords.map(x=>x.hanzi),optionWordIds:choiceWords.map(x=>x.id),answer:w.hanzi};
    }
-   const wrong=sample(WORDS.map(x=>x.pinyin),3,w.pinyin);
-   return {kind:"word",type,label:"단어 · 병음 고르기",word:w,question:w.hanzi,sub:"올바른 병음을 고르세요.",options:shuffled([w.pinyin,...wrong]),answer:w.pinyin};
+   const wrongWords=sample(WORDS.filter(x=>x.id!==w.id),3,null);
+   choiceWords=shuffled([w,...wrongWords]);
+   return {kind:"word",type,label:"단어 · 병음 고르기",word:w,question:w.hanzi,sub:"올바른 병음을 고르세요.",options:choiceWords.map(x=>x.pinyin),optionWordIds:choiceWords.map(x=>x.id),answer:w.pinyin};
  });
 }
 
@@ -256,10 +260,11 @@ function render(){
      b.onclick=()=>{
        if(answered)return;
 
-       // 단어 문제는 보기를 선택하는 순간 중국어 발음을 들려줍니다.
-       // 한자 고르기: 클릭한 중국어 보기 발음 / 뜻·병음 고르기: 문제 단어 발음
+       // 단어 문제는 클릭한 보기와 연결된 실제 중국어 단어를 발음합니다.
+       // 뜻/한자/병음 보기 모두 각 선택지에 대응하는 단어를 찾아 재생합니다.
        if(current.kind==="word"&&current.word){
-         speak(current.type==="hanzi"?o:current.word.hanzi);
+         const optionWord=findWordForOption(current,o,idx);
+         speak(optionWord?.hanzi||current.word.hanzi);
        }
 
        selectedOption=o;
@@ -387,11 +392,18 @@ function renderOrderTokens(){
 }
 
 
-function findWordForOption(q,opt){
+function findWordForOption(q,opt,optionIndex){
+ // New questions carry an explicit 1:1 link from each visible option to its word.
+ if(Array.isArray(q.optionWordIds) && Number.isInteger(optionIndex)){
+   const id=q.optionWordIds[optionIndex];
+   const linked=WORDS.find(w=>w.id===id);
+   if(linked)return linked;
+ }
+ // Backward compatibility for an already-running saved session made by an older version.
  if(q.word&&opt===q.answer)return q.word;
- if(q.type==="meaning")return WORDS.find(w=>w.meaning===opt)||null;
- if(q.type==="hanzi"||q.type==="writeword")return WORDS.find(w=>w.hanzi===opt)||null;
- if(q.type==="pinyin")return WORDS.find(w=>w.pinyin===opt)||null;
+ if(q.type==="meaning")return WORDS.find(w=>String(w.meaning).trim()===String(opt).trim())||null;
+ if(q.type==="hanzi"||q.type==="writeword")return WORDS.find(w=>String(w.hanzi).trim()===String(opt).trim())||null;
+ if(q.type==="pinyin")return WORDS.find(w=>String(w.pinyin).trim().toLowerCase()===String(opt).trim().toLowerCase())||null;
  return null;
 }
 function findSentenceForOption(q,opt){
@@ -410,7 +422,7 @@ function optionInfoHtml(q){
    const badge=isCorrect?"정답":"오답 보기";
 
    if(q.kind==="word"||q.type==="writeword"){
-     const w=findWordForOption(q,opt);
+     const w=findWordForOption(q,opt,idx);
      if(!w){
        return `<div class="option-info-card ${state}"><div class="option-info-head"><span class="option-info-num">보기 ${idx+1}</span><span class="option-info-badge">${badge}</span></div><div class="option-info-main">${esc(opt)}</div></div>`;
      }
@@ -456,19 +468,8 @@ function bindInfoListenButtons(){
 }
 
 function wordExplain(q,userAnswer,ok){
- const w=q.word;
- let why=q.type==="meaning"?`‘${w.hanzi}’의 뜻은 ‘${w.meaning}’입니다.`
- :q.type==="hanzi"?`‘${w.meaning}’에 해당하는 중국어 단어는 ‘${w.hanzi}’입니다.`
- :`‘${w.hanzi}’의 표준 병음은 ‘${w.pinyin}’입니다.`;
- return `<div class="quiz-explain"><div class="quiz-explain-title">${ok?"✅ 정답":"❌ 오답"}</div>
- ${!ok?`<div class="quiz-explain-row"><strong>내 답</strong>${esc(userAnswer)}</div>`:""}
- <div class="quiz-explain-row"><strong>정답</strong>${answerWithPos(q.answer,w.pos)}</div>
- <div class="quiz-explain-row"><strong>한자</strong>${esc(w.hanzi)}</div>
- <div class="quiz-explain-row"><strong>병음</strong><span class="quiz-pinyin">${esc(w.pinyin)}</span></div>
- <div class="quiz-explain-row"><strong>뜻</strong>${esc(w.meaning)}</div>
- <div class="quiz-explain-row"><strong>이유</strong>${esc(why)}</div>
- <button class="quiz-explain-listen" onclick="speak('${esc(w.hanzi)}')">🔊 단어 듣기</button>
- ${optionInfoHtml(q)}</div>`;
+ const info=optionInfoHtml(q).replace('<div class="all-option-title">보기별 정보</div>','<div class="all-option-title">정답</div>');
+ return `<div class="quiz-explain word-options-only">${info}</div>`;
 }
 function hskExplain(q,userAnswer,ok){
  if(q.type==="writeword"){
