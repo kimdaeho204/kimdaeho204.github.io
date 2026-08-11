@@ -6,7 +6,7 @@ const pinyinMap=new Map();
 DEFAULT_WORDS.slice().sort((a,b)=>b.hanzi.length-a.hanzi.length).forEach(w=>{if(!pinyinMap.has(w.hanzi))pinyinMap.set(w.hanzi,w.pinyin)});
 const vocabSorted=[...pinyinMap.keys()].sort((a,b)=>b.length-a.length);
 function pinyinFor(text){let out=[],i=0;while(i<text.length){if(punctuation.has(text[i])){out.push(text[i++]);continue}let f=null;for(const w of vocabSorted){if(text.startsWith(w,i)){f=w;break}}if(f){out.push(pinyinMap.get(f));i+=f.length}else i++}return out.join(" ").replace(/\s+([，。？！])/g,"$1")}
-function speak(text){if(!("speechSynthesis" in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang="zh-CN";u.rate=.78;speechSynthesis.speak(u)}
+function speak(text){if(!("speechSynthesis" in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang="zh-CN";u.rate=.75;speechSynthesis.speak(u)}
 function shuffled(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function sample(a,n,exclude){return shuffled(a.filter(x=>x!==exclude)).slice(0,n)}
 function esc(s){return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}

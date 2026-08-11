@@ -663,6 +663,17 @@ body{
 .word-options-only .all-option-info{margin-top:0;border-top:0;padding-top:0}
 .word-options-only .all-option-title{font-size:16px;font-weight:950;margin-bottom:12px}
 
+
+/* v65 HSK-style listening transcript */
+.listen-transcript{display:grid;gap:12px;margin-top:8px}
+.listen-transcript-line{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start;padding:10px 12px;background:#fff;border:1px solid #ece5df;border-radius:12px}
+.listen-speaker{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff0ea;color:#b3261e;font-size:12px;font-weight:950}
+.listen-transcript-line .pinyin-word-line{justify-content:flex-start}
+@media(max-width:700px){.listen-transcript-line{grid-template-columns:30px 1fr;padding:9px}.listen-speaker{width:27px;height:27px}}
+
+/* v67: HSK 기출형 독해 지문 줄바꿈 */
+#todayQuestion{white-space:pre-line}
+
 </style><link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%234568f2"/><text x="32" y="43" text-anchor="middle" font-size="38" font-weight="700" fill="white">中</text></svg>'>
 </head>
 <body>
@@ -712,7 +723,7 @@ body{
 <script src="sentences.js?v=27"></script>
 <script src="listening.js?v=27"></script>
 <script src="review-store.js?v=27"></script>
-<script src="today.js?v=62-option-audio-3"></script>
+<script src="today.js?v=67"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded",()=>{
