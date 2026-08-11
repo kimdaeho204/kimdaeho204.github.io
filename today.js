@@ -669,6 +669,33 @@ function bindInfoListenButtons(){
    btn.onclick=()=>speak(btn.dataset.speak||"");
  });
 }
+const HSK_LISTENING_ANSWER_MEANINGS={
+ "八点":"8시","七点半":"7시 30분","六点半":"6시 30분","四点四十":"4시 40분","九点二十":"9시 20분","九点":"9시","六点":"6시","十点":"10시",
+ "图书馆":"도서관","医院":"병원","地铁站门口":"지하철역 입구","桌子上":"책상 위","公司食堂":"회사 식당","饭店":"식당","机场":"공항","银行":"은행","上海":"상하이",
+ "坐出租车":"택시를 타다","骑自行车":"자전거를 타다","坐地铁":"지하철을 타다","走路":"걸어가다","地铁":"지하철",
+ "男的的哥哥":"남자의 형/오빠","男的的妹妹":"남자의 여동생","女的的叔叔":"여자의 삼촌","女的的儿子":"여자의 아들","男的的汉语老师":"남자의 중국어 선생님",
+ "明天下午":"내일 오후","看电影":"영화를 보다","星期天":"일요일","四点以后":"4시 이후","晚上":"저녁/밤","后天":"모레","明天":"내일","昨天":"어제",
+ "他生病了":"그가 아프다","路上堵车":"길이 막히다","起得太晚":"너무 늦게 일어나다","外面风大":"밖에 바람이 세다","想早点睡":"일찍 자고 싶다",
+ "苹果和咖啡":"사과와 커피","有点儿贵":"조금 비싸다","三瓶":"세 병","两千多块":"2천 위안이 조금 넘다","不买了":"사지 않다",
+ "买伞":"우산을 사다","关窗户":"창문을 닫다","发电话号码":"전화번호를 보내다","帮她拿箱子":"그녀의 상자를 들어주다","去上课":"수업하러 가다",
+ "很忙":"매우 바쁘다","不太难":"그다지 어렵지 않다","很高兴":"매우 기쁘다","很累":"매우 피곤하다","有点儿小":"조금 작다",
+ "面条":"국수","咖啡":"커피","辣的":"매운 것","鸡蛋和牛奶":"달걀과 우유","不要了":"필요 없다/더 이상 원하지 않다",
+ "很冷还下雪":"매우 춥고 눈도 온다","下雨":"비가 오다","风很大":"바람이 매우 세다","晴天":"맑은 날","今天更冷":"오늘이 더 춥다",
+ "汉语课":"중국어 수업","三十五页":"35쪽","开会了":"회의 중이다/회의를 시작했다","三年":"3년",
+ "肚子疼":"배가 아프다","还有点儿咳嗽":"아직 기침이 조금 나다","早点儿睡":"일찍 자다","腿疼":"다리가 아프다","好多了":"많이 좋아졌다",
+ "左边":"왼쪽","超市旁边":"슈퍼마켓 옆","学校后面":"학교 뒤","包里":"가방 안","前面右边":"앞쪽 오른편",
+ "蓝色":"파란색","小的":"작은 것","四口":"네 식구/4명","六个":"여섯 개","二十七个":"27개/27명","三天":"3일","八杯":"여덟 잔",
+ "没接":"받지 않았다","手机没电了":"휴대전화 배터리가 다 됐다","收到了":"받았다","不知道":"모르다",
+ "要考试":"시험이 있다/시험을 봐야 한다","参加生日会":"생일 모임에 참가하다","已经吃饱了":"이미 배가 부르다","会来":"올 것이다"
+};
+function listeningAnswerMeaning(q){
+ const a=String(q?.answer||"").trim();
+ if(HSK_LISTENING_ANSWER_MEANINGS[a])return HSK_LISTENING_ANSWER_MEANINGS[a];
+ const exact=WORDS.find(w=>String(w.hanzi).trim()===a);
+ if(exact&&exact.meaning)return exact.meaning;
+ return q?.explainMeaning||q?.sentence?.meaning||"";
+}
+
 function listeningOptionInfoHtml(q){
  if(q.hskType!=="listening"||!Array.isArray(q.options))return "";
  const cards=q.options.map((opt,idx)=>{
@@ -748,6 +775,7 @@ function hskExplain(q,userAnswer,ok){
    return `<div class="quiz-explain"><div class="quiz-explain-title">${ok?"✅ 정답":"❌ 오답"}</div>
    ${!ok?`<div class="quiz-explain-row"><strong>내 답</strong>${esc(userAnswer||"-")}</div>`:""}
    <div class="quiz-explain-row"><strong>정답</strong>${esc(q.answer)}</div>
+   <div class="quiz-explain-row"><strong>정답 뜻</strong>${esc(listeningAnswerMeaning(q))}</div>
    <div class="quiz-explain-row"><strong>원문</strong><div class="listen-transcript">${transcript}</div></div>
    <div class="quiz-explain-row"><strong>해석</strong>${esc(q.explainMeaning||s.meaning)}</div>
    <div class="quiz-explain-row"><strong>포인트</strong>시간·장소·사람·행동 같은 핵심 정보를 먼저 잡으세요.</div>
